@@ -12,6 +12,12 @@ Rails.application.routes.draw do
       post 'register', to: 'registrations#create'
       delete 'logout', to: 'sessions#destroy'
       get 'me', to: 'sessions#me'
+      
+      resources :trips do
+        collection do
+          get 'search/:departure_location', to: 'trips#search', as: 'search'
+        end
+      end
     end
   end
 end
