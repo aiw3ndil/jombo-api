@@ -1,12 +1,17 @@
 module Api
   module V1
     class TripsController < ApplicationController
-      before_action :authenticate_user!, except: [:index, :show]
+      before_action :authenticate_user!, except: [:index, :show, :search]
       before_action :set_trip, only: [:show, :update, :destroy]
       before_action :authorize_driver!, only: [:update, :destroy]
 
       def index
         trips = Trip.includes(:driver).all
+        render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
+      end
+
+      def my_trips
+        trips = current_user.trips.includes(:driver).order(created_at: :desc)
         render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
       end
 

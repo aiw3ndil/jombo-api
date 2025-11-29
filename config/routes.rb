@@ -16,6 +16,15 @@ Rails.application.routes.draw do
       resources :trips do
         collection do
           get 'search/:departure_location', to: 'trips#search', as: 'search'
+          get 'my_trips', to: 'trips#my_trips'
+        end
+        resources :bookings, only: [:index], controller: 'trip_bookings'
+      end
+
+      resources :bookings, only: [:index, :show, :create, :update, :destroy] do
+        member do
+          patch :confirm
+          patch :reject
         end
       end
     end
