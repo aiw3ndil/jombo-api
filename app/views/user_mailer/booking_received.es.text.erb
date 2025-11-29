@@ -1,0 +1,26 @@
+¡Nueva Solicitud de Reserva!
+
+Hola <%= @driver.name %>,
+
+Tienes una nueva solicitud de reserva para tu viaje.
+
+📍 TU VIAJE
+===========
+Origen: <%= @trip.departure_location %>
+Destino: <%= @trip.arrival_location %>
+Fecha y Hora: <%= @trip.departure_time.strftime('%d/%m/%Y a las %H:%M') %>
+
+👤 SOLICITUD DE <%= @passenger.name.upcase %>
+======================================
+Email: <%= @passenger.email %>
+Asientos solicitados: <%= @booking.seats %>
+Estado: Pendiente de confirmación
+
+¿QUÉ PUEDES HACER?
+==================
+✅ Confirmar la reserva si estás de acuerdo
+❌ Rechazar la reserva si no puedes aceptarla
+
+Recuerda revisar tu lista de reservas pendientes en la plataforma.
+
+El equipo de Jombo

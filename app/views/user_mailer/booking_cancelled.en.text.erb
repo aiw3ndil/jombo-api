@@ -1,0 +1,18 @@
+<%= t('mailers.user_mailer.booking_cancelled.subject') %>
+
+<%= t('mailers.user_mailer.booking_cancelled.greeting', name: @user.name) %>
+
+<%= t('mailers.user_mailer.booking_cancelled.intro') %>
+
+<%= t('mailers.user_mailer.booking_cancelled.cancelled_trip') %>
+================================
+<%= t('mailers.user_mailer.booking_cancelled.origin') %> <%= @trip.departure_location %>
+<%= t('mailers.user_mailer.booking_cancelled.destination') %> <%= @trip.arrival_location %>
+<%= t('mailers.user_mailer.booking_cancelled.datetime') %> <%= l(@trip.departure_time, format: :email) %>
+<%= t('mailers.user_mailer.booking_cancelled.seats_reserved') %> <%= @booking.seats %>
+
+<%= t('mailers.user_mailer.booking_cancelled.help_text') %>
+
+<%= t('mailers.user_mailer.booking_cancelled.goodbye') %>
+
+<%= t('mailers.user_mailer.booking_cancelled.team') %>

@@ -36,6 +36,9 @@ module Api
         )
 
         if booking.save
+          # Notificar al conductor que tiene una nueva reserva
+          UserMailer.booking_received(trip.driver, booking).deliver_later
+          
           render json: booking.as_json(
             include: {
               trip: {
@@ -70,6 +73,9 @@ module Api
         end
 
         if @booking.confirm_by_driver!
+          # Notificar al pasajero que su reserva fue confirmada
+          UserMailer.booking_confirmed(@booking.user, @booking).deliver_later
+          
           render json: @booking.as_json(
             include: {
               trip: {
@@ -103,6 +109,9 @@ module Api
         end
 
         if @booking.cancel_by_passenger!
+          # Notificar al usuario sobre la cancelación
+          UserMailer.booking_cancelled(@booking.user, @booking).deliver_later
+          
           render json: { message: "Booking cancelled successfully" }
         else
           render json: { error: "Cannot cancel this booking" }, status: :unprocessable_entity

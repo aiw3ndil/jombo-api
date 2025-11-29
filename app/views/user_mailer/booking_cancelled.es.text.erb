@@ -1,0 +1,19 @@
+Tu reserva ha sido cancelada
+
+Hola <%= @user.name %>,
+
+Tu reserva ha sido cancelada exitosamente.
+
+📍 DETALLES DEL VIAJE CANCELADO
+================================
+Origen: <%= @trip.departure_location %>
+Destino: <%= @trip.arrival_location %>
+Fecha y Hora: <%= @trip.departure_time.strftime('%d/%m/%Y a las %H:%M') %>
+Asientos que tenías reservados: <%= @booking.seats %>
+
+Si cancelaste por error o cambias de opinión, puedes crear una nueva reserva 
+si el viaje aún tiene asientos disponibles.
+
+Esperamos verte pronto en otro viaje.
+
+El equipo de Jombo

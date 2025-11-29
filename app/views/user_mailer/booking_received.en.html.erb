@@ -1,0 +1,35 @@
+<h1><%= t('mailers.user_mailer.booking_received.subject') %></h1>
+
+<div class="email-content">
+  <p><%= t('mailers.user_mailer.booking_received.greeting', name: @driver.name) %></p>
+  
+  <p><%= t('mailers.user_mailer.booking_received.intro') %></p>
+
+  <div class="highlight">
+    <h3 style="margin-top: 0;"><%= t('mailers.user_mailer.booking_received.your_trip') %></h3>
+    <p><strong><%= t('mailers.user_mailer.booking_received.origin') %></strong> <%= @trip.departure_location %></p>
+    <p><strong><%= t('mailers.user_mailer.booking_received.destination') %></strong> <%= @trip.arrival_location %></p>
+    <p><strong><%= t('mailers.user_mailer.booking_received.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
+  </div>
+
+  <h3><%= t('mailers.user_mailer.booking_received.request_from', passenger_name: @passenger.name) %></h3>
+  <p>
+    <strong><%= t('mailers.user_mailer.booking_received.passenger_email') %></strong> <%= @passenger.email %><br>
+    <strong><%= t('mailers.user_mailer.booking_received.seats_requested') %></strong> <%= @booking.seats %><br>
+    <strong><%= t('mailers.user_mailer.booking_received.status') %></strong> <span style="color: #f59e0b; font-weight: 600;"><%= t('mailers.user_mailer.booking_received.status_pending') %></span>
+  </p>
+
+  <p style="text-align: center;">
+    <a href="#" class="email-button"><%= t('mailers.user_mailer.booking_received.button') %></a>
+  </p>
+
+  <p><strong><%= t('mailers.user_mailer.booking_received.actions_title') %></strong></p>
+  <p>
+    <%= t('mailers.user_mailer.booking_received.action_confirm') %><br>
+    <%= t('mailers.user_mailer.booking_received.action_reject') %>
+  </p>
+
+  <p><%= t('mailers.user_mailer.booking_received.reminder') %></p>
+  
+  <p><%= t('mailers.user_mailer.booking_received.team') %></p>
+</div>

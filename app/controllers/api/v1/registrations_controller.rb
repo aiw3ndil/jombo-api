@@ -5,6 +5,9 @@ module Api
         user = User.new(registration_params)
 
         if user.save
+          # Enviar email de bienvenida
+          UserMailer.welcome_email(user).deliver_later
+          
           token = JwtService.encode(user_id: user.id)
 
           cookie_opts = {
@@ -19,7 +22,7 @@ module Api
           response.set_cookie("jwt", cookie_opts)
           render json: { 
             message: "User created successfully", 
-            user: { id: user.id, email: user.email, name: user.name } 
+            user: { id: user.id, email: user.email, name: user.name, language: user.language } 
           }, status: :created
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -29,7 +32,7 @@ module Api
       private
 
       def registration_params
-        params.require(:user).permit(:email, :password, :password_confirmation, :name)
+        params.require(:user).permit(:email, :password, :password_confirmation, :name, :language)
       end
     end
   end

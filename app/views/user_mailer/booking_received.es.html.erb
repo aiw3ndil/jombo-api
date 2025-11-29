@@ -1,0 +1,35 @@
+<h1>¡Nueva Solicitud de Reserva! 🔔</h1>
+
+<div class="email-content">
+  <p>Hola <%= @driver.name %>,</p>
+  
+  <p>Tienes una nueva solicitud de reserva para tu viaje.</p>
+
+  <div class="highlight">
+    <h3 style="margin-top: 0;">📍 Tu Viaje</h3>
+    <p><strong>Origen:</strong> <%= @trip.departure_location %></p>
+    <p><strong>Destino:</strong> <%= @trip.arrival_location %></p>
+    <p><strong>Fecha y Hora:</strong> <%= @trip.departure_time.strftime('%d/%m/%Y a las %H:%M') %></p>
+  </div>
+
+  <h3>👤 Solicitud de <%= @passenger.name %></h3>
+  <p>
+    <strong>Email:</strong> <%= @passenger.email %><br>
+    <strong>Asientos solicitados:</strong> <%= @booking.seats %><br>
+    <strong>Estado:</strong> <span style="color: #f59e0b; font-weight: 600;">Pendiente de confirmación</span>
+  </p>
+
+  <p style="text-align: center;">
+    <a href="#" class="email-button">Revisar y Confirmar Reserva</a>
+  </p>
+
+  <p><strong>¿Qué puedes hacer?</strong></p>
+  <p>
+    ✅ Confirmar la reserva si estás de acuerdo<br>
+    ❌ Rechazar la reserva si no puedes aceptarla
+  </p>
+
+  <p>Recuerda revisar tu lista de reservas pendientes en la plataforma.</p>
+  
+  <p>El equipo de Jombo</p>
+</div>

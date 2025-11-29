@@ -1,0 +1,26 @@
+<%= t('mailers.user_mailer.booking_received.subject') %>
+
+<%= t('mailers.user_mailer.booking_received.greeting', name: @driver.name) %>
+
+<%= t('mailers.user_mailer.booking_received.intro') %>
+
+<%= t('mailers.user_mailer.booking_received.your_trip') %>
+===========
+<%= t('mailers.user_mailer.booking_received.origin') %> <%= @trip.departure_location %>
+<%= t('mailers.user_mailer.booking_received.destination') %> <%= @trip.arrival_location %>
+<%= t('mailers.user_mailer.booking_received.datetime') %> <%= l(@trip.departure_time, format: :email) %>
+
+<%= t('mailers.user_mailer.booking_received.request_from', passenger_name: @passenger.name.upcase) %>
+======================================
+<%= t('mailers.user_mailer.booking_received.passenger_email') %> <%= @passenger.email %>
+<%= t('mailers.user_mailer.booking_received.seats_requested') %> <%= @booking.seats %>
+<%= t('mailers.user_mailer.booking_received.status') %> <%= t('mailers.user_mailer.booking_received.status_pending') %>
+
+<%= t('mailers.user_mailer.booking_received.actions_title') %>
+==================
+<%= t('mailers.user_mailer.booking_received.action_confirm') %>
+<%= t('mailers.user_mailer.booking_received.action_reject') %>
+
+<%= t('mailers.user_mailer.booking_received.reminder') %>
+
+<%= t('mailers.user_mailer.booking_received.team') %>

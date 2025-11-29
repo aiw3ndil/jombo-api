@@ -1,0 +1,27 @@
+¡Tu reserva ha sido confirmada!
+
+Hola <%= @user.name %>,
+
+¡Buenas noticias! El conductor <%= @driver.name %> ha confirmado tu reserva.
+
+📍 DETALLES DEL VIAJE
+======================
+Origen: <%= @trip.departure_location %>
+Destino: <%= @trip.arrival_location %>
+Fecha y Hora: <%= @trip.departure_time.strftime('%d/%m/%Y a las %H:%M') %>
+Asientos reservados: <%= @booking.seats %>
+Precio: <%= number_to_currency(@trip.price, unit: '€', format: '%n %u') %>
+
+👤 INFORMACIÓN DEL CONDUCTOR
+============================
+Nombre: <%= @driver.name %>
+Email: <%= @driver.email %>
+
+RECUERDA:
+⏰ Llega a tiempo al punto de encuentro
+📱 Mantén tu teléfono disponible
+🎒 Prepara tu equipaje con anticipación
+
+¡Que tengas un excelente viaje!
+
+El equipo de Jombo

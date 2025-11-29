@@ -1,0 +1,25 @@
+<h1><%= t('mailers.user_mailer.booking_cancelled.subject') %></h1>
+
+<div class="email-content">
+  <p><%= t('mailers.user_mailer.booking_cancelled.greeting', name: @user.name) %></p>
+  
+  <p><%= t('mailers.user_mailer.booking_cancelled.intro') %></p>
+
+  <div class="highlight">
+    <h3 style="margin-top: 0;"><%= t('mailers.user_mailer.booking_cancelled.cancelled_trip') %></h3>
+    <p><strong><%= t('mailers.user_mailer.booking_cancelled.origin') %></strong> <%= @trip.departure_location %></p>
+    <p><strong><%= t('mailers.user_mailer.booking_cancelled.destination') %></strong> <%= @trip.arrival_location %></p>
+    <p><strong><%= t('mailers.user_mailer.booking_cancelled.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
+    <p><strong><%= t('mailers.user_mailer.booking_cancelled.seats_reserved') %></strong> <%= @booking.seats %></p>
+  </div>
+
+  <p><%= t('mailers.user_mailer.booking_cancelled.help_text') %></p>
+
+  <p style="text-align: center;">
+    <a href="#" class="email-button"><%= t('mailers.user_mailer.booking_cancelled.button') %></a>
+  </p>
+
+  <p><%= t('mailers.user_mailer.booking_cancelled.goodbye') %></p>
+  
+  <p><%= t('mailers.user_mailer.booking_cancelled.team') %></p>
+</div>

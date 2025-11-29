@@ -1,0 +1,25 @@
+<h1>Tu reserva ha sido cancelada</h1>
+
+<div class="email-content">
+  <p>Hola <%= @user.name %>,</p>
+  
+  <p>Tu reserva ha sido cancelada exitosamente.</p>
+
+  <div class="highlight">
+    <h3 style="margin-top: 0;">📍 Detalles del Viaje Cancelado</h3>
+    <p><strong>Origen:</strong> <%= @trip.departure_location %></p>
+    <p><strong>Destino:</strong> <%= @trip.arrival_location %></p>
+    <p><strong>Fecha y Hora:</strong> <%= @trip.departure_time.strftime('%d/%m/%Y a las %H:%M') %></p>
+    <p><strong>Asientos que tenías reservados:</strong> <%= @booking.seats %></p>
+  </div>
+
+  <p>Si cancelaste por error o cambias de opinión, puedes crear una nueva reserva si el viaje aún tiene asientos disponibles.</p>
+
+  <p style="text-align: center;">
+    <a href="#" class="email-button">Buscar Otros Viajes</a>
+  </p>
+
+  <p>Esperamos verte pronto en otro viaje.</p>
+  
+  <p>El equipo de Jombo</p>
+</div>

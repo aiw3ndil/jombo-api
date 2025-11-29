@@ -1,0 +1,27 @@
+<%= t('mailers.user_mailer.booking_confirmed.subject') %>
+
+<%= t('mailers.user_mailer.booking_confirmed.greeting', name: @user.name) %>
+
+<%= t('mailers.user_mailer.booking_confirmed.good_news', driver_name: @driver.name) %>
+
+<%= t('mailers.user_mailer.booking_confirmed.trip_details') %>
+======================
+<%= t('mailers.user_mailer.booking_confirmed.origin') %> <%= @trip.departure_location %>
+<%= t('mailers.user_mailer.booking_confirmed.destination') %> <%= @trip.arrival_location %>
+<%= t('mailers.user_mailer.booking_confirmed.datetime') %> <%= l(@trip.departure_time, format: :email) %>
+<%= t('mailers.user_mailer.booking_confirmed.seats') %> <%= @booking.seats %>
+<%= t('mailers.user_mailer.booking_confirmed.price') %> <%= number_to_currency(@trip.price) %>
+
+<%= t('mailers.user_mailer.booking_confirmed.driver_info') %>
+============================
+<%= t('mailers.user_mailer.booking_confirmed.driver_name') %> <%= @driver.name %>
+<%= t('mailers.user_mailer.booking_confirmed.driver_email') %> <%= @driver.email %>
+
+<%= t('mailers.user_mailer.booking_confirmed.remember_title') %>
+<%= t('mailers.user_mailer.booking_confirmed.remember_time') %>
+<%= t('mailers.user_mailer.booking_confirmed.remember_phone') %>
+<%= t('mailers.user_mailer.booking_confirmed.remember_luggage') %>
+
+<%= t('mailers.user_mailer.booking_confirmed.goodbye') %>
+
+<%= t('mailers.user_mailer.booking_confirmed.team') %>

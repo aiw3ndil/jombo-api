@@ -1,0 +1,34 @@
+<h1><%= t('mailers.user_mailer.welcome_email.greeting', name: @user.name) %></h1>
+
+<div class="email-content">
+  <p><%= t('mailers.user_mailer.welcome_email.intro') %></p>
+  
+  <p><%= t('mailers.user_mailer.welcome_email.features_title') %></p>
+  
+  <div class="highlight">
+    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_offer') %></strong></p>
+    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_find') %></strong></p>
+    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_planet') %></strong></p>
+    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_people') %></strong></p>
+  </div>
+
+  <p><%= t('mailers.user_mailer.welcome_email.account_created', email: @user.email) %></p>
+
+  <p style="text-align: center;">
+    <a href="#" class="email-button"><%= t('mailers.user_mailer.welcome_email.button') %></a>
+  </p>
+
+  <h2><%= t('mailers.user_mailer.welcome_email.next_steps_title') %></h2>
+  <p>
+    <%= t('mailers.user_mailer.welcome_email.next_step_search') %><br>
+    <%= t('mailers.user_mailer.welcome_email.next_step_publish') %><br>
+    <%= t('mailers.user_mailer.welcome_email.next_step_profile') %><br>
+    <%= t('mailers.user_mailer.welcome_email.next_step_book') %>
+  </p>
+
+  <p><%= t('mailers.user_mailer.welcome_email.help') %></p>
+
+  <p><%= t('mailers.user_mailer.welcome_email.goodbye') %></p>
+  
+  <p><%= t('mailers.user_mailer.welcome_email.team') %></p>
+</div>
