@@ -32,6 +32,7 @@ class UserMailer < ApplicationMailer
     @booking = booking
     @passenger = booking.user
     @trip = booking.trip
+    @frontend_url = ENV.fetch('FRONTEND_URL', 'http://localhost:3001')
     
     I18n.with_locale(driver.language) do
       mail(

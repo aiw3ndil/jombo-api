@@ -25,6 +25,12 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
   - Notificaciones de reservas
   - Configuración de proveedores SMTP
 
+- **[MESSAGING_SYSTEM.md](MESSAGING_SYSTEM.md)** - Sistema de mensajería
+  - Chat entre conductor y pasajeros
+  - Conversaciones por viaje
+  - Acceso solo con reserva confirmada
+  - Gestión de mensajes y conversaciones
+
 ## 🌟 Características
 
 - ✅ Autenticación JWT con cookies
@@ -34,6 +40,8 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
 - ✅ Búsqueda de viajes por ubicación
 - ✅ Control de asientos disponibles
 - ✅ Estados de reserva (pending, confirmed, rejected, cancelled)
+- ✅ Sistema de mensajería entre conductor y pasajeros
+- ✅ Conversaciones por viaje con acceso controlado
 
 ## 🛠 Tecnologías
 
@@ -112,6 +120,15 @@ Configurar variables de entorno para SMTP:
 - `PATCH /api/v1/bookings/:id/reject` - Rechazar reserva (solo conductor)
 - `GET /api/v1/trips/:trip_id/bookings` - Ver reservas de un viaje (solo conductor)
 
+### Conversaciones y Mensajes
+- `GET /api/v1/conversations` - Listar mis conversaciones
+- `GET /api/v1/conversations/:id` - Ver conversación con mensajes
+- `GET /api/v1/trips/:trip_id/conversation` - Ver conversación de un viaje
+- `DELETE /api/v1/conversations/:id` - Eliminar conversación (solo conductor)
+- `GET /api/v1/conversations/:conversation_id/messages` - Listar mensajes
+- `POST /api/v1/conversations/:conversation_id/messages` - Enviar mensaje
+- `DELETE /api/v1/conversations/:conversation_id/messages/:id` - Eliminar mensaje
+
 ## 🗄 Modelos
 
 ### User
@@ -133,6 +150,18 @@ Configurar variables de entorno para SMTP:
 - `trip_id` - Referencias a Trip
 - `seats` - Integer, default: 1
 - `status` - String (pending, confirmed, rejected, cancelled)
+
+### Conversation
+- `trip_id` - Referencias a Trip (único)
+
+### Message
+- `conversation_id` - Referencias a Conversation
+- `user_id` - Referencias a User (autor)
+- `content` - Text, máximo 1000 caracteres
+
+### ConversationParticipant
+- `conversation_id` - Referencias a Conversation
+- `user_id` - Referencias a User
 
 ## 🔐 Autenticación
 

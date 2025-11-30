@@ -19,6 +19,7 @@ Rails.application.routes.draw do
           get 'my_trips', to: 'trips#my_trips'
         end
         resources :bookings, only: [:index], controller: 'trip_bookings'
+        get 'conversation', to: 'conversations#show_by_trip'
       end
 
       resources :bookings, only: [:index, :show, :create, :update, :destroy] do
@@ -26,6 +27,10 @@ Rails.application.routes.draw do
           patch :confirm
           patch :reject
         end
+      end
+      
+      resources :conversations, only: [:index, :show, :destroy] do
+        resources :messages, only: [:index, :create, :destroy]
       end
     end
   end

@@ -24,3 +24,5 @@
 2025-11-29 15:42:57.290 EET [8053] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
 2025-11-29 15:42:57.309 EET [8054] LOG:  database system was shut down at 2025-11-28 21:34:19 EET
 2025-11-29 15:42:57.321 EET [8053] LOG:  database system is ready to accept connections
+2025-11-30 14:28:36.140 EET [88038] ERROR:  relation "index_conversations_on_trip_id" already exists
+2025-11-30 14:28:36.140 EET [88038] STATEMENT:  CREATE UNIQUE INDEX "index_conversations_on_trip_id" ON "conversations" ("trip_id")

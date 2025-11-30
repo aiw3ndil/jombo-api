@@ -22,8 +22,9 @@ Los emails se envían automáticamente en el idioma del usuario configurado en s
 **Trigger:** Cuando un pasajero crea una reserva
 **Template:** `booking_received`
 **Destinatario:** Conductor del viaje
-**Contenido:** Notificación de nueva solicitud pendiente, datos del pasajero
+**Contenido:** Notificación de nueva solicitud pendiente, datos del pasajero, enlace para confirmar/rechazar
 **Idiomas:** en, es, fi
+**Enlace:** `{FRONTEND_URL}/trips/{trip_id}/bookings`
 
 ### 3. Email de Reserva Confirmada (para Pasajero)
 **Trigger:** Cuando el conductor confirma una reserva
@@ -116,6 +117,14 @@ app/views/user_mailer/
 ```
 
 ## ⚙️ Configuración
+
+### Variables de Entorno
+
+```bash
+# URL del frontend para enlaces en emails
+FRONTEND_URL=http://localhost:3001  # Desarrollo
+FRONTEND_URL=https://jombo.com      # Producción
+```
 
 ### Desarrollo
 ```ruby

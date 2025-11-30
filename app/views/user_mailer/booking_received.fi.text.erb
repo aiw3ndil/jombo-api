@@ -16,6 +16,8 @@
 <%= t('mailers.user_mailer.booking_received.seats_requested') %> <%= @booking.seats %>
 <%= t('mailers.user_mailer.booking_received.status') %> <%= t('mailers.user_mailer.booking_received.status_pending') %>
 
+👉 <%= @frontend_url %>/trips/<%= @trip.id %>/bookings
+
 <%= t('mailers.user_mailer.booking_received.actions_title') %>
 ==================
 <%= t('mailers.user_mailer.booking_received.action_confirm') %>

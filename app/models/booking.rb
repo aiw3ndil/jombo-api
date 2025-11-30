@@ -7,6 +7,7 @@ class Booking < ApplicationRecord
   validate :not_driver
 
   before_create :set_default_status
+  after_update :add_to_conversation, if: :saved_change_to_status?
 
   scope :confirmed, -> { where(status: 'confirmed') }
   scope :pending, -> { where(status: 'pending') }
@@ -53,6 +54,14 @@ class Booking < ApplicationRecord
     
     if user.id == trip.driver_id
       errors.add(:user, "cannot book their own trip")
+    end
+  end
+  
+  def add_to_conversation
+    if status == 'confirmed'
+      conversation = trip.ensure_conversation
+      conversation.add_participant(user)
+      conversation.add_participant(trip.driver)
     end
   end
 end
