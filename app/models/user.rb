@@ -3,6 +3,9 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :language, presence: true, inclusion: { in: %w[en es fi] }
   
+  # Picture upload
+  has_one_attached :picture
+  
   has_many :trips, foreign_key: 'driver_id', dependent: :destroy
   has_many :bookings, dependent: :destroy
   has_many :booked_trips, through: :bookings, source: :trip
