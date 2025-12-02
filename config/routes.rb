@@ -20,6 +20,11 @@ Rails.application.routes.draw do
           patch :confirm
           patch :reject
         end
+        resources :reviews, only: [:create] do
+          collection do
+            get '', to: 'reviews#booking_reviews', as: ''
+          end
+        end
       end
       
       resources :conversations, only: [:index, :show, :destroy] do
@@ -29,6 +34,8 @@ Rails.application.routes.draw do
       namespace :users do
         patch 'profile', to: 'profile#update'
       end
+      
+      get 'users/:user_id/reviews', to: 'reviews#index', as: 'user_reviews'
     end
   end
 end
