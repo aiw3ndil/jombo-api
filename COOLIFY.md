@@ -9,25 +9,38 @@
 
 ### 2. Crear App en Coolify
 
-1. **New Resource** → **Docker Compose**
+1. **New Resource** → **Application** (NO Docker Compose)
 2. **Repository**: Pega la URL de tu repo Git
 3. **Branch**: `main`
+4. **Build Pack**: Dockerfile
 
 ### 3. Variables de Entorno Mínimas
 
 ```env
 SECRET_KEY_BASE=<ejecuta: rails secret>
 RAILS_MASTER_KEY=<copia de config/master.key>
-POSTGRES_USER=jombo_api
+POSTGRES_USER=jombo
 POSTGRES_PASSWORD=<genera_password_segura>
-POSTGRES_DB=jombo_api_production
+POSTGRES_DB=jombo_production
 RAILS_ENV=production
 PORT=3000
+DATABASE_URL=postgresql://jombo:<password>@<db_host>:5432/jombo_production
 ```
+
+### 4. Configurar Base de Datos
+
+1. En Coolify → **Add Database** → PostgreSQL
+2. Conecta la DB a tu aplicación
+3. Coolify generará automáticamente `DATABASE_URL`
 
 ### 4. Deploy
 
 Click en **"Deploy"** y espera ~5 minutos.
+
+**⚠️ Si ves error "exporting to image":**
+1. Ver [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+2. Verificar que tienes >2GB RAM y >10GB disco
+3. Intentar: Settings → Build Pack → Nixpacks
 
 ### 5. Verificar
 

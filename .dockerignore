@@ -29,3 +29,17 @@
 !/storage/.keep
 /tmp/storage/*
 !/tmp/storage/.keep
+
+# Ignore test files
+/test/
+/spec/
+
+# Ignore documentation
+/doc/
+
+# Ignore node modules
+/node_modules/
+
+# Ignore development database
+*.sqlite3
+*.sqlite3-*
