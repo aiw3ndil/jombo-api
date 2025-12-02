@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  # Health check endpoints
+  get '/health', to: 'health#index'
+  get '/health/database', to: 'health#database'
+  
   namespace :api do
     namespace :v1 do
       post 'login', to: 'sessions#create'
