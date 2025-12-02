@@ -1,13 +1,24 @@
-# 🚨 Fix Rápido - Error "exporting to image"
+# 🚨 Fix Rápido - Errores de Build en Coolify
 
-## El Error que Estás Viendo
+## Errores Comunes
 
+### Error 1: "exporting to image"
 ```
 #20 exporting to image
 Error type: RuntimeException
 ```
 
-## Solución Rápida (3 pasos)
+### Error 2: "yaml.h not found" / "psych gem failed"
+```
+checking for yaml.h... no
+An error occurred while installing psych (5.2.6)
+```
+
+**✅ AMBOS ERRORES SOLUCIONADOS** - Los Dockerfiles ya tienen todas las dependencias.
+
+---
+
+## Solución Rápida (4 pasos)
 
 ### ✅ Paso 1: Cambiar Configuración en Coolify
 

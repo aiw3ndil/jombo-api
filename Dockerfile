@@ -13,7 +13,7 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development:test"
 
-# Install packages needed to build gems and run app
+# Instalar dependencias del sistema
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
     build-essential \
@@ -21,6 +21,7 @@ RUN apt-get update -qq && \
     git \
     libpq-dev \
     libvips \
+    libyaml-dev \
     pkg-config \
     postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives

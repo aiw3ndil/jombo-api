@@ -160,6 +160,31 @@ ls -la Gemfile.lock
 BUNDLE_FROZEN=false
 ```
 
+### "yaml.h not found" / "psych gem failed"
+
+**Solución:** Falta libyaml-dev
+
+```
+checking for yaml.h... no
+An error occurred while installing psych (5.2.6)
+```
+
+**✅ YA CORREGIDO** en los Dockerfiles actuales. Si usas un Dockerfile viejo:
+
+```dockerfile
+# Asegúrate de tener libyaml-dev en la instalación de paquetes
+RUN apt-get install --no-install-recommends -y \
+    build-essential \
+    libpq-dev \
+    libyaml-dev \  # <- Esta línea es crítica
+    postgresql-client
+```
+
+**Solución rápida:**
+```bash
+git pull  # Obtén el Dockerfile actualizado
+```
+
 ### "bootsnap precompile failed"
 
 **Solución:** Problema de permisos o memoria
