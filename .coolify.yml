@@ -42,7 +42,7 @@ environment:
 # Volumes
 volumes:
   - postgres_data:/var/lib/postgresql/data
-  - storage_data:/rails/storage
+  - storage_data:/app/storage
 
 # Deployment
 deploy:

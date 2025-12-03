@@ -40,7 +40,7 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_DOMAIN: ${SMTP_DOMAIN:-}
     volumes:
-      - storage_data:/rails/storage
+      - storage_data:/app/storage
     networks:
       - jombo-network
     healthcheck:
