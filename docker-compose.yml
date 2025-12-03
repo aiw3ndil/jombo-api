@@ -39,8 +39,6 @@ services:
       SMTP_USERNAME: ${SMTP_USERNAME:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_DOMAIN: ${SMTP_DOMAIN:-}
-    volumes:
-      - storage_data:/rails/storage
     networks:
       - jombo-network
     healthcheck:

@@ -38,10 +38,15 @@ COPY . .
 RUN bundle exec bootsnap precompile --gemfile && \
     bundle exec bootsnap precompile app/ lib/
 
-# Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp && \
-    chmod +x bin/docker-entrypoint
+# Create user
+RUN useradd rails --create-home --shell /bin/bash
+
+# Create dirs and assign permissions
+RUN mkdir -p /rails/db /rails/log /rails/storage /rails/tmp && \
+    chown -R rails:rails /rails && \
+    chmod -R 755 /rails
+	
+RUN chmod +x /rails/bin/docker-entrypoint
 
 USER rails:rails
 
