@@ -38,7 +38,12 @@ module Api
         if payload
           user = User.find_by(id: payload["user_id"] || payload[:user_id])
           if user
-            render json: { id: user.id, email: user.email, name: user.name }
+            render json: { 
+              id: user.id, 
+              email: user.email, 
+              name: user.name,
+              picture: user.picture.attached? ? url_for(user.picture) : nil
+            }
           else
             render json: { error: "Unauthorized" }, status: :unauthorized
           end
@@ -51,7 +56,7 @@ module Api
 
       # Aquí definimos los parámetros permitidos
       def session_params
-        params.require(:user).permit(:email, :password)
+        params.require(:user).permit(:email, :password, :picture)
       end
 
     end

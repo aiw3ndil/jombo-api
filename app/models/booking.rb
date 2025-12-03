@@ -1,6 +1,7 @@
 class Booking < ApplicationRecord
   belongs_to :user
   belongs_to :trip
+  has_many :reviews, dependent: :destroy
 
   validates :seats, presence: true, numericality: { greater_than: 0, only_integer: true }
   validates :status, presence: true, inclusion: { in: %w[pending confirmed rejected cancelled] }

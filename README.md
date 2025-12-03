@@ -8,6 +8,11 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
 
 ## 📚 Documentación
 
+### Deployment
+
+- **[COOLIFY.md](COOLIFY.md)** - 🚀 Guía rápida de deployment con Coolify (5 minutos)
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - 📖 Guía completa de deployment y operaciones
+
 ### API Endpoints
 
 - **[BOOKINGS_API.md](BOOKINGS_API.md)** - Sistema de reservas de viajes
@@ -15,6 +20,12 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
   - Confirmación por conductor
   - Gestión de estados (pending, confirmed, rejected, cancelled)
   - Endpoints para pasajeros y conductores
+
+- **[REVIEWS_SYSTEM.md](REVIEWS_SYSTEM.md)** - Sistema de reviews y valoraciones
+  - Valoraciones de 1-5 estrellas
+  - Reviews bidireccionales (conductor ↔ pasajero)
+  - Ratings promedio por usuario
+  - Solo después del viaje completado
 
 ### Sistemas
 
@@ -36,12 +47,16 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
 - ✅ Autenticación JWT con cookies
 - ✅ Gestión de viajes (CRUD)
 - ✅ Sistema de reservas con confirmación del conductor
+- ✅ Sistema de reviews y valoraciones (1-5 estrellas)
 - ✅ Emails multiidioma (en, es, fi)
 - ✅ Búsqueda de viajes por ubicación
 - ✅ Control de asientos disponibles
 - ✅ Estados de reserva (pending, confirmed, rejected, cancelled)
 - ✅ Sistema de mensajería entre conductor y pasajeros
 - ✅ Conversaciones por viaje con acceso controlado
+- ✅ Perfil de usuario con foto
+- ✅ Health checks para monitoreo
+- ✅ Docker y Coolify ready
 
 ## 🛠 Tecnologías
 
@@ -129,6 +144,15 @@ Configurar variables de entorno para SMTP:
 - `POST /api/v1/conversations/:conversation_id/messages` - Enviar mensaje
 - `DELETE /api/v1/conversations/:conversation_id/messages/:id` - Eliminar mensaje
 
+### Reviews
+- `POST /api/v1/bookings/:booking_id/reviews` - Crear review (después del viaje)
+- `GET /api/v1/bookings/:booking_id/reviews` - Ver reviews de un booking
+- `GET /api/v1/users/:user_id/reviews` - Ver reviews de un usuario
+
+### Health Checks
+- `GET /health` - Estado general de la API
+- `GET /health/database` - Estado de la conexión a base de datos
+
 ## 🗄 Modelos
 
 ### User
@@ -162,6 +186,43 @@ Configurar variables de entorno para SMTP:
 ### ConversationParticipant
 - `conversation_id` - Referencias a Conversation
 - `user_id` - Referencias a User
+
+### Review
+- `booking_id` - Referencias a Booking
+- `reviewer_id` - Referencias a User (quien hace la review)
+- `reviewee_id` - Referencias a User (quien recibe la review)
+- `rating` - Integer (1-5)
+- `comment` - Text (opcional)
+
+## 🚀 Quick Start
+
+### Desarrollo Local
+
+```bash
+# Clonar repositorio
+git clone <repository-url>
+cd jombo-api
+
+# Instalar dependencias
+bundle install
+
+# Configurar base de datos
+rails db:create db:migrate
+
+# Iniciar servidor
+rails server
+```
+
+### Deploy con Docker + Coolify
+
+Ver [COOLIFY.md](COOLIFY.md) para guía rápida de deployment (5 minutos).
+
+```bash
+# Con docker-compose
+docker-compose up -d
+
+# La app estará disponible en http://localhost:3000
+```
 
 ## 🔐 Autenticación
 

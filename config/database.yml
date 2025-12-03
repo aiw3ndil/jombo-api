@@ -79,6 +79,7 @@ test:
 #
 production:
   <<: *default
-  database: jombo_api_production
-  username: jombo_api
-  password: <%= ENV["JOMBO_API_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
+  database: <%= ENV["POSTGRES_DB"] || "jombo_api_production" %>
+  username: <%= ENV["POSTGRES_USER"] || "jombo_api" %>
+  password: <%= ENV["POSTGRES_PASSWORD"] || ENV["JOMBO_API_DATABASE_PASSWORD"] %>

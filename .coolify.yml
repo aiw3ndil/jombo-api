@@ -1,0 +1,50 @@
+# Coolify Configuration File
+# This file helps Coolify understand how to deploy your application
+
+# Build configuration
+build:
+  command: docker-compose build
+  dockerfile: Dockerfile
+  
+# Services
+services:
+  - name: db
+    type: postgresql
+    version: "16"
+    persistent: true
+    
+  - name: app
+    type: docker
+    port: 3000
+    healthcheck:
+      path: /
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - db
+
+# Environment variables (set these in Coolify UI)
+environment:
+  required:
+    - SECRET_KEY_BASE
+    - RAILS_MASTER_KEY
+    - POSTGRES_USER
+    - POSTGRES_PASSWORD
+    - POSTGRES_DB
+  optional:
+    - SMTP_ADDRESS
+    - SMTP_PORT
+    - SMTP_USERNAME
+    - SMTP_PASSWORD
+    - SMTP_DOMAIN
+
+# Volumes
+volumes:
+  - postgres_data:/var/lib/postgresql/data
+  - storage_data:/rails/storage
+
+# Deployment
+deploy:
+  strategy: rolling
+  command: sh -c "bin/rails db:prepare && bin/rails server -b 0.0.0.0"

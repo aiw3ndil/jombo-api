@@ -1,0 +1,72 @@
+{
+  "name": "jombo-api",
+  "description": "Jombo Carpooling API - Rails 7 REST API for ride sharing",
+  "logo": "https://api.example.com/logo.png",
+  "keywords": ["rails", "api", "carpooling", "postgresql"],
+  "stack": "container",
+  "repository": "https://github.com/yourusername/jombo-api",
+  "env": {
+    "SECRET_KEY_BASE": {
+      "description": "Rails secret key base. Generate with: rails secret",
+      "required": true,
+      "generator": "secret"
+    },
+    "RAILS_MASTER_KEY": {
+      "description": "Rails master key from config/master.key",
+      "required": true
+    },
+    "POSTGRES_USER": {
+      "description": "PostgreSQL username",
+      "value": "jombo_api",
+      "required": true
+    },
+    "POSTGRES_PASSWORD": {
+      "description": "PostgreSQL password",
+      "required": true,
+      "generator": "secret"
+    },
+    "POSTGRES_DB": {
+      "description": "PostgreSQL database name",
+      "value": "jombo_api_production",
+      "required": true
+    },
+    "RAILS_ENV": {
+      "description": "Rails environment",
+      "value": "production",
+      "required": true
+    },
+    "PORT": {
+      "description": "Application port",
+      "value": "3000"
+    },
+    "SMTP_ADDRESS": {
+      "description": "SMTP server address (optional)",
+      "required": false
+    },
+    "SMTP_PORT": {
+      "description": "SMTP server port (optional)",
+      "value": "587",
+      "required": false
+    },
+    "SMTP_USERNAME": {
+      "description": "SMTP username (optional)",
+      "required": false
+    },
+    "SMTP_PASSWORD": {
+      "description": "SMTP password (optional)",
+      "required": false
+    },
+    "SMTP_DOMAIN": {
+      "description": "SMTP domain (optional)",
+      "required": false
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "image": "heroku/ruby",
+  "addons": ["postgresql:basic"]
+}
