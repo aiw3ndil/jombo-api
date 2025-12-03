@@ -10,11 +10,14 @@ module Api
           cookie_opts = {
             value: token,
             httponly: true,
-            secure: Rails.env.production?,
-            same_site: Rails.env.production? ? :none : :lax,
+            secure: Rails.env.production?,              # true en producción HTTPS
+            same_site: Rails.env.production? ? :none : :lax, # en prod: none (cross-site), en dev: lax
             expires: 2.hours.from_now,
             path: "/"
           }
+
+          # Si necesitas cookie para subdominios en producción:
+          # cookie_opts[:domain] = ".tudominio.com" if Rails.env.production?
 
           response.set_cookie("jwt", cookie_opts)
           render json: { message: "Logged in" }
@@ -39,8 +42,7 @@ module Api
               id: user.id, 
               email: user.email, 
               name: user.name,
-              language: user.language,
-              picture_url: user.picture.attached? ? url_for(user.picture) : nil
+              picture: user.picture.attached? ? url_for(user.picture) : nil
             }
           else
             render json: { error: "Unauthorized" }, status: :unauthorized
@@ -52,6 +54,7 @@ module Api
 
       private
 
+      # Aquí definimos los parámetros permitidos
       def session_params
         params.require(:user).permit(:email, :password, :picture)
       end

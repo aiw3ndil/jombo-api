@@ -30,3 +30,9 @@
 2025-11-30 22:06:57.941 EET [8053] LOG:  background worker "logical replication launcher" (PID 8060) exited with exit code 1
 2025-11-30 22:06:57.942 EET [8055] LOG:  shutting down
 2025-11-30 22:06:57.969 EET [8053] LOG:  database system is shut down
+2025-12-03 16:36:37.120 EET [18092] LOG:  starting PostgreSQL 14.19 (Homebrew) on x86_64-apple-darwin21.2.0, compiled by Apple clang version 13.1.6 (clang-1316.0.21.2.5), 64-bit
+2025-12-03 16:36:37.123 EET [18092] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-12-03 16:36:37.123 EET [18092] LOG:  listening on IPv6 address "::1", port 5432
+2025-12-03 16:36:37.124 EET [18092] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-12-03 16:36:37.141 EET [18093] LOG:  database system was shut down at 2025-11-30 22:06:57 EET
+2025-12-03 16:36:37.153 EET [18092] LOG:  database system is ready to accept connections
