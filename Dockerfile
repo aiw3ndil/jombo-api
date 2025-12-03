@@ -5,7 +5,7 @@ ARG RUBY_VERSION=3.3.7
 FROM ruby:$RUBY_VERSION-slim
 
 # Rails app lives here
-WORKDIR /rails
+WORKDIR /app
 
 # Set production environment
 ENV RAILS_ENV="production" \
@@ -42,16 +42,17 @@ RUN bundle exec bootsnap precompile --gemfile && \
 RUN useradd rails --create-home --shell /bin/bash
 
 # Create dirs and assign permissions
-RUN mkdir -p /rails/db /rails/log /rails/storage /rails/tmp && \
-    chown -R rails:rails /rails && \
-    chmod -R 755 /rails
+RUN mkdir -p /app/db /app/log /app/storage /app/tmp && \
+    chown -R rails:rails /app && \
+    chmod -R 775 /app/storage && \
+    chmod -R 755 /app
 	
-RUN chmod +x /rails/bin/docker-entrypoint
+RUN chmod +x /app/bin/docker-entrypoint
 
 USER rails:rails
 
 # Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+ENTRYPOINT ["/app/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
