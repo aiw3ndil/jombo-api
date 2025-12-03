@@ -5,13 +5,22 @@ module Api
         before_action :authenticate_user!
 
         def update
-          if current_user.update(profile_params)
-            render json: {
-              message: "Profile updated successfully",
-              user: user_json(current_user)
-            }, status: :ok
-          else
-            render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+          begin
+            if current_user.update(profile_params)
+              render json: {
+                message: "Profile updated successfully",
+                user: user_json(current_user)
+              }, status: :ok
+            else
+              render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+            end
+          rescue => e
+            Rails.logger.error "Profile update error: #{e.message}"
+            Rails.logger.error e.backtrace.join("\n")
+            render json: { 
+              error: "Failed to update profile", 
+              message: e.message 
+            }, status: :internal_server_error
           end
         end
 
