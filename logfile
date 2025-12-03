@@ -26,3 +26,7 @@
 2025-11-29 15:42:57.321 EET [8053] LOG:  database system is ready to accept connections
 2025-11-30 14:28:36.140 EET [88038] ERROR:  relation "index_conversations_on_trip_id" already exists
 2025-11-30 14:28:36.140 EET [88038] STATEMENT:  CREATE UNIQUE INDEX "index_conversations_on_trip_id" ON "conversations" ("trip_id")
+2025-11-30 22:06:57.939 EET [8053] LOG:  received smart shutdown request
+2025-11-30 22:06:57.941 EET [8053] LOG:  background worker "logical replication launcher" (PID 8060) exited with exit code 1
+2025-11-30 22:06:57.942 EET [8055] LOG:  shutting down
+2025-11-30 22:06:57.969 EET [8053] LOG:  database system is shut down
