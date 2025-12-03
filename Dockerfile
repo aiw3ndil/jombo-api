@@ -39,7 +39,9 @@ RUN bundle exec bootsnap precompile --gemfile && \
     bundle exec bootsnap precompile app/ lib/
 
 # Create user
-RUN useradd rails --create-home --shell /bin/bash
+RUN useradd rails --create-home --shell /bin/bash && \
+    usermod -u 1000 rails && \
+    groupmod -g 1000 rails
 
 # Create dirs and assign permissions
 RUN mkdir -p /app/db /app/log /app/storage /app/tmp && \
