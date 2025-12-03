@@ -1,5 +1,5 @@
 class UserMailer < ApplicationMailer
-  default from: 'noreply@jombo.com'
+  default from: 'noreply@jombo.es'
 
   def welcome_email(user)
     @user = user
@@ -32,7 +32,7 @@ class UserMailer < ApplicationMailer
     @booking = booking
     @passenger = booking.user
     @trip = booking.trip
-    @frontend_url = ENV.fetch('FRONTEND_URL', 'http://localhost:3001')
+    @frontend_url = frontend_url
     
     I18n.with_locale(driver.language) do
       mail(
