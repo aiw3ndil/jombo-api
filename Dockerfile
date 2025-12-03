@@ -51,9 +51,7 @@ RUN mkdir -p /app/db /app/log /app/storage /app/tmp && \
 	
 RUN chmod +x /app/bin/docker-entrypoint
 
-USER rails:rails
-
-# Entrypoint prepares the database.
+# Entrypoint prepares the database (runs as root to fix permissions, then switches to rails)
 ENTRYPOINT ["/app/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
