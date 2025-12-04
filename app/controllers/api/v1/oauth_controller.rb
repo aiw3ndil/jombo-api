@@ -70,17 +70,36 @@ module Api
         require 'net/http'
         require 'json'
         
+        # Try as id_token first
         uri = URI("https://oauth2.googleapis.com/tokeninfo?id_token=#{token}")
         response = Net::HTTP.get_response(uri)
+        
+        # If id_token fails, try as access_token
+        if !response.is_a?(Net::HTTPSuccess)
+          uri = URI("https://oauth2.googleapis.com/tokeninfo?access_token=#{token}")
+          response = Net::HTTP.get_response(uri)
+        end
         
         if response.is_a?(Net::HTTPSuccess)
           data = JSON.parse(response.body)
           
           # Verify the token is for our app
           client_id = ENV['GOOGLE_CLIENT_ID']
-          if client_id && data['aud'] != client_id
+          if client_id && data['aud'] && data['aud'] != client_id
             Rails.logger.error "Google token aud mismatch"
             return nil
+          end
+          
+          # If we have token info but need user info, fetch it
+          if data['sub'] && !data['email']
+            user_uri = URI("https://www.googleapis.com/oauth2/v3/userinfo?access_token=#{token}")
+            user_response = Net::HTTP.get_response(user_uri)
+            if user_response.is_a?(Net::HTTPSuccess)
+              user_data = JSON.parse(user_response.body)
+              data['email'] = user_data['email']
+              data['name'] = user_data['name']
+              data['picture'] = user_data['picture']
+            end
           end
           
           OpenStruct.new(
