@@ -13,6 +13,10 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
 - **[COOLIFY.md](COOLIFY.md)** - 🚀 Guía rápida de deployment con Coolify (5 minutos)
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - 📖 Guía completa de deployment y operaciones
 
+### Autenticación
+
+- **[OAUTH_AUTHENTICATION.md](OAUTH_AUTHENTICATION.md)** - 🔐 Login con Google y Facebook
+
 ### API Endpoints
 
 - **[BOOKINGS_API.md](BOOKINGS_API.md)** - Sistema de reservas de viajes
@@ -45,6 +49,7 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
 ## 🌟 Características
 
 - ✅ Autenticación JWT con cookies
+- ✅ **Login con Google y Facebook** 🆕
 - ✅ Gestión de viajes (CRUD)
 - ✅ Sistema de reservas con confirmación del conductor
 - ✅ Sistema de reviews y valoraciones (1-5 estrellas)
@@ -116,6 +121,8 @@ Configurar variables de entorno para SMTP:
 - `POST /api/v1/login` - Iniciar sesión
 - `DELETE /api/v1/logout` - Cerrar sesión
 - `GET /api/v1/me` - Obtener usuario actual
+- `POST /api/v1/auth/google` - Login con Google 🆕
+- `POST /api/v1/auth/facebook` - Login con Facebook 🆕
 
 ### Viajes
 - `GET /api/v1/trips` - Listar todos los viajes

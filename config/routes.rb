@@ -10,6 +10,9 @@ Rails.application.routes.draw do
       delete 'logout', to: 'sessions#destroy'
       get 'me', to: 'sessions#me'
       
+      # OAuth routes
+      post 'auth/:provider', to: 'oauth#create'
+      
       resources :trips do
         collection do
           get 'search/:departure_location', to: 'trips#search', as: 'search'

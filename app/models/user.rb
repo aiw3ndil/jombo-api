@@ -1,6 +1,7 @@
 class User < ApplicationRecord
-  has_secure_password
+  has_secure_password validations: false
   validates :email, presence: true, uniqueness: true
+  validates :password, presence: true, if: -> { provider.blank? }
   validates :language, presence: true, inclusion: { in: %w[en es fi] }
   
   # Picture upload
@@ -29,5 +30,27 @@ class User < ApplicationRecord
   
   def set_default_language
     self.language ||= 'en'
+  end
+  
+  # Find or create user from OAuth data
+  def self.from_omniauth(auth)
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email = auth.info.email
+      user.name = auth.info.name
+      user.password = SecureRandom.hex(20) # Random password for OAuth users
+      # Download and attach picture if available
+      if auth.info.image
+        begin
+          require 'open-uri'
+          downloaded_image = URI.open(auth.info.image)
+          user.picture.attach(
+            io: downloaded_image,
+            filename: "profile_#{auth.provider}_#{auth.uid}.jpg"
+          )
+        rescue => e
+          Rails.logger.error "Failed to download profile picture: #{e.message}"
+        end
+      end
+    end
   end
 end
