@@ -19,12 +19,25 @@ FACEBOOK_APP_SECRET=tu_facebook_app_secret
 
 #### Login con Google
 
+**Flujo recomendado (ID Token):**
+
 ```http
 POST /api/v1/auth/google
 Content-Type: application/json
 
 {
-  "token": "google_id_token_from_frontend"
+  "credential": "google_id_token_jwt_from_frontend"
+}
+```
+
+**Flujo legacy (Access Token) - También soportado:**
+
+```http
+POST /api/v1/auth/google
+Content-Type: application/json
+
+{
+  "token": "google_access_token_from_frontend"
 }
 ```
 
@@ -86,7 +99,7 @@ Content-Type: application/json
 **Token no proporcionado (400 Bad Request):**
 ```json
 {
-  "error": "Token is required"
+  "error": "Token or credential is required"
 }
 ```
 
@@ -102,7 +115,7 @@ Content-Type: application/json
 
 ### Implementación en Frontend
 
-#### Ejemplo con Google (React)
+#### Ejemplo con Google (React) - Flujo Recomendado
 
 ```javascript
 import { GoogleLogin } from '@react-oauth/google';
@@ -115,7 +128,7 @@ function GoogleLoginButton() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        token: credentialResponse.credential
+        credential: credentialResponse.credential // ID Token JWT
       }),
       credentials: 'include' // Importante para cookies
     });
@@ -132,6 +145,36 @@ function GoogleLoginButton() {
       onError={() => console.log('Login Failed')}
     />
   );
+}
+```
+
+#### Ejemplo con Google (React) - Flujo Legacy con Popup
+
+```javascript
+import { useGoogleLogin } from '@react-oauth/google';
+
+function GoogleLoginButton() {
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const response = await fetch('/api/v1/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: tokenResponse.access_token // Access Token
+        }),
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Login exitoso:', data.user);
+      }
+    }
+  });
+
+  return <button onClick={() => login()}>Login con Google</button>;
 }
 ```
 

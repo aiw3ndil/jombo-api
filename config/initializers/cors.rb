@@ -17,7 +17,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "http://localhost:3000", "https://jombo.es", "https://www.jombo.es", "https://jombo.fi", "https://www.jombo.fi" # Next.js, Production
+    origins "http://localhost:3000", "http://localhost:3001", "https://jombo.es", "https://www.jombo.es", "https://jombo.fi", "https://www.jombo.fi" # Next.js frontend (dev & prod)
     resource "*",
       headers: :any,
       expose: ["Authorization"],

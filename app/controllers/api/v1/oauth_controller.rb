@@ -1,18 +1,21 @@
 module Api
   module V1
     class OauthController < ApplicationController
+      require 'ostruct'
+      
       # POST /api/v1/auth/google
       # POST /api/v1/auth/facebook
       def create
         provider = params[:provider]
-        token = params[:token]
+        # Accept both 'credential' (new Google flow with ID token) and 'token' (legacy/Facebook)
+        token = params[:credential] || params[:token]
         
         unless %w[google facebook].include?(provider)
           return render json: { error: 'Invalid provider' }, status: :bad_request
         end
         
         unless token.present?
-          return render json: { error: 'Token is required' }, status: :bad_request
+          return render json: { error: 'Token or credential is required' }, status: :bad_request
         end
         
         # Verify token and get user info
@@ -70,28 +73,38 @@ module Api
         require 'net/http'
         require 'json'
         
+        Rails.logger.info "🔵 Verifying Google token (length: #{token&.length})"
+        
         # Try as id_token first
         uri = URI("https://oauth2.googleapis.com/tokeninfo?id_token=#{token}")
         response = Net::HTTP.get_response(uri)
         
+        Rails.logger.info "🔵 Google id_token response: #{response.code}"
+        
         # If id_token fails, try as access_token
         if !response.is_a?(Net::HTTPSuccess)
+          Rails.logger.info "🔵 Trying as access_token instead..."
           uri = URI("https://oauth2.googleapis.com/tokeninfo?access_token=#{token}")
           response = Net::HTTP.get_response(uri)
+          Rails.logger.info "🔵 Google access_token response: #{response.code}"
         end
         
         if response.is_a?(Net::HTTPSuccess)
           data = JSON.parse(response.body)
+          Rails.logger.info "🔵 Token data: sub=#{data['sub']}, email=#{data['email']}, aud=#{data['aud']}"
           
           # Verify the token is for our app
           client_id = ENV['GOOGLE_CLIENT_ID']
+          Rails.logger.info "🔵 Expected CLIENT_ID: #{client_id}"
+          
           if client_id && data['aud'] && data['aud'] != client_id
-            Rails.logger.error "Google token aud mismatch"
+            Rails.logger.error "❌ Google token aud mismatch: expected #{client_id}, got #{data['aud']}"
             return nil
           end
           
           # If we have token info but need user info, fetch it
           if data['sub'] && !data['email']
+            Rails.logger.info "🔵 Fetching additional user info..."
             user_uri = URI("https://www.googleapis.com/oauth2/v3/userinfo?access_token=#{token}")
             user_response = Net::HTTP.get_response(user_uri)
             if user_response.is_a?(Net::HTTPSuccess)
@@ -101,6 +114,8 @@ module Api
               data['picture'] = user_data['picture']
             end
           end
+          
+          Rails.logger.info "✅ Google token verified successfully for #{data['email']}"
           
           OpenStruct.new(
             provider: 'google',
@@ -112,6 +127,8 @@ module Api
             )
           )
         else
+          error_body = response.body rescue "Unable to read response body"
+          Rails.logger.error "❌ Google token verification failed: #{response.code} - #{error_body}"
           nil
         end
       end
