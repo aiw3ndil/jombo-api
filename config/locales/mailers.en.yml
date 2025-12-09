@@ -72,6 +72,19 @@ en:
         button: "Search Other Trips"
         goodbye: "We hope to see you soon on another trip."
         team: "The Jombo Team"
+      new_message:
+        subject: "New message from %{sender_name} 💬"
+        greeting: "Hello %{name},"
+        notification: "%{sender_name} has sent you a message about your trip."
+        message_preview: "Message Preview"
+        sent_at: "Sent at %{time}"
+        trip_details: "📍 Trip Details"
+        origin: "Origin:"
+        destination: "Destination:"
+        datetime: "Date and Time:"
+        button: "View and Reply to Message"
+        goodbye: "Keep in touch with your fellow travelers!"
+        team: "The Jombo Team"
   date:
     formats:
       email: "%m/%d/%Y at %H:%M"

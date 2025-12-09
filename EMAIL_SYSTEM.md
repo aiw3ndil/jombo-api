@@ -40,6 +40,14 @@ Los emails se envían automáticamente en el idioma del usuario configurado en s
 **Contenido:** Confirmación de cancelación, detalles del viaje cancelado
 **Idiomas:** en, es, fi
 
+### 5. Email de Nuevo Mensaje
+**Trigger:** Cuando un participante recibe un mensaje en una conversación
+**Template:** `new_message`
+**Destinatario:** Participantes de la conversación (excepto el remitente)
+**Contenido:** Vista previa del mensaje, nombre del remitente, detalles del viaje, enlace para responder
+**Idiomas:** en, es, fi
+**Enlace:** `{FRONTEND_URL}/trips/{trip_id}/messages`
+
 ## 🎨 Plantilla Reutilizable
 
 La plantilla base (`layouts/mailer.html.erb`) incluye:
@@ -216,3 +224,5 @@ assert_match 'Bienvenido', mail.body.encoded
 - [ ] Email cuando un viaje está por llenarse
 - [ ] Email cuando un viaje es cancelado por el conductor
 - [ ] Notificaciones por cambios en el viaje
+- [ ] Preferencias de notificación (permitir desactivar ciertos emails)
+- [ ] Resumen diario/semanal de actividad

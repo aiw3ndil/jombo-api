@@ -13,6 +13,7 @@ Sistema de mensajería que permite la comunicación entre conductores y pasajero
 - ✅ Eliminación de conversaciones (solo conductor)
 - ✅ Eliminación de mensajes individuales (solo autor)
 - ✅ Participantes agregados automáticamente al confirmar reserva
+- ✅ Notificaciones por email al recibir nuevos mensajes
 
 ## 🗄 Modelos
 
@@ -325,6 +326,37 @@ def add_to_conversation
 end
 ```
 
+## 📧 Notificaciones por Email
+
+Cada vez que un usuario envía un mensaje, todos los demás participantes de la conversación reciben un email de notificación automáticamente.
+
+### Email de Nuevo Mensaje
+
+**Trigger:** Cuando un participante envía un mensaje en una conversación
+**Template:** `new_message`
+**Destinatarios:** Todos los participantes excepto el remitente
+**Contenido:** 
+- Vista previa del mensaje (primeros 100 caracteres)
+- Nombre del remitente
+- Detalles del viaje
+- Enlace directo a la conversación
+**Idiomas:** en, es, fi
+
+### Implementación
+
+```ruby
+# En Message model
+after_create_commit :notify_participants
+
+def notify_participants
+  conversation.participants.where.not(id: user_id).find_each do |participant|
+    UserMailer.new_message(participant, self).deliver_later
+  end
+end
+```
+
+El email se envía de forma asíncrona para no bloquear la respuesta de la API.
+
 ## 🚀 Preparado para WebSockets
 
 El modelo `Message` incluye un callback `after_create_commit` preparado para Action Cable:
@@ -388,3 +420,5 @@ add_index :conversation_participants, [:conversation_id, :user_id], unique: true
 - [ ] Búsqueda de mensajes
 - [ ] Archivar conversaciones en lugar de eliminar
 - [ ] Silenciar conversaciones
+- [ ] Preferencias de notificación (permitir desactivar emails)
+- [ ] Resumen diario de mensajes no leídos

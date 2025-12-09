@@ -8,6 +8,7 @@ class Message < ApplicationRecord
   
   # Broadcast del mensaje (para futuro uso con Action Cable)
   after_create_commit :broadcast_message
+  after_create_commit :notify_participants
   
   private
   
@@ -16,5 +17,11 @@ class Message < ApplicationRecord
     # ActionCable.server.broadcast("conversation_#{conversation_id}", {
     #   message: as_json(include: { user: { only: [:id, :name] } })
     # })
+  end
+
+  def notify_participants
+    conversation.participants.where.not(id: user_id).find_each do |participant|
+      UserMailer.new_message(participant, self).deliver_later
+    end
   end
 end

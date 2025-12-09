@@ -72,6 +72,19 @@ fi:
         button: "Etsi Muita Kyytejä"
         goodbye: "Toivomme näkevämme sinut pian toisella matkalla."
         team: "Jombo-tiimi"
+      new_message:
+        subject: "Uusi viesti käyttäjältä %{sender_name} 💬"
+        greeting: "Hei %{name},"
+        notification: "%{sender_name} on lähettänyt sinulle viestin matkastasi."
+        message_preview: "Viestin esikatselu"
+        sent_at: "Lähetetty %{time}"
+        trip_details: "📍 Matkan Tiedot"
+        origin: "Lähtöpaikka:"
+        destination: "Määränpää:"
+        datetime: "Päivämäärä ja Aika:"
+        button: "Näytä ja Vastaa Viestiin"
+        goodbye: "Pidä yhteyttä matkatovereidesi kanssa!"
+        team: "Jombo-tiimi"
   date:
     formats:
       email: "%d.%m.%Y klo %H:%M"

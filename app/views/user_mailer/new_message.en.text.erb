@@ -1,0 +1,23 @@
+<%= t('mailers.user_mailer.new_message.subject', sender_name: @sender.name) %>
+
+<%= t('mailers.user_mailer.new_message.greeting', name: @recipient.name) %>
+
+<%= t('mailers.user_mailer.new_message.notification', sender_name: @sender.name) %>
+
+<%= t('mailers.user_mailer.new_message.message_preview') %>
+======================
+"<%= truncate(@message.content, length: 100) %>"
+<%= t('mailers.user_mailer.new_message.sent_at', time: l(@message.created_at, format: :short)) %>
+
+<%= t('mailers.user_mailer.new_message.trip_details') %>
+======================
+<%= t('mailers.user_mailer.new_message.origin') %> <%= @trip.departure_location %>
+<%= t('mailers.user_mailer.new_message.destination') %> <%= @trip.arrival_location %>
+<%= t('mailers.user_mailer.new_message.datetime') %> <%= l(@trip.departure_time, format: :email) %>
+
+<%= t('mailers.user_mailer.new_message.button') %>
+<%= @frontend_url %>/trips/<%= @trip.id %>/messages
+
+<%= t('mailers.user_mailer.new_message.goodbye') %>
+
+<%= t('mailers.user_mailer.new_message.team') %>

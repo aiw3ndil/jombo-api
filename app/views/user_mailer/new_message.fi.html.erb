@@ -1,0 +1,30 @@
+<h1><%= t('mailers.user_mailer.new_message.subject', sender_name: @sender.name) %></h1>
+
+<div class="email-content">
+  <p><%= t('mailers.user_mailer.new_message.greeting', name: @recipient.name) %></p>
+  
+  <p><%= t('mailers.user_mailer.new_message.notification', sender_name: @sender.name) %></p>
+
+  <div class="highlight">
+    <h3 style="margin-top: 0;"><%= t('mailers.user_mailer.new_message.message_preview') %></h3>
+    <p style="font-style: italic;">"<%= truncate(@message.content, length: 100) %>"</p>
+    <p style="margin-top: 10px; font-size: 12px; color: #666;">
+      <%= t('mailers.user_mailer.new_message.sent_at', time: l(@message.created_at, format: :short)) %>
+    </p>
+  </div>
+
+  <div class="highlight" style="margin-top: 20px;">
+    <h3 style="margin-top: 0;"><%= t('mailers.user_mailer.new_message.trip_details') %></h3>
+    <p><strong><%= t('mailers.user_mailer.new_message.origin') %></strong> <%= @trip.departure_location %></p>
+    <p><strong><%= t('mailers.user_mailer.new_message.destination') %></strong> <%= @trip.arrival_location %></p>
+    <p><strong><%= t('mailers.user_mailer.new_message.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
+  </div>
+
+  <p style="text-align: center;">
+    <a href="<%= @frontend_url %>/trips/<%= @trip.id %>/messages" class="email-button"><%= t('mailers.user_mailer.new_message.button') %></a>
+  </p>
+
+  <p><%= t('mailers.user_mailer.new_message.goodbye') %></p>
+  
+  <p><%= t('mailers.user_mailer.new_message.team') %></p>
+</div>

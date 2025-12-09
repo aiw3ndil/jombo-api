@@ -54,4 +54,20 @@ class UserMailer < ApplicationMailer
       )
     end
   end
+
+  def new_message(recipient, message)
+    @recipient = recipient
+    @message = message
+    @sender = message.user
+    @conversation = message.conversation
+    @trip = @conversation.trip
+    @frontend_url = frontend_url
+    
+    I18n.with_locale(recipient.language) do
+      mail(
+        to: @recipient.email,
+        subject: I18n.t('mailers.user_mailer.new_message.subject', sender_name: @sender.name)
+      )
+    end
+  end
 end
