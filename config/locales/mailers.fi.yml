@@ -85,6 +85,10 @@ fi:
         button: "Näytä ja Vastaa Viestiin"
         goodbye: "Pidä yhteyttä matkatovereidesi kanssa!"
         team: "Jombo-tiimi"
+  time:
+    formats:
+      email: "%a, %d %b %Y %H:%M:%S %z"
+      short: "%d.%m.%Y"
   date:
     formats:
       email: "%d.%m.%Y klo %H:%M"

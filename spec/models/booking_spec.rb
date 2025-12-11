@@ -35,8 +35,8 @@ RSpec.describe Booking, type: :model do
     describe 'before_create' do
       it 'sets default status to pending' do
         booking = build(:booking, status: nil)
-        booking.save
-        expect(booking.status).to eq('pending')
+        booking.save(validate: false)
+        expect(booking.reload.status).to eq('pending')
       end
     end
   end

@@ -1,0 +1,5 @@
+fi:
+  time:
+    formats:
+      email: "%a, %d %b %Y %H:%M:%S %z"
+      short: "%d/%m/%Y"

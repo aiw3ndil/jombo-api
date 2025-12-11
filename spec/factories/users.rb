@@ -5,8 +5,6 @@ FactoryBot.define do
     password_confirmation { 'password123' }
     sequence(:name) { |n| "User #{n}" }
     language { 'en' }
-    phone { Faker::PhoneNumber.cell_phone }
-    bio { Faker::Lorem.paragraph }
 
     trait :spanish do
       language { 'es' }
@@ -16,8 +14,5 @@ FactoryBot.define do
       language { 'fi' }
     end
 
-    trait :without_phone do
-      phone { nil }
-    end
   end
 end

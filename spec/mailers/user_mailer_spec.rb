@@ -6,7 +6,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.welcome_email(user) }
 
     it 'renders the subject' do
-      expect(mail.subject).to eq('Welcome to Jombo! 🚗')
+      expect(mail.subject).to eq('[Jombo] Welcome to Jombo! 🚗')
     end
 
     it 'renders the receiver email' do
@@ -21,12 +21,23 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.body.encoded).to match(user.name)
     end
 
+    it 'creates a notification for the user' do
+      expect {
+        mail.deliver_now
+      }.to change { user.notifications.count }.by(1)
+      
+      notification = user.notifications.last
+      expect(notification.notification_type).to eq('email')
+      expect(notification.email_type).to eq('welcome_email')
+      expect(notification.read).to be false
+    end
+
     context 'with Spanish language' do
       let(:user) { create(:user, :spanish) }
       let(:mail) { UserMailer.welcome_email(user) }
 
       it 'renders subject in Spanish' do
-        expect(mail.subject).to eq('¡Bienvenido a Jombo! 🚗')
+        expect(mail.subject).to eq('[Jombo] ¡Bienvenido a Jombo! 🚗')
       end
     end
 
@@ -35,7 +46,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) { UserMailer.welcome_email(user) }
 
       it 'renders subject in Finnish' do
-        expect(mail.subject).to eq('Tervetuloa Jomboon! 🚗')
+        expect(mail.subject).to eq('[Jombo] Tervetuloa Jomboon! 🚗')
       end
     end
   end
@@ -48,7 +59,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.booking_confirmed(passenger, booking) }
 
     it 'renders the subject' do
-      expect(mail.subject).to eq('Your booking has been confirmed! 🎉')
+      expect(mail.subject).to eq('[Jombo] Your booking has been confirmed! 🎉')
     end
 
     it 'renders the receiver email' do
@@ -63,6 +74,17 @@ RSpec.describe UserMailer, type: :mailer do
     it 'includes driver information' do
       expect(mail.body.encoded).to match(driver.name)
     end
+
+    it 'creates a notification for the passenger' do
+      expect {
+        mail.deliver_now
+      }.to change { passenger.notifications.count }.by(1)
+      
+      notification = passenger.notifications.last
+      expect(notification.notification_type).to eq('email')
+      expect(notification.email_type).to eq('booking_confirmed')
+      expect(notification.related_id).to eq(booking.id)
+    end
   end
 
   describe 'booking_received' do
@@ -73,7 +95,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.booking_received(driver, booking) }
 
     it 'renders the subject' do
-      expect(mail.subject).to eq('You have a new booking request! 🔔')
+      expect(mail.subject).to eq('[Jombo] You have a new booking request! 🔔')
     end
 
     it 'renders the receiver email' do
@@ -87,6 +109,17 @@ RSpec.describe UserMailer, type: :mailer do
     it 'includes number of seats' do
       expect(mail.body.encoded).to match('2')
     end
+
+    it 'creates a notification for the driver' do
+      expect {
+        mail.deliver_now
+      }.to change { driver.notifications.count }.by(1)
+      
+      notification = driver.notifications.last
+      expect(notification.notification_type).to eq('email')
+      expect(notification.email_type).to eq('booking_received')
+      expect(notification.related_id).to eq(booking.id)
+    end
   end
 
   describe 'booking_cancelled' do
@@ -96,7 +129,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.booking_cancelled(user, booking) }
 
     it 'renders the subject' do
-      expect(mail.subject).to eq('Your booking has been cancelled')
+      expect(mail.subject).to eq('[Jombo] Your booking has been cancelled')
     end
 
     it 'renders the receiver email' do
@@ -106,6 +139,17 @@ RSpec.describe UserMailer, type: :mailer do
     it 'includes trip details' do
       expect(mail.body.encoded).to match(trip.departure_location)
       expect(mail.body.encoded).to match(trip.arrival_location)
+    end
+
+    it 'creates a notification for the user' do
+      expect {
+        mail.deliver_now
+      }.to change { user.notifications.count }.by(1)
+      
+      notification = user.notifications.last
+      expect(notification.notification_type).to eq('email')
+      expect(notification.email_type).to eq('booking_cancelled')
+      expect(notification.related_id).to eq(booking.id)
     end
   end
 
@@ -118,7 +162,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.new_message(recipient, message) }
 
     it 'renders the subject' do
-      expect(mail.subject).to eq("New message from #{sender.name} 💬")
+      expect(mail.subject).to eq("[Jombo] New message from #{sender.name} 💬")
     end
 
     it 'renders the receiver email' do
@@ -137,12 +181,23 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.body.encoded).to match(trip.departure_location)
     end
 
+    it 'creates a notification for the recipient' do
+      expect {
+        mail.deliver_now
+      }.to change { recipient.notifications.count }.by(1)
+      
+      notification = recipient.notifications.last
+      expect(notification.notification_type).to eq('email')
+      expect(notification.email_type).to eq('new_message')
+      expect(notification.related_id).to eq(message.id)
+    end
+
     context 'with Spanish language' do
       let(:recipient) { create(:user, :spanish, name: 'Recipient') }
       let(:mail) { UserMailer.new_message(recipient, message) }
 
       it 'renders subject in Spanish' do
-        expect(mail.subject).to eq("Nuevo mensaje de #{sender.name} 💬")
+        expect(mail.subject).to eq("[Jombo] Nuevo mensaje de #{sender.name} 💬")
       end
     end
   end

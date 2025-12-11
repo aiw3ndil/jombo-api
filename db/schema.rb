@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_04_085954) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_11_185249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_04_085954) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "notification_type", null: false
+    t.string "title", null: false
+    t.text "content"
+    t.boolean "read", default: false, null: false
+    t.string "email_type"
+    t.integer "related_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_notifications_on_created_at"
+    t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "reviews", force: :cascade do |t|
     t.bigint "booking_id", null: false
     t.bigint "reviewer_id", null: false
@@ -106,6 +121,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_04_085954) do
     t.integer "driver_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
     t.index ["driver_id"], name: "index_trips_on_driver_id"
   end
 
@@ -131,6 +147,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_04_085954) do
   add_foreign_key "conversations", "trips"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"
+  add_foreign_key "notifications", "users"
   add_foreign_key "reviews", "bookings"
   add_foreign_key "reviews", "users", column: "reviewee_id"
   add_foreign_key "reviews", "users", column: "reviewer_id"

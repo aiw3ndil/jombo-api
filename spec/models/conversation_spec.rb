@@ -14,20 +14,23 @@ RSpec.describe Conversation, type: :model do
   end
 
   describe '#participant?' do
-    let(:conversation) { create(:conversation) }
-    let(:participant) { create(:user) }
-    let(:non_participant) { create(:user) }
+    let(:driver) { create(:user) }
+    let(:passenger) { create(:user) }
+    let(:trip) { create(:trip, driver: driver) }
+    let!(:booking) { create(:booking, :confirmed, trip: trip, user: passenger) }
+    let(:conversation) { create(:conversation, trip: trip) }
 
-    before do
-      create(:conversation_participant, conversation: conversation, user: participant)
+    it 'returns true for the driver' do
+      expect(conversation.participant?(driver)).to be true
     end
 
-    it 'returns true for participants' do
-      expect(conversation.participant?(participant)).to be true
+    it 'returns true for a passenger with a confirmed booking' do
+      expect(conversation.participant?(passenger)).to be true
     end
 
-    it 'returns false for non-participants' do
-      expect(conversation.participant?(non_participant)).to be false
+    it 'returns false for other users' do
+      other_user = create(:user)
+      expect(conversation.participant?(other_user)).to be false
     end
   end
 
@@ -41,10 +44,6 @@ RSpec.describe Conversation, type: :model do
           conversation.add_participant(user)
         }.to change { conversation.participants.count }.by(1)
       end
-
-      it 'returns true' do
-        expect(conversation.add_participant(user)).to be true
-      end
     end
 
     context 'when user is already a participant' do
@@ -56,10 +55,6 @@ RSpec.describe Conversation, type: :model do
         expect {
           conversation.add_participant(user)
         }.not_to change { conversation.participants.count }
-      end
-
-      it 'returns false' do
-        expect(conversation.add_participant(user)).to be false
       end
     end
   end

@@ -85,6 +85,10 @@ es:
         button: "Ver y Responder al Mensaje"
         goodbye: "¡Mantente en contacto con tus compañeros de viaje!"
         team: "El equipo de Jombo"
+  time:
+    formats:
+      email: "%a, %d %b %Y %H:%M:%S %z"
+      short: "%d/%m/%Y"
   date:
     formats:
       email: "%d/%m/%Y a las %H:%M"

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
           get 'my_trips', to: 'trips#my_trips'
         end
         resources :bookings, only: [:index], controller: 'trip_bookings'
+        post 'bookings', to: 'bookings#create' # Add this line
         get 'conversation', to: 'conversations#show_by_trip'
       end
 
@@ -40,6 +41,17 @@ Rails.application.routes.draw do
       
       namespace :users do
         patch 'profile', to: 'profile#update'
+      end
+      
+      resources :notifications, only: [:index, :show, :destroy] do
+        member do
+          patch :mark_as_read
+          patch :mark_as_unread
+        end
+        collection do
+          patch :mark_all_as_read
+          get :unread_count
+        end
       end
       
       get 'users/:user_id/reviews', to: 'reviews#index', as: 'user_reviews'

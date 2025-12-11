@@ -6,9 +6,19 @@ class UserMailer < ApplicationMailer
     @app_name = 'Jombo'
     
     I18n.with_locale(user.language) do
+      subject = I18n.t('mailers.user_mailer.welcome_email.subject')
+      
+      # Crear notificación
+      NotificationService.create_email_notification(
+        user,
+        'welcome_email',
+        subject,
+        I18n.t('mailers.user_mailer.welcome_email.preview', default: 'Welcome to Jombo!')
+      )
+      
       mail(
         to: @user.email,
-        subject: I18n.t('mailers.user_mailer.welcome_email.subject')
+        subject: subject
       )
     end
   end
@@ -20,9 +30,20 @@ class UserMailer < ApplicationMailer
     @driver = @trip.driver
     
     I18n.with_locale(user.language) do
+      subject = I18n.t('mailers.user_mailer.booking_confirmed.subject')
+      
+      # Crear notificación
+      NotificationService.create_email_notification(
+        user,
+        'booking_confirmed',
+        subject,
+        I18n.t('mailers.user_mailer.booking_confirmed.preview', default: "Your booking for #{@trip.departure_location} to #{@trip.arrival_location} has been confirmed"),
+        booking.id
+      )
+      
       mail(
         to: @user.email,
-        subject: I18n.t('mailers.user_mailer.booking_confirmed.subject')
+        subject: subject
       )
     end
   end
@@ -35,9 +56,20 @@ class UserMailer < ApplicationMailer
     @frontend_url = frontend_url
     
     I18n.with_locale(driver.language) do
+      subject = I18n.t('mailers.user_mailer.booking_received.subject')
+      
+      # Crear notificación
+      NotificationService.create_email_notification(
+        driver,
+        'booking_received',
+        subject,
+        I18n.t('mailers.user_mailer.booking_received.preview', default: "#{@passenger.name} has booked your trip"),
+        booking.id
+      )
+      
       mail(
         to: @driver.email,
-        subject: I18n.t('mailers.user_mailer.booking_received.subject')
+        subject: subject
       )
     end
   end
@@ -48,9 +80,20 @@ class UserMailer < ApplicationMailer
     @trip = booking.trip
     
     I18n.with_locale(user.language) do
+      subject = I18n.t('mailers.user_mailer.booking_cancelled.subject')
+      
+      # Crear notificación
+      NotificationService.create_email_notification(
+        user,
+        'booking_cancelled',
+        subject,
+        I18n.t('mailers.user_mailer.booking_cancelled.preview', default: "Your booking has been cancelled"),
+        booking.id
+      )
+      
       mail(
         to: @user.email,
-        subject: I18n.t('mailers.user_mailer.booking_cancelled.subject')
+        subject: subject
       )
     end
   end
@@ -64,9 +107,20 @@ class UserMailer < ApplicationMailer
     @frontend_url = frontend_url
     
     I18n.with_locale(recipient.language) do
+      subject = I18n.t('mailers.user_mailer.new_message.subject', sender_name: @sender.name)
+      
+      # Crear notificación
+      NotificationService.create_email_notification(
+        recipient,
+        'new_message',
+        subject,
+        @message.content.truncate(100),
+        message.id
+      )
+      
       mail(
         to: @recipient.email,
-        subject: I18n.t('mailers.user_mailer.new_message.subject', sender_name: @sender.name)
+        subject: subject
       )
     end
   end

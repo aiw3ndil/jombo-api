@@ -85,6 +85,10 @@ en:
         button: "View and Reply to Message"
         goodbye: "Keep in touch with your fellow travelers!"
         team: "The Jombo Team"
+  time:
+    formats:
+      email: "%a, %d %b %Y %H:%M:%S %z" # e.g., "Tue, 01 Jan 2025 12:00:00 +0000"
+      short: "%d/%m/%Y" # e.g., "01/01/2025"
   date:
     formats:
       email: "%m/%d/%Y at %H:%M"
