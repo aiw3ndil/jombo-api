@@ -46,6 +46,8 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
   - Acceso solo con reserva confirmada
   - Gestión de mensajes y conversaciones
 
+- **[NOTIFICATIONS_SYSTEM.md](NOTIFICATIONS_SYSTEM.md)** - Sistema de notificaciones
+
 ## 🌟 Características
 
 - ✅ Autenticación JWT con cookies
