@@ -55,9 +55,32 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
   end
 
   describe 'GET /api/v1/users/:user_id/reviews' do
-    let!(:review1) { create(:review, :past_trip, reviewee: driver, rating: 5) }
-    let(:other_user) { create(:user) }
-    let!(:review2) { create(:review, :past_trip, reviewee: other_user, rating: 3) }
+    let(:reviewer_for_1) { create(:user) }
+    let(:trip1) { create(:trip, :past, driver: driver) }
+    let(:booking1) { create(:booking, :confirmed, trip: trip1, user: reviewer_for_1) }
+    
+    let!(:review1) do
+      create(:review,
+        booking: booking1,
+        reviewer: reviewer_for_1,
+        reviewee: driver,
+        rating: 5
+      )    
+    end
+    
+    let!(:other_user) { create(:user) }
+    let(:reviewer_for_2) { create(:user) }
+    let(:trip2) { create(:trip, :past, driver: other_user) }
+    let(:booking2) { create(:booking, :confirmed, trip: trip2, user: reviewer_for_2) } 
+    
+    let!(:review2) do
+      create(:review,
+      booking: booking2,
+      reviewer: reviewer_for_2,
+      reviewee: other_user,
+      rating: 3
+      )
+    end
 
     it 'returns reviews for specific user' do
       get "/api/v1/users/#{driver.id}/reviews"

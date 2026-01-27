@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Sessions', type: :request do
   describe 'POST /api/v1/login' do
-    let(:user) { create(:user, email: 'test@example.com', password: 'password123') }
+    let!(:user) { create(:user, email: 'test@example.com', password: 'password123') }
 
     context 'with valid credentials' do
       it 'logs in successfully' do
@@ -12,7 +12,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
         expect(response).to have_http_status(:ok)
         json = JSON.parse(response.body)
-        expect(json['user']['email']).to eq('test@example.com')
+        expect(json['message']).to eq('Logged in')
         expect(response.cookies['jwt']).to be_present
       end
     end

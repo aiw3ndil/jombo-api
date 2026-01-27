@@ -25,7 +25,7 @@ module Api
 
       def destroy
         response.delete_cookie("jwt", path: "/")
-        render json: { message: "Logged out" }
+        render json: { message: "Logged out successfully" }
       end
 
       def me

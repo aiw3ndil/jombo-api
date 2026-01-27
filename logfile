@@ -66,3 +66,30 @@
 2025-12-11 20:30:27.667 EET [33076] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
 2025-12-11 20:30:27.687 EET [33077] LOG:  database system was shut down at 2025-12-07 21:26:14 EET
 2025-12-11 20:30:27.700 EET [33076] LOG:  database system is ready to accept connections
+2025-12-11 22:05:19.082 EET [33076] LOG:  received smart shutdown request
+2025-12-11 22:05:19.085 EET [33076] LOG:  background worker "logical replication launcher" (PID 33083) exited with exit code 1
+2025-12-11 22:05:19.085 EET [33078] LOG:  shutting down
+2025-12-11 22:05:19.096 EET [33076] LOG:  database system is shut down
+2025-12-15 17:16:27.557 EET [7939] LOG:  starting PostgreSQL 14.19 (Homebrew) on x86_64-apple-darwin21.2.0, compiled by Apple clang version 13.1.6 (clang-1316.0.21.2.5), 64-bit
+2025-12-15 17:16:27.558 EET [7939] LOG:  listening on IPv6 address "::1", port 5432
+2025-12-15 17:16:27.558 EET [7939] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-12-15 17:16:27.560 EET [7939] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-12-15 17:16:27.575 EET [7940] LOG:  database system was shut down at 2025-12-11 22:05:19 EET
+2025-12-15 17:16:27.595 EET [7939] LOG:  database system is ready to accept connections
+2025-12-18 22:19:22.722 EET [7939] LOG:  received smart shutdown request
+2025-12-18 22:19:22.726 EET [7939] LOG:  background worker "logical replication launcher" (PID 7946) exited with exit code 1
+2025-12-18 22:19:22.727 EET [7941] LOG:  shutting down
+2025-12-18 22:19:22.749 EET [7939] LOG:  database system is shut down
+2026-01-26 09:37:42.860 EET [5796] LOG:  starting PostgreSQL 14.19 (Homebrew) on x86_64-apple-darwin21.2.0, compiled by Apple clang version 13.1.6 (clang-1316.0.21.2.5), 64-bit
+2026-01-26 09:37:42.863 EET [5796] LOG:  listening on IPv6 address "::1", port 5432
+2026-01-26 09:37:42.863 EET [5796] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-01-26 09:37:42.864 EET [5796] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-01-26 09:37:42.884 EET [5797] LOG:  database system was shut down at 2026-01-05 23:45:38 EET
+2026-01-26 09:37:42.902 EET [5796] LOG:  database system is ready to accept connections
+2026-01-26 16:32:06.022 EET [9273] ERROR:  column "start_time" does not exist at character 38
+2026-01-26 16:32:06.022 EET [9273] STATEMENT:  SELECT "trips".* FROM "trips" WHERE (start_time >= '2026-01-26 14:32:06.021023')
+2026-01-26 16:32:06.044 EET [9273] ERROR:  column "start_time" does not exist at character 38
+2026-01-26 16:32:06.044 EET [9273] STATEMENT:  SELECT "trips".* FROM "trips" WHERE (start_time >= '2026-01-26 14:32:06.044279')
+2026-01-27 14:53:37.801 EET [22725] ERROR:  null value in column "status" of relation "bookings" violates not-null constraint
+2026-01-27 14:53:37.801 EET [22725] DETAIL:  Failing row contains (1704, 8276, 3506, 1, null, 2026-01-27 12:53:37.79901, 2026-01-27 12:53:37.79901).
+2026-01-27 14:53:37.801 EET [22725] STATEMENT:  INSERT INTO "bookings" ("user_id", "trip_id", "seats", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"

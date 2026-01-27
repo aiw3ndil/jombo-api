@@ -28,6 +28,16 @@ module Api
 
       def create
         trip = Trip.find(params[:trip_id])
+        booking = trip.bookings.new(booking_params.merge(user: current_user))
+        
+
+        if booking.seats <= 0
+          return render json: { error: 'Invalid seats' }, status: :unprocessable_entity
+        end
+
+        if booking.seats > trip.available_seats
+          return render json: { error: 'Not enough seats available' }, status: :unprocessable_entity
+        end
         
         booking = current_user.bookings.build(
           trip: trip,

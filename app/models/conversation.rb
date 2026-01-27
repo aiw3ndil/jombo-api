@@ -8,12 +8,18 @@ class Conversation < ApplicationRecord
   
   # Verificar si un usuario puede acceder a esta conversación
   def participant?(user)
-    # El conductor del viaje siempre puede acceder
+    return false unless user
+
+    # Conductor del viaje
     return true if trip.driver_id == user.id
-    
-    # Los pasajeros con reservas confirmadas pueden acceder
+
+    # Cualquier usuario añadido como participante explícito
+    return true if participants.exists?(user.id)
+
+    # Pasajeros que tienen una reserva confirmada
     trip.bookings.confirmed.exists?(user_id: user.id)
   end
+
   
   # Agregar participante a la conversación
   def add_participant(user)

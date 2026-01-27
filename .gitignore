@@ -39,3 +39,4 @@
 
 # Docker
 docker-compose.override.yml
+logfile

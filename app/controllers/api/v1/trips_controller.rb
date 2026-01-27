@@ -6,7 +6,7 @@ module Api
       before_action :authorize_driver!, only: [:update, :destroy]
 
       def index
-        trips = Trip.includes(:driver).all
+        trips = Trip.includes(:driver).where('departure_time >= ?', Time.current)
         render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
       end
 
@@ -29,7 +29,7 @@ module Api
         trip = current_user.trips.build(trip_params)
 
         if trip.save
-          render json: trip, status: :created
+          render json: trip.as_json(include: { driver: { only: [:id, :email, :name] } }), status: :created 
         else
           render json: { errors: trip.errors.full_messages }, status: :unprocessable_entity
         end
@@ -57,7 +57,8 @@ module Api
       end
 
       def trip_params
-        params.require(:trip).permit(:departure_location, :arrival_location, :departure_time, :available_seats, :price)
+        params.require(:trip).permit(:departure_location, :arrival_location, :departure_time, 
+          :available_seats, :description, :price)
       end
 
       def authenticate_user!
