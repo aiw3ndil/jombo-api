@@ -2,25 +2,37 @@ module Api
   module V1
     class BookingsController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_trip, only: [:index]
       before_action :set_booking, only: [:show, :update, :destroy, :confirm, :reject]
       before_action :authorize_booking_owner!, only: [:show, :update, :destroy]
 
       def index
-        # Ensure the current user is the driver of this trip (authorization)
-        unless @trip.driver == current_user
-          render json: { error: "Forbidden - You are not the driver of this trip" }, status: :forbidden
-          return
+        if params[:trip_id].present?
+          # Logic for nested bookings (GET /api/v1/trips/:trip_id/bookings)
+          trip = Trip.find(params[:trip_id])
+
+          unless trip.driver == current_user
+            render json: { error: "Forbidden - You are not the driver of this trip" }, status: :forbidden
+            return
+          end
+
+          bookings = trip.bookings.includes(user: []).order(created_at: :desc)
+
+          render json: bookings.as_json(
+            include: {
+              user: { only: [:id, :email, :name] }
+            }
+          )
+        else
+          # Original logic for standalone bookings (GET /api/v1/bookings)
+          bookings = current_user.bookings.includes(trip: :driver).order(created_at: :desc)
+          render json: bookings.as_json(
+            include: {
+              trip: {
+                include: { driver: { only: [:id, :email, :name] } }
+              }
+            }
+          )
         end
-
-        # Get bookings for this specific trip, including the passenger's user information
-        bookings = @trip.bookings.includes(user: []).order(created_at: :desc)
-
-        render json: bookings.as_json(
-          include: {
-            user: { only: [:id, :email, :name] }
-          }
-        )
       rescue ActiveRecord::RecordNotFound
         render json: { error: "Trip not found" }, status: :not_found
       end
@@ -37,9 +49,7 @@ module Api
 
       def create
         trip = Trip.find(params[:trip_id])
-        booking = trip.bookings.build(
-          booking_params.merge(user: current_user, status: 'pending')
-        )
+        booking = trip.bookings.build(booking_params.merge(user: current_user, status: 'pending'))
 
         if booking.seats <= 0
           return render json: { error: 'Invalid seats' }, status: :unprocessable_entity
@@ -86,7 +96,7 @@ module Api
         end
 
         if @booking.confirm_by_driver!
-          UserMailer.booking_confirmed(@booking.user, @booking.trip).deliver_later
+          UserMailer.booking_confirmed(@booking.user, @booking).deliver_later
 
           render json: @booking.as_json(
             include: {
@@ -108,6 +118,7 @@ module Api
         end
 
         if @booking.reject_by_driver!
+          UserMailer.booking_rejected(@booking.user, @booking).deliver_later
           render json: @booking
         else
           render json: { error: "Cannot reject this booking" }, status: :unprocessable_entity
@@ -131,12 +142,6 @@ module Api
       end
 
       private
-
-      def set_trip
-        @trip = Trip.find(params[:trip_id])
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: "Trip not found" }, status: :not_found
-      end
 
       def set_booking
         @booking = Booking.find(params[:id])
@@ -170,6 +175,5 @@ module Api
         end
       end
     end
-  
-end
+  end
 end

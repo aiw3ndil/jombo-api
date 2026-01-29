@@ -1,0 +1,20 @@
+<%= t('mailers.user_mailer.booking_rejected.subject') %>
+
+<%= t('mailers.user_mailer.booking_rejected.greeting', name: @user.name) %>
+
+<%= t('mailers.user_mailer.booking_rejected.intro') %>
+
+<%= t('mailers.user_mailer.booking_rejected.rejected_trip') %>
+================================
+<%= t('mailers.user_mailer.booking_rejected.origin') %> <%= @trip.departure_location %>
+<%= t('mailers.user_mailer.booking_rejected.destination') %> <%= @trip.arrival_location %>
+<%= t('mailers.user_mailer.booking_rejected.datetime') %> <%= l(@trip.departure_time, format: :email) %>
+<%= t('mailers.user_mailer.booking_rejected.seats_reserved') %> <%= @booking.seats %>
+
+<%= t('mailers.user_mailer.booking_rejected.apology_text') %>
+
+<%= t('mailers.user_mailer.booking_rejected.find_another_trip') %>
+
+<%= t('mailers.user_mailer.booking_rejected.goodbye') %>
+
+<%= t('mailers.user_mailer.booking_rejected.team') %>

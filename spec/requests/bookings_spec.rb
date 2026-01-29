@@ -77,10 +77,12 @@ RSpec.describe 'Api::V1::Bookings', type: :request do
     let(:booking) { create(:booking, trip: trip, user: user, seats: 2) }
 
     context 'when driver' do
-      it 'confirms the booking' do
-        put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/confirm", 
-            headers: auth_headers(driver)
-        
+      it 'confirms the booking and sends a confirmation email' do
+        expect {
+          put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/confirm",
+              headers: auth_headers(driver)
+        }.to have_enqueued_mail(UserMailer, :booking_confirmed).with(user, booking)
+
         expect(response).to have_http_status(:ok)
         booking.reload
         expect(booking.status).to eq('confirmed')
@@ -88,7 +90,7 @@ RSpec.describe 'Api::V1::Bookings', type: :request do
 
       it 'decrements available seats' do
         expect {
-          put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/confirm", 
+          put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/confirm",
               headers: auth_headers(driver)
           trip.reload
         }.to change { trip.available_seats }.from(3).to(1)
@@ -97,7 +99,7 @@ RSpec.describe 'Api::V1::Bookings', type: :request do
 
     context 'when not driver' do
       it 'returns forbidden' do
-        put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/confirm", 
+        put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/confirm",
             headers: auth_headers(user)
         expect(response).to have_http_status(:forbidden)
       end
@@ -108,10 +110,12 @@ RSpec.describe 'Api::V1::Bookings', type: :request do
     let(:booking) { create(:booking, trip: trip, user: user) }
 
     context 'when driver' do
-      it 'rejects the booking' do
-        put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/reject", 
-            headers: auth_headers(driver)
-        
+      it 'rejects the booking and sends a rejection email' do
+        expect {
+          put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/reject",
+              headers: auth_headers(driver)
+        }.to have_enqueued_mail(UserMailer, :booking_rejected).with(user, booking)
+
         expect(response).to have_http_status(:ok)
         booking.reload
         expect(booking.status).to eq('rejected')
@@ -120,7 +124,7 @@ RSpec.describe 'Api::V1::Bookings', type: :request do
 
     context 'when not driver' do
       it 'returns forbidden' do
-        put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/reject", 
+        put "/api/v1/trips/#{trip.id}/bookings/#{booking.id}/reject",
             headers: auth_headers(user)
         expect(response).to have_http_status(:forbidden)
       end

@@ -28,10 +28,12 @@ class UserMailer < ApplicationMailer
     @booking = booking
     @trip = booking.trip
     @driver = @trip.driver
-    
+    @frontend_url = frontend_url
+    @messages_url = "#{@frontend_url}/messages"
+
     I18n.with_locale(user.language) do
       subject = I18n.t('mailers.user_mailer.booking_confirmed.subject')
-      
+
       # Crear notificación
       NotificationService.create_email_notification(
         user,
@@ -91,6 +93,30 @@ class UserMailer < ApplicationMailer
         booking.id
       )
       
+      mail(
+        to: @user.email,
+        subject: subject
+      )
+    end
+  end
+
+  def booking_rejected(user, booking)
+    @user = user
+    @booking = booking
+    @trip = booking.trip
+    @driver = @trip.driver
+
+    I18n.with_locale(user.language) do
+      subject = I18n.t('mailers.user_mailer.booking_rejected.subject', default: "Your booking has been rejected")
+
+      NotificationService.create_email_notification(
+        user,
+        'booking_rejected',
+        subject,
+        I18n.t('mailers.user_mailer.booking_rejected.preview', default: "Your booking for #{@trip.departure_location} to #{@trip.arrival_location} has been rejected."),
+        booking.id
+      )
+
       mail(
         to: @user.email,
         subject: subject
