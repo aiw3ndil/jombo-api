@@ -14,7 +14,7 @@
 
   <h3><%= t('mailers.user_mailer.booking_received.request_from', passenger_name: @passenger.name) %></h3>
   <p>
-    <strong><%= t('mailers.user_mailer.booking_received.passenger_email') %></strong> <%= @passenger.email %><br>
+
     <strong><%= t('mailers.user_mailer.booking_received.seats_requested') %></strong> <%= @booking.seats %><br>
     <strong><%= t('mailers.user_mailer.booking_received.status') %></strong> <span style="color: #f59e0b; font-weight: 600;"><%= t('mailers.user_mailer.booking_received.status_pending') %></span>
   </p>

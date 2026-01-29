@@ -12,7 +12,7 @@
 
 <%= t('mailers.user_mailer.booking_received.request_from', passenger_name: @passenger.name.upcase) %>
 ======================================
-<%= t('mailers.user_mailer.booking_received.passenger_email') %> <%= @passenger.email %>
+
 <%= t('mailers.user_mailer.booking_received.seats_requested') %> <%= @booking.seats %>
 <%= t('mailers.user_mailer.booking_received.status') %> <%= t('mailers.user_mailer.booking_received.status_pending') %>
 

@@ -34,7 +34,7 @@ Rails.application.routes.draw do
       end
 
       # Standalone bookings routes (for show, update, destroy)
-      resources :bookings, only: [:show, :update, :destroy] do
+      resources :bookings, only: [:index, :show, :update, :destroy] do
         # Reviews on a booking
         resources :reviews, only: [:create] do
           collection do

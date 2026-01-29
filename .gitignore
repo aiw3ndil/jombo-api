@@ -40,5 +40,7 @@
 # Docker
 docker-compose.override.yml
 logfile
+
+Misc
 .bak
 .backup

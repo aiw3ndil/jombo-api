@@ -12,7 +12,7 @@ module Api
             httponly: true,
             secure: Rails.env.production?,
             same_site: Rails.env.production? ? :none : :lax,
-            expires: 2.hours.from_now,
+            expires: 1.week.from_now,
             path: "/"
           }
 

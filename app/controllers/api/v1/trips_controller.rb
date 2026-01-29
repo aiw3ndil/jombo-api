@@ -16,8 +16,19 @@ module Api
       end
 
       def search
-        departure_location = params[:departure_location]
-        trips = Trip.includes(:driver).where("departure_location ILIKE ?", "%#{departure_location}%")
+        # Iniciamos la consulta incluyendo al driver para evitar el problema de N+1
+        trips = Trip.includes(:driver).where('departure_time >= ?', Time.current)
+
+        # Añadimos el filtro de salida solo si el parámetro está presente
+        if params[:departure_location].present?
+          trips = trips.where("departure_location ILIKE ?", "%#{params[:departure_location]}%")
+        end
+
+        # Añadimos el filtro de llegada solo si el parámetro está presente
+        if params[:arrival_location].present?
+          trips = trips.where("arrival_location ILIKE ?", "%#{params[:arrival_location]}%")
+        end
+
         render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
       end
 
