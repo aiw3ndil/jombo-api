@@ -15,7 +15,7 @@
   <p><%= t('mailers.user_mailer.welcome_email.account_created', email: @user.email) %></p>
 
   <p style="text-align: center;">
-    <a href="#" class="email-button"><%= t('mailers.user_mailer.welcome_email.button') %></a>
+    <a href="<%= @frontend_url %>" class="email-button"><%= t('mailers.user_mailer.welcome_email.button') %></a>
   </p>
 
   <h2><%= t('mailers.user_mailer.welcome_email.next_steps_title') %></h2>

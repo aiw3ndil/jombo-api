@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   has_secure_password validations: false
-  validates :email, presence: true, uniqueness: true
-  validates :password, presence: true, if: -> { provider.blank? }
+  validates :email, uniqueness: { case_sensitive: false }
+  validates :password, presence: true, if: :password_required?
   validates :language, presence: true, inclusion: { in: %w[en es fi] }
   
   # Picture upload
@@ -28,6 +28,12 @@ class User < ApplicationRecord
   end
   
   private
+  
+  private
+
+  def password_required?
+    provider.blank? && (new_record? || password_digest_changed?)
+  end
   
   def set_default_language
     self.language ||= 'en'

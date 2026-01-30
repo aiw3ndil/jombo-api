@@ -24,6 +24,14 @@ module Api
           end
         end
 
+        def destroy
+          if current_user.destroy
+            head :no_content # HTTP 204 No Content
+          else
+            render json: { error: "Failed to delete account" }, status: :unprocessable_entity
+          end
+        end
+
         private
 
         def authenticate_user!
