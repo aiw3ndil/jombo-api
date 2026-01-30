@@ -16,7 +16,7 @@
 <%= t('mailers.user_mailer.new_message.datetime') %> <%= l(@trip.departure_time, format: :email) %>
 
 <%= t('mailers.user_mailer.new_message.button') %>
-<%= @frontend_url %>/trips/<%= @trip.id %>/messages
+<%= @frontend_url %>/messages/<%= @conversation.id %>
 
 <%= t('mailers.user_mailer.new_message.goodbye') %>
 

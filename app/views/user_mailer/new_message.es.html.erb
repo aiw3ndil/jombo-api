@@ -21,7 +21,7 @@
   </div>
 
   <p style="text-align: center;">
-    <a href="<%= @frontend_url %>/trips/<%= @trip.id %>/messages" class="email-button"><%= t('mailers.user_mailer.new_message.button') %></a>
+    <a href="<%= @frontend_url %>/messages/<%= @conversation.id %>" class="email-button"><%= t('mailers.user_mailer.new_message.button') %></a>
   </p>
 
   <p><%= t('mailers.user_mailer.new_message.goodbye') %></p>
