@@ -83,6 +83,7 @@ en:
         datetime: "Date and Time:"
         seats: "Requested seats:"
         rejection_reason: "The driver has not provided a specific reason for the rejection. This can happen for various reasons, such as last-minute changes in the driver's plans or a full vehicle."
+        apology_text: "We apologize for any inconvenience this may cause. We encourage you to search for other available trips."
         next_steps: "Don't worry! There are many other options available."
         button: "Search for Other Trips"
         goodbye: "We hope you find a suitable trip soon."

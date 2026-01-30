@@ -83,6 +83,7 @@ fi:
         datetime: "Päivämäärä ja Aika:"
         seats: "Pyydetyt paikat:"
         rejection_reason: "Kuljettaja ei ole antanut erityistä syytä hylkäämiselle. Tämä voi johtua useista syistä, kuten viime hetken muutoksista kuljettajan suunnitelmissa tai täydestä ajoneuvosta."
+        apology_text: "Pahoittelemme mahdollisesti aiheutuvaa haittaa. Suosittelemme etsimään muita saatavilla olevia matkoja."
         next_steps: "Älä huoli! Saatavilla on monia muita vaihtoehtoja."
         button: "Etsi Muita Kyytejä"
         goodbye: "Toivomme, että löydät pian sopivan kyydin."

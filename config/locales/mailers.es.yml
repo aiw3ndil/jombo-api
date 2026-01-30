@@ -83,6 +83,7 @@ es:
         datetime: "Fecha y Hora:"
         seats: "Asientos solicitados:"
         rejection_reason: "El conductor no ha proporcionado una razón específica para el rechazo. Esto puede ocurrir por diversas razones, como cambios de última hora en los planes del conductor o vehículo completo."
+        apology_text: "Lamentamos cualquier inconveniente que esto pueda causar. Te animamos a buscar otros viajes disponibles."
         next_steps: "¡No te preocupes! Hay muchas otras opciones disponibles."
         button: "Buscar Otros Viajes"
         goodbye: "Esperamos que encuentres un viaje adecuado pronto."
