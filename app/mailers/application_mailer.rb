@@ -1,6 +1,12 @@
 class ApplicationMailer < ActionMailer::Base
+  include Rails.application.routes.url_helpers
   default from: "Jombo <noreply@jombo.es>"
   layout "mailer"
+
+  # Explicitly define root_url for mailer views, relying on Rails' default behavior
+  def root_url(options = {})
+    Rails.application.routes.url_helpers.root_url(options)
+  end
   
   def mail(headers = {}, &block)
     headers[:subject] = "[Jombo] #{headers[:subject]}" if headers[:subject].present?

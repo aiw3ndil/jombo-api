@@ -3,7 +3,7 @@
 <div class="email-content">
   <p><%= t('mailers.user_mailer.booking_rejected.greeting', name: @user.name) %></p>
   
-  <p><%= t('mailers.user_mailer.booking_rejected.intro') %></p>
+  <p><%= t('mailers.user_mailer.booking_rejected.intro', driver_name: @driver.name) %></p>
 
   <div class="highlight">
     <h3 style="margin-top: 0;"><%= t('mailers.user_mailer.booking_rejected.rejected_trip') %></h3>
@@ -16,7 +16,7 @@
   <p><%= t('mailers.user_mailer.booking_rejected.apology_text') %></p>
 
   <p style="text-align: center;">
-    <a href="#" class="email-button"><%= t('mailers.user_mailer.booking_rejected.find_another_trip') %></a>
+    <a href="<%= @frontend_url %>" class="email-button"><%= t('mailers.user_mailer.booking_rejected.find_another_trip') %></a>
   </p>
 
   <p><%= t('mailers.user_mailer.booking_rejected.goodbye') %></p>

@@ -109,6 +109,7 @@ class UserMailer < ApplicationMailer
 
     I18n.with_locale(user.language) do
       subject = I18n.t('mailers.user_mailer.booking_rejected.subject', default: "Your booking has been rejected")
+      @frontend_url = frontend_url
 
       NotificationService.create_email_notification(
         user,
