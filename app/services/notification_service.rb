@@ -1,6 +1,6 @@
 class NotificationService
   class << self
-    def create_email_notification(user, email_type, title, content = nil, related_id = nil)
+    def create_email_notification(user, email_type, title, content = nil, related_id = nil, url: nil)
       return unless user
 
       Notification.create(
@@ -10,11 +10,12 @@ class NotificationService
         title: title,
         content: content,
         related_id: related_id,
+        url: url,
         read: false
       )
     end
 
-    def create_booking_notification(user, title, content = nil, booking_id = nil)
+    def create_booking_notification(user, title, content = nil, booking_id = nil, url: nil)
       return unless user
 
       Notification.create(
@@ -23,11 +24,12 @@ class NotificationService
         title: title,
         content: content,
         related_id: booking_id,
+        url: url,
         read: false
       )
     end
 
-    def create_message_notification(user, title, content = nil, message_id = nil)
+    def create_message_notification(user, title, content = nil, message_id = nil, url: nil)
       return unless user
 
       Notification.create(
@@ -36,6 +38,7 @@ class NotificationService
         title: title,
         content: content,
         related_id: message_id,
+        url: url,
         read: false
       )
     end

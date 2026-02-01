@@ -14,7 +14,9 @@ class UserMailer < ApplicationMailer
         user,
         'welcome_email',
         subject,
-        I18n.t('mailers.user_mailer.welcome_email.preview', default: 'Welcome to Jombo!')
+        I18n.t('mailers.user_mailer.welcome_email.preview', default: 'Welcome to Jombo!'),
+        nil,
+        url: @frontend_url
       )
       
       mail(
@@ -41,7 +43,8 @@ class UserMailer < ApplicationMailer
         'booking_confirmed',
         subject,
         I18n.t('mailers.user_mailer.booking_confirmed.preview', default: "Your booking for #{@trip.departure_location} to #{@trip.arrival_location} has been confirmed"),
-        booking.id
+        booking.id,
+        url: "#{@frontend_url}/my-bookings"
       )
       
       mail(
@@ -67,7 +70,8 @@ class UserMailer < ApplicationMailer
         'booking_received',
         subject,
         I18n.t('mailers.user_mailer.booking_received.preview', default: "#{@passenger.name} has booked your trip"),
-        booking.id
+        booking.id,
+        url: "#{@frontend_url}/my-bookings"
       )
       
       mail(
@@ -91,7 +95,8 @@ class UserMailer < ApplicationMailer
         'booking_cancelled',
         subject,
         I18n.t('mailers.user_mailer.booking_cancelled.preview', default: "Your booking has been cancelled"),
-        booking.id
+        booking.id,
+        url: "#{@frontend_url}/my-bookings"
       )
       
       mail(
@@ -116,7 +121,8 @@ class UserMailer < ApplicationMailer
         'booking_rejected',
         subject,
         I18n.t('mailers.user_mailer.booking_rejected.preview', default: "Your booking for #{@trip.departure_location} to #{@trip.arrival_location} has been rejected."),
-        booking.id
+        booking.id,
+        url: "#{@frontend_url}/my-bookings"
       )
 
       mail(
@@ -143,7 +149,8 @@ class UserMailer < ApplicationMailer
         'new_message',
         subject,
         @message.content.truncate(100),
-        message.id
+        message.id,
+        url: "#{@frontend_url}/messages"
       )
       
       mail(
