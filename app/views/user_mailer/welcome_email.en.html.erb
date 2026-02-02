@@ -12,7 +12,7 @@
     <p><strong><%= t('mailers.user_mailer.welcome_email.feature_people') %></strong></p>
   </div>
 
-  <p><%= t('mailers.user_mailer.welcome_email.account_created', email: @user.email) %></p>
+  <p><%= t('mailers.user_mailer.welcome_email.account_created', email: "<span style='color: #0BB1D3; font-weight: 600;'>#{@user.email}</span>").html_safe %></p>
 
   <p style="text-align: center;">
     <a href="<%= @frontend_url %>" class="email-button"><%= t('mailers.user_mailer.welcome_email.button') %></a>
