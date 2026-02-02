@@ -71,7 +71,7 @@ class UserMailer < ApplicationMailer
         subject,
         I18n.t('mailers.user_mailer.booking_received.preview', default: "#{@passenger.name} has booked your trip"),
         booking.id,
-        url: "#{@frontend_url}/my-bookings"
+        url: "#{@frontend_url}/my-trips"
       )
       
       mail(
@@ -85,6 +85,7 @@ class UserMailer < ApplicationMailer
     @user = user
     @booking = booking
     @trip = booking.trip
+    @frontend_url = frontend_url
     
     I18n.with_locale(user.language) do
       subject = I18n.t('mailers.user_mailer.booking_cancelled.subject')

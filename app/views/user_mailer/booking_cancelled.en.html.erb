@@ -16,7 +16,7 @@
   <p><%= t('mailers.user_mailer.booking_cancelled.help_text') %></p>
 
   <p style="text-align: center;">
-    <a href="#" class="email-button"><%= t('mailers.user_mailer.booking_cancelled.button') %></a>
+    <a href="<%= @frontend_url %>/my-bookings" class="email-button"><%= t('mailers.user_mailer.booking_cancelled.button') %></a>
   </p>
 
   <p><%= t('mailers.user_mailer.booking_cancelled.goodbye') %></p>
