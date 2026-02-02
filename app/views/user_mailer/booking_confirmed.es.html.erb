@@ -14,10 +14,7 @@
     <p><strong><%= t('mailers.user_mailer.booking_confirmed.price') %></strong> <%= number_to_currency(@trip.price) %></p>
   </div>
 
-  <h3><%= t('mailers.user_mailer.booking_confirmed.driver_info') %></h3>
-  <p>
-    <strong><%= t('mailers.user_mailer.booking_confirmed.driver_name') %></strong> <%= @driver.name %><br>
-    <strong><%= t('mailers.user_mailer.booking_confirmed.contact_driver') %></strong> <a href="<%= @messages_url %>"><%= t('mailers.user_mailer.booking_confirmed.send_message_link') %></a>
+    <strong><%= t('mailers.user_mailer.booking_confirmed.contact_driver') %></strong> <a href="<%= @messages_url %>" style="color: #0BB1D3;"><%= t('mailers.user_mailer.booking_confirmed.send_message_link') %></a>
   </p>
 
   <p style="text-align: center;">
