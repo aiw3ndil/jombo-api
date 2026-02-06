@@ -103,3 +103,5 @@
 2026-01-31 09:42:11.464 EET [7978] LOG:  invalid record length at 0/2A28F00: wanted 24, got 0
 2026-01-31 09:42:11.464 EET [7978] LOG:  redo done at 0/2A28EC8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
 2026-01-31 09:42:11.483 EET [7977] LOG:  database system is ready to accept connections
+2026-02-06 10:46:40.288 EET [31398] FATAL:  lock file "postmaster.pid" already exists
+2026-02-06 10:46:40.288 EET [31398] HINT:  Is another postmaster (PID 7977) running in data directory "/usr/local/var/postgres"?

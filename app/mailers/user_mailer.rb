@@ -71,7 +71,7 @@ class UserMailer < ApplicationMailer
         subject,
         I18n.t('mailers.user_mailer.booking_received.preview', default: "#{@passenger.name} has booked your trip"),
         booking.id,
-        url: "#{@frontend_url}/my-trips"
+        url: "#{@frontend_url}/my-trips#{@trip.id}"
       )
       
       mail(
