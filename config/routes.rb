@@ -17,7 +17,7 @@ Rails.application.routes.draw do
       # Trips and nested bookings
       resources :trips do
         collection do
-          get 'search/:departure_location', to: 'trips#search', as: 'search'
+          get 'search', to: 'trips#search', as: 'search'
           get 'my_trips', to: 'trips#my_trips'
         end
 
