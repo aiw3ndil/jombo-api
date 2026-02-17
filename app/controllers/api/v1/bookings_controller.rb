@@ -132,7 +132,7 @@ module Api
         end
 
         if @booking.cancel_by_passenger!
-          UserMailer.booking_cancelled(@booking.user, @booking.trip).deliver_later
+          UserMailer.booking_cancelled(@booking.user, @booking).deliver_later
           render json: { message: "Booking cancelled successfully" }
         else
           render json: { error: "Cannot cancel this booking" }, status: :unprocessable_entity
