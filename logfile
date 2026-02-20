@@ -105,3 +105,19 @@
 2026-01-31 09:42:11.483 EET [7977] LOG:  database system is ready to accept connections
 2026-02-06 10:46:40.288 EET [31398] FATAL:  lock file "postmaster.pid" already exists
 2026-02-06 10:46:40.288 EET [31398] HINT:  Is another postmaster (PID 7977) running in data directory "/usr/local/var/postgres"?
+2026-02-17 08:48:15.960 EET [52806] LOG:  starting PostgreSQL 14.20 (Homebrew) on x86_64-apple-darwin22.6.0, compiled by Apple clang version 14.0.3 (clang-1403.0.22.14.1), 64-bit
+2026-02-17 08:48:15.963 EET [52806] LOG:  listening on IPv6 address "::1", port 5432
+2026-02-17 08:48:15.963 EET [52806] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-02-17 08:48:15.964 EET [52806] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-02-17 08:48:15.983 EET [52807] LOG:  database system was interrupted; last known up at 2026-02-09 17:24:31 EET
+2026-02-17 08:48:16.218 EET [52807] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-02-17 08:48:16.226 EET [52807] LOG:  redo starts at 0/2E16B48
+2026-02-17 08:48:16.226 EET [52807] LOG:  invalid record length at 0/2E16C30: wanted 24, got 0
+2026-02-17 08:48:16.226 EET [52807] LOG:  redo done at 0/2E16BF8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-02-17 08:48:16.249 EET [52806] LOG:  database system is ready to accept connections
+2026-02-18 13:53:03.613 EET [7243] FATAL:  role "postgres" does not exist
+2026-02-18 13:53:03.730 EET [7244] FATAL:  role "postgres" does not exist
+2026-02-18 18:56:14.239 EET [52806] LOG:  received smart shutdown request
+2026-02-18 18:56:14.249 EET [52806] LOG:  background worker "logical replication launcher" (PID 52813) exited with exit code 1
+2026-02-18 18:56:14.250 EET [52808] LOG:  shutting down
+2026-02-18 18:56:14.295 EET [52806] LOG:  database system is shut down

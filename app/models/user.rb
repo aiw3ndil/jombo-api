@@ -3,6 +3,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :password, presence: true, if: :password_required?
   validates :language, presence: true, inclusion: { in: %w[en es fi] }
+  validates :region, inclusion: { in: %w[es fi], allow_nil: true }
   
   # Picture upload
   has_one_attached :picture

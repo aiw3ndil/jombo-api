@@ -35,6 +35,8 @@ gem "bootsnap", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem "rack-cors"
 
+gem 'rollbar'
+
 gem 'jwt', '~> 2.6'
 
 # OAuth authentication
@@ -50,6 +52,7 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.4'
   gem 'faker', '~> 3.2'
   gem 'shoulda-matchers', '~> 6.0'
+  gem 'dotenv-rails', '~> 2.2'
 end
 
 group :development do

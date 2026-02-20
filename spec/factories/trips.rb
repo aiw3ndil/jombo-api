@@ -7,6 +7,7 @@ FactoryBot.define do
     available_seats { 3 }
     price { rand(10.0..50.0).round(2) }
     description { Faker::Lorem.paragraph }
+    region { 'es' }
 
     trait :full do
       available_seats { 0 }

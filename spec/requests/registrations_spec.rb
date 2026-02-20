@@ -32,6 +32,14 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
         expect(json['user']['name']).to eq('New User')
       end
 
+      it 'allows setting region during registration' do
+        params = valid_params.deep_merge(user: { region: 'fi' })
+        post '/api/v1/register', params: params
+        json = JSON.parse(response.body)
+        expect(json['user']['region']).to eq('fi')
+        expect(User.last.region).to eq('fi')
+      end
+
       it 'sets JWT cookie' do
         post '/api/v1/register', params: valid_params
         expect(response.cookies['jwt']).to be_present

@@ -22,7 +22,7 @@ module Api
           response.set_cookie("jwt", cookie_opts)
           render json: { 
             message: "User created successfully", 
-            user: { id: user.id, email: user.email, name: user.name, language: user.language } 
+            user: { id: user.id, email: user.email, name: user.name, language: user.language, region: user.region } 
           }, status: :created
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -32,7 +32,7 @@ module Api
       private
 
       def registration_params
-        params.require(:user).permit(:email, :password, :password_confirmation, :name, :language)
+        params.require(:user).permit(:email, :password, :password_confirmation, :name, :language, :region)
       end
     end
   end

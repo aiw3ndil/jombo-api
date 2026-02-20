@@ -25,6 +25,22 @@ RSpec.describe 'Api::V1::Trips', type: :request do
       trip = json.find { |t| t['id'] == upcoming_trip.id }
       expect(trip['driver']['name']).to eq(driver.name)
     end
+
+    it 'filters trips by region' do
+      fi_trip = create(:trip, region: 'fi', departure_time: 1.day.from_now)
+      
+      # Default (es)
+      get '/api/v1/trips'
+      json = JSON.parse(response.body)
+      expect(json.map { |t| t['region'] }.uniq).to eq(['es'])
+      expect(json.map { |t| t['id'] }).not_to include(fi_trip.id)
+      
+      # Explicit fi
+      get '/api/v1/trips', params: { region: 'fi' }
+      json = JSON.parse(response.body)
+      expect(json.map { |t| t['region'] }.uniq).to eq(['fi'])
+      expect(json.map { |t| t['id'] }).to include(fi_trip.id)
+    end
   end
 
   describe 'GET /api/v1/trips/:id' do

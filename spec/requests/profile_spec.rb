@@ -4,6 +4,32 @@ RSpec.describe "Profile API", type: :request do
   include AuthenticationHelper
   let!(:user) { create(:user) }
 
+  describe "PATCH /api/v1/users/profile" do
+    let(:update_params) { { name: "Updated Name", region: "fi" } }
+
+    context "when authenticated" do
+      it "updates the user profile" do
+        patch "/api/v1/users/profile", params: update_params, headers: auth_headers(user)
+        expect(response).to have_http_status(:ok)
+        user.reload
+        expect(user.name).to eq("Updated Name")
+        expect(user.region).to eq("fi")
+      end
+
+      it "returns the updated user in JSON" do
+        patch "/api/v1/users/profile", params: update_params, headers: auth_headers(user)
+        json = JSON.parse(response.body)
+        expect(json['user']['region']).to eq("fi")
+      end
+    end
+
+    context "when unauthenticated" do
+      it "returns a 401 Unauthorized status" do
+        patch "/api/v1/users/profile", params: update_params
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 
   describe "DELETE /api/v1/users/profile" do
     context "when authenticated" do

@@ -5,10 +5,10 @@ class UserMailer < ApplicationMailer
     @user = user
     @app_name = 'Jombo'
     @frontend_url = URI.join(frontend_url, user.language.to_s).to_s
-    
+
     I18n.with_locale(user.language) do
       subject = I18n.t('mailers.user_mailer.welcome_email.subject')
-      
+
       # Crear notificación
       NotificationService.create_email_notification(
         user,
@@ -18,7 +18,7 @@ class UserMailer < ApplicationMailer
         nil,
         url: @frontend_url
       )
-      
+
       mail(
         to: @user.email,
         subject: subject
@@ -46,7 +46,7 @@ class UserMailer < ApplicationMailer
         booking.id,
         url: "#{@frontend_url}/my-bookings"
       )
-      
+
       mail(
         to: @user.email,
         subject: subject
@@ -60,10 +60,10 @@ class UserMailer < ApplicationMailer
     @passenger = booking.user
     @trip = booking.trip
     @frontend_url = frontend_url
-    
+
     I18n.with_locale(driver.language) do
       subject = I18n.t('mailers.user_mailer.booking_received.subject')
-      
+
       # Crear notificación
       NotificationService.create_email_notification(
         driver,
@@ -71,9 +71,9 @@ class UserMailer < ApplicationMailer
         subject,
         I18n.t('mailers.user_mailer.booking_received.preview', default: "#{@passenger.name} has booked your trip"),
         booking.id,
-        url: "#{@frontend_url}/my-trips#{@trip.id}"
+        url: "#{@frontend_url}/my-trips/#{@trip.id}"
       )
-      
+
       mail(
         to: @driver.email,
         subject: subject
@@ -86,10 +86,10 @@ class UserMailer < ApplicationMailer
     @booking = booking
     @trip = booking.trip
     @frontend_url = frontend_url
-    
+
     I18n.with_locale(user.language) do
       subject = I18n.t('mailers.user_mailer.booking_cancelled.subject')
-      
+
       # Crear notificación
       NotificationService.create_email_notification(
         user,
@@ -99,7 +99,7 @@ class UserMailer < ApplicationMailer
         booking.id,
         url: "#{@frontend_url}/my-bookings"
       )
-      
+
       mail(
         to: @user.email,
         subject: subject
@@ -140,10 +140,10 @@ class UserMailer < ApplicationMailer
     @conversation = message.conversation
     @trip = @conversation.trip
     @frontend_url = frontend_url
-    
+
     I18n.with_locale(recipient.language) do
       subject = I18n.t('mailers.user_mailer.new_message.subject', sender_name: @sender.name)
-      
+
       # Crear notificación
       NotificationService.create_email_notification(
         recipient,
@@ -153,7 +153,7 @@ class UserMailer < ApplicationMailer
         message.id,
         url: "#{@frontend_url}/messages"
       )
-      
+
       mail(
         to: @recipient.email,
         subject: subject

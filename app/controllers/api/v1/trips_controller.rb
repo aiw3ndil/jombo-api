@@ -6,7 +6,10 @@ module Api
       before_action :authorize_driver!, only: [:update, :destroy]
 
       def index
-        trips = Trip.includes(:driver).where('departure_time >= ?', Time.current)
+        region = params[:region] || detect_region
+        trips = Trip.includes(:driver)
+                    .where('departure_time >= ?', Time.current)
+                    .where(region: region)
         render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
       end
 
@@ -16,8 +19,11 @@ module Api
       end
 
       def search
+        region = params[:region] || detect_region
         # Iniciamos la consulta incluyendo al driver para evitar el problema de N+1
-        trips = Trip.includes(:driver).where('departure_time >= ?', Time.current)
+        trips = Trip.includes(:driver)
+                    .where('departure_time >= ?', Time.current)
+                    .where(region: region)
 
         # Añadimos el filtro de salida solo si el parámetro está presente
         if params[:departure_location].present?
@@ -38,6 +44,7 @@ module Api
 
       def create
         trip = current_user.trips.build(trip_params)
+        trip.region ||= current_user.region
 
         if trip.save
           render json: trip.as_json(include: { driver: { only: [:id, :email, :name] } }), status: :created 
@@ -69,10 +76,12 @@ module Api
 
       def trip_params
         params.require(:trip).permit(:departure_location, :arrival_location, :departure_time, 
-          :available_seats, :description, :price)
+          :available_seats, :description, :price, :region)
       end
 
       def authenticate_user!
+        return if @current_user # Already set by optional check if any
+        
         token = request.cookies["jwt"]
         payload = JwtService.decode(token)
 
@@ -85,7 +94,20 @@ module Api
       end
 
       def current_user
+        @current_user || find_user_from_token
+      end
+
+      def find_user_from_token
+        token = request.cookies["jwt"]
+        payload = JwtService.decode(token)
+        if payload
+          @current_user = User.find_by(id: payload["user_id"] || payload[:user_id])
+        end
         @current_user
+      end
+
+      def detect_region
+        current_user&.region || 'es'
       end
 
       def authorize_driver!

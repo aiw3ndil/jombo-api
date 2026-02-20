@@ -44,6 +44,7 @@ module Api
                 email: user.email,
                 name: user.name,
                 language: user.language,
+                region: user.region,
                 picture_url: user.picture.attached? ? url_for(user.picture) : nil
               }
             }
