@@ -21,20 +21,19 @@ module Api
 
         @trips = trips_query
 
-        external_options = []
-        if params[:departure_location].present? && params[:arrival_location].present?
+        # Nueva funcionalidad SOLO para Finlandia
+        if region == 'fi' && params[:departure_location].present? && params[:arrival_location].present?
           cache_key = "external_transport/#{params[:departure_location]}/#{params[:arrival_location]}"
           external_options = Rails.cache.fetch(cache_key, expires_in: 30.minutes) do
             ExternalTransportService.search(params[:departure_location], params[:arrival_location])
           end
-        end
 
-        if params[:departure_location].present? || params[:arrival_location].present?
           render json: {
             trips: @trips.as_json(include: { driver: { only: [:id, :email, :name] } }),
             external_options: external_options || []
           }
         else
+          # Comportamiento original para España o búsquedas generales
           render json: @trips.as_json(include: { driver: { only: [:id, :email, :name] } })
         end
       end
@@ -47,26 +46,22 @@ module Api
 
       def search
         region = params[:region] || detect_region
-        # Iniciamos la consulta incluyendo al driver para evitar el problema de N+1
         trips_query = Trip.includes(:driver)
                           .where('departure_time >= ?', Time.current)
                           .where(region: region)
 
-        # Añadimos el filtro de salida solo si el parámetro está presente
         if params[:departure_location].present?
           trips_query = trips_query.where("departure_location ILIKE ?", "%#{params[:departure_location]}%")
         end
 
-        # Añadimos el filtro de llegada solo si el parámetro está presente
         if params[:arrival_location].present?
           trips_query = trips_query.where("arrival_location ILIKE ?", "%#{params[:arrival_location]}%")
         end
 
         @trips = trips_query
 
-        external_options = []
-        if params[:departure_location].present? && params[:arrival_location].present?
-          # Log the missed search only if no local trips were found
+        # Nueva funcionalidad SOLO para Finlandia
+        if region == 'fi' && params[:departure_location].present? && params[:arrival_location].present?
           if @trips.empty?
             SearchLog.create(
               departure_location: params[:departure_location],
@@ -80,12 +75,15 @@ module Api
           external_options = Rails.cache.fetch(cache_key, expires_in: 30.minutes) do
             ExternalTransportService.search(params[:departure_location], params[:arrival_location])
           end
-        end
 
-        render json: {
-          trips: @trips.as_json(include: { driver: { only: [:id, :email, :name] } }),
-          external_options: external_options || []
-        }
+          render json: {
+            trips: @trips.as_json(include: { driver: { only: [:id, :email, :name] } }),
+            external_options: external_options || []
+          }
+        else
+          # Comportamiento original para España
+          render json: @trips.as_json(include: { driver: { only: [:id, :email, :name] } })
+        end
       end
 
       def show
