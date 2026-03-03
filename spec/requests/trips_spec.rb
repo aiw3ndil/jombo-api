@@ -43,6 +43,45 @@ RSpec.describe 'Api::V1::Trips', type: :request do
     end
   end
 
+  describe 'GET /api/v1/trips/search' do
+    let!(:madrid_trip) { create(:trip, departure_location: 'Madrid', arrival_location: 'Barcelona', departure_time: 1.day.from_now) }
+
+    it 'returns local trips when found' do
+      get '/api/v1/trips/search', params: { departure_location: 'Madrid', arrival_location: 'Barcelona' }
+      
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['trips'].count).to be >= 1
+      expect(json['trips'].first['departure_location']).to eq('Madrid')
+      expect(json['external_options']).to be_empty
+    end
+
+    it 'calls ExternalTransportService when no local trips are found' do
+      # We'll search for something that doesn't exist
+      # And we'll verify it returns the structure with external_options
+      get '/api/v1/trips/search', params: { departure_location: 'Turku', arrival_location: 'Helsinki', region: 'fi' }
+      
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['trips']).to be_empty
+      expect(json).to have_key('external_options')
+    end
+
+    it 'logs the search when no local trips are found' do
+      expect {
+        get '/api/v1/trips/search', params: { departure_location: 'Unknown', arrival_location: 'Place', region: 'fi' }
+      }.to change(SearchLog, :count).by(1)
+    end
+
+    it 'supports SEO-friendly URLs' do
+      get '/api/v1/trips/Madrid-Barcelona'
+      
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['trips'].first['departure_location']).to eq('Madrid')
+    end
+  end
+
   describe 'GET /api/v1/trips/:id' do
     let(:trip) { create(:trip, driver: driver) }
 

@@ -7,13 +7,40 @@ module Api
 
       def index
         region = params[:region] || detect_region
-        trips = Trip.includes(:driver)
-                    .where('departure_time >= ?', Time.current)
-                    .where(region: region)
-        render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
+        trips_query = Trip.includes(:driver)
+                          .where('departure_time >= ?', Time.current)
+                          .where(region: region)
+
+        if params[:departure_location].present?
+          trips_query = trips_query.where("departure_location ILIKE ?", "%#{params[:departure_location]}%")
+        end
+
+        if params[:arrival_location].present?
+          trips_query = trips_query.where("arrival_location ILIKE ?", "%#{params[:arrival_location]}%")
+        end
+
+        @trips = trips_query
+
+        external_options = []
+        if params[:departure_location].present? && params[:arrival_location].present?
+          cache_key = "external_transport/#{params[:departure_location]}/#{params[:arrival_location]}"
+          external_options = Rails.cache.fetch(cache_key, expires_in: 30.minutes) do
+            ExternalTransportService.search(params[:departure_location], params[:arrival_location])
+          end
+        end
+
+        if params[:departure_location].present? || params[:arrival_location].present?
+          render json: {
+            trips: @trips.as_json(include: { driver: { only: [:id, :email, :name] } }),
+            external_options: external_options || []
+          }
+        else
+          render json: @trips.as_json(include: { driver: { only: [:id, :email, :name] } })
+        end
       end
 
       def my_trips
+        return render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
         trips = current_user.trips.includes(:driver).order(created_at: :desc)
         render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
       end
@@ -21,21 +48,44 @@ module Api
       def search
         region = params[:region] || detect_region
         # Iniciamos la consulta incluyendo al driver para evitar el problema de N+1
-        trips = Trip.includes(:driver)
-                    .where('departure_time >= ?', Time.current)
-                    .where(region: region)
+        trips_query = Trip.includes(:driver)
+                          .where('departure_time >= ?', Time.current)
+                          .where(region: region)
 
         # Añadimos el filtro de salida solo si el parámetro está presente
         if params[:departure_location].present?
-          trips = trips.where("departure_location ILIKE ?", "%#{params[:departure_location]}%")
+          trips_query = trips_query.where("departure_location ILIKE ?", "%#{params[:departure_location]}%")
         end
 
         # Añadimos el filtro de llegada solo si el parámetro está presente
         if params[:arrival_location].present?
-          trips = trips.where("arrival_location ILIKE ?", "%#{params[:arrival_location]}%")
+          trips_query = trips_query.where("arrival_location ILIKE ?", "%#{params[:arrival_location]}%")
         end
 
-        render json: trips.as_json(include: { driver: { only: [:id, :email, :name] } })
+        @trips = trips_query
+
+        external_options = []
+        if params[:departure_location].present? && params[:arrival_location].present?
+          # Log the missed search only if no local trips were found
+          if @trips.empty?
+            SearchLog.create(
+              departure_location: params[:departure_location],
+              arrival_location: params[:arrival_location],
+              region: region,
+              user_id: current_user&.id
+            )
+          end
+
+          cache_key = "external_transport/#{params[:departure_location]}/#{params[:arrival_location]}"
+          external_options = Rails.cache.fetch(cache_key, expires_in: 30.minutes) do
+            ExternalTransportService.search(params[:departure_location], params[:arrival_location])
+          end
+        end
+
+        render json: {
+          trips: @trips.as_json(include: { driver: { only: [:id, :email, :name] } }),
+          external_options: external_options || []
+        }
       end
 
       def show
@@ -43,6 +93,7 @@ module Api
       end
 
       def create
+        return render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
         trip = current_user.trips.build(trip_params)
         trip.region ||= current_user.region
 
@@ -79,31 +130,18 @@ module Api
           :available_seats, :description, :price, :region)
       end
 
-      def authenticate_user!
-        return if @current_user # Already set by optional check if any
-        
-        token = request.cookies["jwt"]
-        payload = JwtService.decode(token)
-
-        if payload
-          @current_user = User.find_by(id: payload["user_id"] || payload[:user_id])
-          render json: { error: "Unauthorized" }, status: :unauthorized unless @current_user
-        else
-          render json: { error: "Unauthorized" }, status: :unauthorized
-        end
-      end
-
       def current_user
-        @current_user || find_user_from_token
+        @current_user ||= find_user_from_token
       end
 
       def find_user_from_token
         token = request.cookies["jwt"]
+        return nil if token.blank?
+        
         payload = JwtService.decode(token)
-        if payload
-          @current_user = User.find_by(id: payload["user_id"] || payload[:user_id])
-        end
-        @current_user
+        User.find_by(id: payload["user_id"] || payload[:user_id]) if payload
+      rescue
+        nil
       end
 
       def detect_region
@@ -111,9 +149,13 @@ module Api
       end
 
       def authorize_driver!
-        unless @trip.driver_id == current_user.id
+        unless @trip.driver_id == current_user&.id
           render json: { error: "Forbidden - You are not the driver of this trip" }, status: :forbidden
         end
+      end
+
+      def authenticate_user!
+        render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
       end
     end
   end

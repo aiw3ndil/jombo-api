@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_20_124625) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_03_130843) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -111,6 +111,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_20_124625) do
     t.index ["rating"], name: "index_reviews_on_rating"
     t.index ["reviewee_id"], name: "index_reviews_on_reviewee_id"
     t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
+  end
+
+  create_table "search_logs", force: :cascade do |t|
+    t.string "departure_location"
+    t.string "arrival_location"
+    t.string "region"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "trips", force: :cascade do |t|

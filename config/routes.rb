@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resources :trips do
         collection do
           get 'search', to: 'trips#search', as: 'search'
+          get ':departure_location-:arrival_location', to: 'trips#search'
           get 'my_trips', to: 'trips#my_trips'
         end
 
