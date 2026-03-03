@@ -126,16 +126,21 @@ Configurar variables de entorno para SMTP:
 - `POST /api/v1/auth/google` - Login con Google 🆕
 - `POST /api/v1/auth/facebook` - Login con Facebook 🆕
 
-### Viajes
-- `GET /api/v1/trips` - Listar todos los viajes
+### Viajes (Trips)
+- `GET /api/v1/trips` - Listar viajes (soporta filtros `departure_location`, `arrival_location`, `region`)
+- `GET /api/v1/trips/search` - Búsqueda avanzada de viajes
+- `GET /api/v1/trips/:departure_location-:arrival_location` - Ruta SEO para búsqueda (ej: `/helsinki-tampere`)
 - `GET /api/v1/trips/my_trips` - Mis viajes como conductor
-- `GET /api/v1/trips/search/:departure_location` - Buscar viajes
 - `POST /api/v1/trips` - Crear viaje
 - `GET /api/v1/trips/:id` - Ver detalle de viaje
 - `PATCH /api/v1/trips/:id` - Actualizar viaje
 - `DELETE /api/v1/trips/:id` - Eliminar viaje
 
-### Reservas
+> **Nota sobre el formato de respuesta:**
+> - En **España (es)**: Los endpoints de búsqueda devuelven un **Array** directo de viajes `[...]`.
+> - En **Finlandia (fi)**: Devuelven un **Objeto** `{ trips: [...], external_options: [...] }` que incluye alternativas de trenes y buses de la API de Digitransit si no hay viajes locales suficientes.
+
+### Reservas (Bookings)
 - `GET /api/v1/bookings` - Mis reservas como pasajero
 - `POST /api/v1/bookings` - Crear reserva
 - `GET /api/v1/bookings/:id` - Ver detalle de reserva
