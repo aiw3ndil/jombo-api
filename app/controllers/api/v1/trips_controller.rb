@@ -143,7 +143,22 @@ module Api
       end
 
       def detect_region
-        current_user&.region || 'es'
+        # 1. Prioridad al parámetro explícito
+        return params[:region] if params[:region].present?
+        
+        # 2. Si no hay parámetro, intentar inferir por ciudades de Finlandia
+        if params[:departure_location]&.downcase&.include?('helsinki') || 
+           params[:departure_location]&.downcase&.include?('tampere') ||
+           params[:arrival_location]&.downcase&.include?('helsinki') ||
+           params[:arrival_location]&.downcase&.include?('tampere')
+          return 'fi'
+        end
+
+        # 3. Usuario logueado
+        return current_user.region if current_user&.region.present?
+
+        # 4. Por defecto España (manteniendo la base actual)
+        'es'
       end
 
       def authorize_driver!
