@@ -18,7 +18,13 @@ class ExternalTransportService
 
     itineraries = fetch_itineraries(from_coords, to_coords)
     puts "DEBUG: Found #{itineraries.count} itineraries"
-    format_itineraries(itineraries)
+
+    # Generar URL de Matka.fi (versión nacional de HSL/Reittiopas)
+    from_param = "#{from}::#{from_coords[:lat]},#{from_coords[:lon]}"
+    to_param = "#{to}::#{to_coords[:lat]},#{to_coords[:lon]}"
+    external_url = "https://opas.matka.fi/reitti/#{CGI.escape(from_param)}/#{CGI.escape(to_param)}"
+
+    format_itineraries(itineraries, external_url)
   end
 
   private
@@ -56,6 +62,11 @@ class ExternalTransportService
             startTime
             endTime
             duration
+            fares {
+              type
+              currency
+              cents
+            }
             legs {
               mode
               startTime
@@ -64,6 +75,15 @@ class ExternalTransportService
               to { name }
               route {
                 shortName
+              }
+              fareProducts {
+                product {
+                  ... on DefaultFareProduct {
+                    price {
+                      amount
+                    }
+                  }
+                }
               }
             }
           }
@@ -84,13 +104,32 @@ class ExternalTransportService
     []
   end
 
-  def format_itineraries(itineraries)
+  def format_itineraries(itineraries, external_url)
     itineraries.map do |itin|
+      # Intentar extraer precio de 'fares' o de 'fareProducts' en los legs
+      price = nil
+      currency = "EUR"
+
+      if itin["fares"]&.any?
+        fare = itin["fares"].first
+        price = (fare["cents"] / 100.0).round(2)
+        currency = fare["currency"]
+      else
+        fare_product = itin["legs"].map { |l| l["fareProducts"] }.flatten.compact.first
+        if fare_product && fare_product.dig("product", "price")
+          price = fare_product.dig("product", "price", "amount")
+          currency = "EUR" # Asumimos EUR si no podemos obtenerla
+        end
+      end
+
       {
         type: "external_transport",
         start_time: Time.at(itin["startTime"] / 1000).utc,
         end_time: Time.at(itin["endTime"] / 1000).utc,
         duration: itin["duration"],
+        price: price,
+        currency: currency,
+        url: external_url,
         legs: itin["legs"].map do |leg|
           {
             mode: leg["mode"],
