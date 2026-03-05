@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       namespace :users do
         patch 'profile', to: 'profile#update'
         delete 'profile', to: 'profile#destroy'
+        patch 'password', to: 'passwords#update'
       end
 
       # Notifications
