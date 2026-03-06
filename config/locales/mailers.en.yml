@@ -101,6 +101,14 @@ en:
         button: "View and Reply to Message"
         goodbye: "Keep in touch with your fellow travelers!"
         team: "The Jombo Team"
+      password_reset:
+        subject: "Reset your Jombo password 🔒"
+        greeting: "Hello %{name},"
+        intro: "You've requested to reset your password. Click the following link to choose a new one:"
+        button: "Reset Password"
+        expiry: "This link will expire in 2 hours."
+        ignore: "If you didn't request this change, you can safely ignore this email."
+        team: "The Jombo Team"
   time:
     formats:
       email: "%a, %d %b %Y %H:%M:%S %z" # e.g., "Tue, 01 Jan 2025 12:00:00 +0000"

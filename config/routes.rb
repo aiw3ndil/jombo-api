@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       post 'register', to: 'registrations#create'
       delete 'logout', to: 'sessions#destroy'
       get 'me', to: 'sessions#me'
+      post 'password/forgot', to: 'passwords#forgot'
+      post 'password/reset', to: 'passwords#reset'
 
       # OAuth
       post 'auth/:provider', to: 'oauth#create'

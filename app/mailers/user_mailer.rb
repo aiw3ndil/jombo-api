@@ -160,4 +160,29 @@ class UserMailer < ApplicationMailer
       )
     end
   end
+
+  def password_reset(user)
+    @user = user
+    @token = user.reset_password_token
+    @frontend_url = frontend_url
+    @reset_url = "#{@frontend_url}/reset-password?token=#{@token}"
+
+    I18n.with_locale(user.language) do
+      subject = I18n.t('mailers.user_mailer.password_reset.subject', default: "Reset your password")
+
+      NotificationService.create_email_notification(
+        user,
+        'password_reset',
+        subject,
+        I18n.t('mailers.user_mailer.password_reset.preview', default: "Follow this link to reset your password"),
+        nil,
+        url: @reset_url
+      )
+
+      mail(
+        to: @user.email,
+        subject: subject
+      )
+    end
+  end
 end

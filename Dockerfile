@@ -48,11 +48,11 @@ RUN mkdir -p /app/db /app/log /app/storage /app/tmp && \
     chown -R rails:rails /app && \
     chmod -R 775 /app/storage && \
     chmod -R 755 /app
-	
+
 RUN chmod +x /app/bin/docker-entrypoint
 
 # Entrypoint prepares the database (runs as root to fix permissions, then switches to rails)
-ENTRYPOINT ["/app/bin/docker-entrypoint"]
+ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000

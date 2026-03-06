@@ -101,6 +101,14 @@ fi:
         button: "Näytä ja Vastaa Viestiin"
         goodbye: "Pidä yhteyttä matkatovereidesi kanssa!"
         team: "Jombo-tiimi"
+      password_reset:
+        subject: "Nollaa Jombo-salasanasi 🔒"
+        greeting: "Hei %{name},"
+        intro: "Olet pyytänyt salasanasi nollaamista. Napsauta seuraavaa linkkiä valitaksesi uuden:"
+        button: "Nollaa Salasana"
+        expiry: "Tämä linkki vanhenee 2 tunnissa."
+        ignore: "Jos et pyytänyt tätä muutosta, voit turvallisesti sivuuttaa tämän sähköpostin."
+        team: "Jombo-tiimi"
   time:
     formats:
       email: "%a, %d %b %Y %H:%M:%S %z"

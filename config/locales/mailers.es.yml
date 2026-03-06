@@ -101,6 +101,14 @@ es:
         button: "Ver y Responder al Mensaje"
         goodbye: "¡Mantente en contacto con tus compañeros de viaje!"
         team: "El equipo de Jombo"
+      password_reset:
+        subject: "Restablece tu contraseña de Jombo 🔒"
+        greeting: "Hola %{name},"
+        intro: "Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para elegir una nueva:"
+        button: "Restablecer Contraseña"
+        expiry: "Este enlace expirará en 2 horas."
+        ignore: "Si no solicitaste este cambio, puedes ignorar este correo de forma segura."
+        team: "El equipo de Jombo"
   time:
     formats:
       email: "%a, %d %b %Y %H:%M:%S %z"
