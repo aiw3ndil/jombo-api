@@ -49,7 +49,7 @@ RUN mkdir -p /app/db /app/log /app/storage /app/tmp && \
     chmod -R 775 /app/storage && \
     chmod -R 755 /app
 
-RUN chmod +x /app/bin/docker-entrypoint
+RUN chmod +x /app/bin/docker-entrypoint.sh
 
 # Entrypoint prepares the database (runs as root to fix permissions, then switches to rails)
 ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
