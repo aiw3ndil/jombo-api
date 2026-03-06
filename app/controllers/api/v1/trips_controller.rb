@@ -111,8 +111,20 @@ module Api
       end
 
       def destroy
-        @trip.destroy
-        render json: { message: "Trip deleted successfully" }
+        if params[:all_recurring] == 'true' && (@trip.is_recurring? || @trip.parent_id.present?)
+          series_id = @trip.parent_id || @trip.id
+          trips_to_delete = Trip.where(id: series_id).or(Trip.where(parent_id: series_id))
+          
+          # Solo eliminamos viajes futuros para no perder el historial de los ya realizados
+          trips_to_delete = trips_to_delete.where('departure_time >= ?', Time.current)
+          
+          count = trips_to_delete.count
+          trips_to_delete.destroy_all
+          render json: { message: "#{count} trips from the series deleted successfully" }
+        else
+          @trip.destroy
+          render json: { message: "Trip deleted successfully" }
+        end
       end
 
       private
@@ -125,7 +137,8 @@ module Api
 
       def trip_params
         params.require(:trip).permit(:departure_location, :arrival_location, :departure_time, 
-          :available_seats, :description, :price, :region)
+          :available_seats, :description, :price, :region,
+          :is_recurring, :recurrence_pattern, :recurrence_days, :recurrence_until)
       end
 
       def current_user
