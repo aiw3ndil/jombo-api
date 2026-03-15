@@ -29,7 +29,8 @@ Trip.create!(
   arrival_location: "Barcelona",
   departure_time: 2.days.from_now,
   available_seats: 3,
-  price: 25.50
+  price: 25.50,
+  region: "es"
 )
 
 Trip.create!(
@@ -38,7 +39,8 @@ Trip.create!(
   arrival_location: "Madrid",
   departure_time: 1.day.from_now,
   available_seats: 4,
-  price: 20.00
+  price: 20.00,
+  region: "es"
 )
 
 Trip.create!(
@@ -47,7 +49,8 @@ Trip.create!(
   arrival_location: "Valencia",
   departure_time: 3.days.from_now,
   available_seats: 2,
-  price: 30.00
+  price: 30.00,
+  region: "es"
 )
 
 Trip.create!(
@@ -56,7 +59,8 @@ Trip.create!(
   arrival_location: "Granada",
   departure_time: 4.days.from_now,
   available_seats: 3,
-  price: 15.75
+  price: 15.75,
+  region: "es"
 )
 
 Trip.create!(
@@ -65,5 +69,6 @@ Trip.create!(
   arrival_location: "Sevilla",
   departure_time: 5.days.from_now,
   available_seats: 4,
-  price: 35.00
+  price: 35.00,
+  region: "es"
 )
