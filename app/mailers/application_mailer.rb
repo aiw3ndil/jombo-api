@@ -1,6 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
   include Rails.application.routes.url_helpers
-  default from: "Jombo <noreply@jombo.es>"
+  default from: "Jombo <no-reply@jombo.fi>"
   layout "mailer"
 
   # Explicitly define root_url for mailer views, relying on Rails' default behavior

@@ -14,7 +14,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the sender email' do
-      expect(mail.from).to eq(['noreply@jombo.es'])
+      expect(mail.from).to eq(['no-reply@jombo.fi'])
     end
 
     it 'includes user name in body' do
