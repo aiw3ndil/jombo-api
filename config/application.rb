@@ -11,6 +11,11 @@ module JomboApi
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
+    # Fix ArgumentError: key must be 16 bytes
+    # Since master.key is 16 bytes, we force the use of AES-128-GCM and SHA1 for key derivation
+    config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
+    config.active_support.use_authenticated_message_encryption = true
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
