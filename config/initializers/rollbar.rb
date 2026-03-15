@@ -4,6 +4,11 @@ Rollbar.configure do |config|
 
   config.access_token = ENV["ROLLBAR_ACCESS_TOKEN"]
 
+  # Disable invalid token
+  if config.access_token == "6d40cdc0d64a44458f2d6f13d7570e79"
+    config.enabled = false
+  end
+
   # Here we'll disable in 'test' and 'development' environments
   if Rails.env.test? || Rails.env.development?
     config.enabled = false
