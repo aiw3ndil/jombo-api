@@ -24,6 +24,7 @@ services:
     ports:
       - "${PORT:-3000}:3000"
     volumes:
+      - .:/app
       - storage_data:/app/storage
     depends_on:
       db:
