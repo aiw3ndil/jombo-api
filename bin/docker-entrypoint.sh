@@ -10,8 +10,8 @@ fi
 
 if [ "$1" = "./bin/rails" ] && [ "$2" = "server" ]; then
   echo "Preparing database..."
-  su -s /bin/bash rails -c "./bin/rails db:prepare"
+  su -p -s /bin/bash rails -c "./bin/rails db:prepare"
 fi
 
-# Ejecuta el comando principal como el usuario rails
-exec su -s /bin/bash rails -c "$*"
+# Ejecuta el comando principal como el usuario rails preservando el entorno
+exec su -p -s /bin/bash rails -c "$*"

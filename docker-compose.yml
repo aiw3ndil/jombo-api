@@ -10,6 +10,8 @@ services:
     volumes:
       - .:/app
       - storage_data:/app/storage
+    env_file:
+      - .env
     environment:
       RAILS_ENV: production
       RAILS_LOG_TO_STDOUT: "true"
