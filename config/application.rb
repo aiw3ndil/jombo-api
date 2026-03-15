@@ -48,12 +48,5 @@ module JomboApi
                  credentials: true
       end
     end
-
-    # Enkimail configuration
-    require 'enkimail'
-    config.action_mailer.delivery_method = :enkimail
-    config.action_mailer.enkimail_settings = {
-      api_key: ENV['ENKIMAIL_API_KEY']
-    }
   end
 end
