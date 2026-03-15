@@ -110,11 +110,8 @@ gem 'letter_opener', group: :development
 ```
 
 ### Producción
-Configurar variables de entorno para SMTP:
-- `SMTP_ADDRESS`
-- `SMTP_PORT`
-- `SMTP_USERNAME`
-- `SMTP_PASSWORD`
+Configurar variable de entorno para Enkimail:
+- `ENKIMAIL_API_KEY`
 
 ## 📋 Endpoints Principales
 

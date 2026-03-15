@@ -62,11 +62,7 @@ cat config/master.key
 #### Opcionales (Email)
 
 ```bash
-SMTP_ADDRESS=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USERNAME=tu_email@gmail.com
-SMTP_PASSWORD=tu_app_password
-SMTP_DOMAIN=gmail.com
+ENKIMAIL_API_KEY=<tu_api_key_de_enkimail>
 ```
 
 ### Paso 4: Configurar el Dominio
@@ -271,7 +267,7 @@ get '/health', to: proc { [200, {}, ['OK']] }
 - Passwords de base de datos
 - SECRET_KEY_BASE
 - RAILS_MASTER_KEY
-- Credenciales SMTP
+- ENKIMAIL_API_KEY
 
 ❌ **Nunca commitees**:
 - `config/master.key`

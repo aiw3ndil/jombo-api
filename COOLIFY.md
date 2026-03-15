@@ -179,7 +179,7 @@ Ver [README.md](./README.md) para documentación completa de la API.
 
 1. ✅ Deploy básico funcionando
 2. Configure dominio personalizado
-3. Configure emails (SMTP)
+3. Configure emails (Enkimail)
 4. Configure backups automáticos
 5. Configure monitoreo/alertas
 6. Configure staging environment

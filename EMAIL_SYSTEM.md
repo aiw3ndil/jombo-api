@@ -152,16 +152,13 @@ gem 'letter_opener', group: :development
 ### Producción
 ```ruby
 # config/environments/production.rb
-config.action_mailer.delivery_method = :smtp
-config.action_mailer.smtp_settings = {
-  address: ENV['SMTP_ADDRESS'],
-  port: ENV['SMTP_PORT'],
-  user_name: ENV['SMTP_USERNAME'],
-  password: ENV['SMTP_PASSWORD'],
-  authentication: 'plain',
-  enable_starttls_auto: true
+config.action_mailer.delivery_method = :enkimail
+config.action_mailer.enkimail_settings = {
+  api_key: ENV['ENKIMAIL_API_KEY']
 }
 ```
+
+**Enkimail:** El sistema usa Enkimail para el envío de correos en producción. Requiere una API Key válida configurada como `ENKIMAIL_API_KEY`.
 
 ## 🔧 Uso en Código
 
