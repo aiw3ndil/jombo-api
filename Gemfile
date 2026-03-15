@@ -39,6 +39,8 @@ gem 'rollbar'
 
 gem 'jwt', '~> 2.6'
 
+gem 'enkimail'
+
 # OAuth authentication
 gem 'omniauth', '~> 2.1'
 gem 'omniauth-google-oauth2', '~> 1.1'

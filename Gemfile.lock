@@ -102,6 +102,9 @@ GEM
       dotenv (= 2.8.1)
       railties (>= 3.2)
     drb (2.2.3)
+    enkimail (0.1.6)
+      faraday (~> 2.0)
+      mail (>= 2.8)
     erb (5.0.2)
     erubi (1.13.1)
     factory_bot (6.5.6)
@@ -327,6 +330,7 @@ DEPENDENCIES
   bootsnap
   debug
   dotenv-rails (~> 2.2)
+  enkimail
   factory_bot_rails (~> 6.4)
   faker (~> 3.2)
   jwt (~> 2.6)
