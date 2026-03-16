@@ -95,7 +95,7 @@ Rails.application.configure do
 
   # Optional: Configure a global 'from' address
   # This address MUST be a verified sender in your Enkimail dashboard.
-  config.action_mailer.default_options = { from: 'no-reply@yourdomain.com' }
+  config.action_mailer.default_options = { from: 'no-reply@jombo.fi' }
 
   # config.action_mailer.delivery_method = :smtp
   # config.action_mailer.smtp_settings = {
