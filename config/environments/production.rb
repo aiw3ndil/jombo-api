@@ -95,15 +95,25 @@ Rails.application.configure do
 
   # Optional: Configure a global 'from' address
   # This address MUST be a verified sender in your Enkimail dashboard.
+  # config.action_mailer.default_options = { from: 'no-reply@jombo.fi' }
+  #
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   address: ENV['SMTP_ADDRESS'],
+  #   port: ENV['SMTP_PORT'],
+  #   user_name: ENV['SMTP_USERNAME'],
+  #   password: ENV['SMTP_PASSWORD'],
+  #   authentication: 'plain',
+  #   enable_starttls_auto: true
+  # }
+
+  config.action_mailer.delivery_method = :enkimail
+  config.action_mailer.enkimail_settings = {
+    api_key: ENV['ENKIMAIL_API_KEY']
+  }
+
+  # Optional: Configure a global 'from' address
+  # This address MUST be a verified sender in your Enkimail dashboard.
   config.action_mailer.default_options = { from: 'no-reply@jombo.fi' }
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: ENV['SMTP_ADDRESS'],
-    port: ENV['SMTP_PORT'],
-    user_name: ENV['SMTP_USERNAME'],
-    password: ENV['SMTP_PASSWORD'],
-    authentication: 'plain',
-    enable_starttls_auto: true
-  }
 end
