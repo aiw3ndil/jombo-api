@@ -1,59 +1,67 @@
 # syntax = docker/dockerfile:1
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+# 1. Base compartida
 ARG RUBY_VERSION=3.3.7
-FROM ruby:$RUBY_VERSION-slim
+FROM ruby:$RUBY_VERSION-slim AS base
 
-# Rails app lives here
 WORKDIR /app
 
-# Set production environment
+# Variables de entorno para producción
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development:test"
 
-# Instalar dependencias del sistema
+# 2. Etapa de Construcción (Build)
+# Aquí se instalan las herramientas necesarias para compilar gemas con extensiones C (como pg o bcrypt)
+FROM base AS build
+
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
     build-essential \
     curl \
     git \
     libpq-dev \
-    libvips \
     libyaml-dev \
-    pkg-config \
-    postgresql-client && \
+    pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install application gems
+# Instalamos las gemas
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
-# Copy application code
+# Copiamos el código de la aplicación
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile --gemfile && \
-    bundle exec bootsnap precompile app/ lib/
+# Precompilamos bootsnap para un arranque más rápido
+RUN bundle exec bootsnap precompile --gemfile app/ lib/
 
-# Create user
+# 3. Etapa Final
+# Esta es la imagen limpia que se despliega. No tiene compiladores.
+FROM base
+
+# Instalamos solo las librerías de tiempo de ejecución (runtime)
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    curl \
+    libpq5 \
+    postgresql-client && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Copiamos las gemas y el código desde la etapa de build
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /app /app
+
+# Creamos el usuario rails para no ejecutar como root
 RUN useradd rails --create-home --shell /bin/bash && \
-    usermod -u 1000 rails && \
-    groupmod -g 1000 rails
+    chown -R rails:rails /app/db /app/log /app/storage /app/tmp
 
-# Create dirs and assign permissions
-RUN mkdir -p /app/db /app/log /app/storage /app/tmp && \
-    chown -R rails:rails /app && \
-    chmod -R 775 /app/storage && \
-    chmod -R 755 /app
-
+# Permisos para el entrypoint
 RUN chmod +x /app/bin/docker-entrypoint.sh
 
-# Entrypoint prepares the database (runs as root to fix permissions, then switches to rails)
-ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
+USER rails:rails
 
-# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
+ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
 CMD ["./bin/rails", "server", "-b", "0.0.0.0"]

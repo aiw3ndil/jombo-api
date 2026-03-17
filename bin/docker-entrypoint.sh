@@ -1,17 +1,16 @@
 #!/bin/bash -e
 
-# Fix permissions
-chown -R rails:rails /app/storage /app/tmp /app/log 2>/dev/null || true
-
 # Si no hay argumentos, por defecto arranca el servidor
 if [ -z "$1" ]; then
   set -- ./bin/rails server -b 0.0.0.0
 fi
 
+# Si se arranca el servidor, preparamos la base de datos (migraciones)
 if [ "$1" = "./bin/rails" ] && [ "$2" = "server" ]; then
   echo "Preparing database..."
-  su -p -s /bin/bash rails -c "./bin/rails db:prepare"
+  ./bin/rails db:prepare
 fi
 
-# Ejecuta el comando principal como el usuario rails preservando el entorno
-exec su -p -s /bin/bash rails -c "$*"
+# Ejecuta el comando principal directamente
+# Como el Dockerfile tiene 'USER rails', se ejecuta como ese usuario
+exec "$@"
