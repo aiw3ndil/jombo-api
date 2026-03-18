@@ -1,13 +1,13 @@
 class ApplicationMailer < ActionMailer::Base
   include Rails.application.routes.url_helpers
-  default from: "Jombo <noreply@jombo.es>"
+  default from: "Jombo <no-reply@jombo.fi>"
   layout "mailer"
 
   # Explicitly define root_url for mailer views, relying on Rails' default behavior
   def root_url(options = {})
     Rails.application.routes.url_helpers.root_url(options)
   end
-  
+
   def mail(headers = {}, &block)
     headers[:subject] = "[Jombo] #{headers[:subject]}" if headers[:subject].present?
     super
@@ -24,7 +24,7 @@ class ApplicationMailer < ActionMailer::Base
                else
                  ENV.fetch('FRONTEND_URL', 'https://www.jombo.es')
                end
-    
+
     # Ensure the base_url does not end with a slash to avoid double slashes
     base_url = base_url.chomp('/')
 
