@@ -116,4 +116,5 @@ Rails.application.configure do
   # This address MUST be a verified sender in your Enkimail dashboard.
   config.action_mailer.default_options = { from: 'no-reply@jombo.fi' }
 
+  config.secret_key_base = ENV["SECRET_KEY_BASE"]
 end
