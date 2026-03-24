@@ -16,6 +16,14 @@ services:
       # DATABASE_URL debe ser provisto por el entorno o Coolify
     networks:
       - jombo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s
