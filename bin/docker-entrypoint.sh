@@ -5,11 +5,12 @@ if [ -f /app/tmp/pids/server.pid ]; then
   rm -f /app/tmp/pids/server.pid
 fi
 
-# Intentar preparar la base de datos SIEMPRE antes de arrancar
-# Esto creará la DB si no existe y correrá las migraciones
-echo "🚀 Intentando preparar la base de datos (db:prepare)..."
-bundle exec rails db:prepare || echo "⚠️ Advertencia: db:prepare falló, intentando continuar..."
+# Intentar ejecutar migraciones siempre antes de arrancar.
+# Si falla, el contenedor se detendrá y verás el error en los logs de Coolify.
+if [[ "$*" == *"rails server"* ]] || [[ "$*" == *"bin/rails server"* ]] || [[ -z "$1" ]]; then
+  echo "🚀 Running database migrations..."
+  bundle exec rails db:migrate
+fi
 
 # Ejecuta el comando principal (server, rake, etc.)
-echo "🎬 Arrancando aplicación con: $@"
 exec "$@"

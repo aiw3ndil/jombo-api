@@ -101,9 +101,11 @@ module Api
           
           # Verify the token is for our app
           client_id = ENV['GOOGLE_CLIENT_ID']
-          Rails.logger.info "🔵 Expected CLIENT_ID: #{client_id}"
+          Rails.logger.info "🔵 Expected CLIENT_ID: #{client_id || 'NOT CONFIGURED'}"
           
-          if client_id && data['aud'] && data['aud'] != client_id
+          if client_id.blank?
+            Rails.logger.warn "⚠️ GOOGLE_CLIENT_ID is not configured. Skipping 'aud' validation (security risk in production)."
+          elsif data['aud'] && data['aud'] != client_id
             Rails.logger.error "❌ Google token aud mismatch: expected #{client_id}, got #{data['aud']}"
             return nil
           end
@@ -118,9 +120,16 @@ module Api
               data['email'] = user_data['email']
               data['name'] = user_data['name']
               data['picture'] = user_data['picture']
+            else
+              Rails.logger.error "❌ Failed to fetch user info: #{user_response.code}"
             end
           end
           
+          if data['email'].blank?
+            Rails.logger.error "❌ Google token verified but email is missing from data: #{data.inspect}"
+            return nil
+          end
+
           Rails.logger.info "✅ Google token verified successfully for #{data['email']}"
           
           OpenStruct.new(

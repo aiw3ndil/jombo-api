@@ -1,3 +1,4 @@
+<% require 'uri' %>
 # PostgreSQL. Versions 9.3 and up are supported.
 #
 # Install the pg driver:
@@ -18,6 +19,11 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV["DATABASE_HOST"] || "localhost" %>
+  username: <%= ENV["DATABASE_USER"] || "postgres" %>
+  password: <%= ENV["DATABASE_PASSWORD"] || "password" %>
+  port: <%= ENV["DATABASE_PORT"] || 5432 %>
+  url: <%= ENV["DATABASE_URL"] %>
 
 development:
   <<: *default
@@ -80,7 +86,3 @@ test:
 production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
-  # El adaptador se infiere de la URL (postgres://...)
-  # pero nos aseguramos de que no intente usar sockets locales.
-  host: <%= ENV["DATABASE_URL"] ? URI.parse(ENV["DATABASE_URL"]).host : nil %>
-  port: <%= ENV["DATABASE_URL"] ? URI.parse(ENV["DATABASE_URL"]).port : 5432 %>
