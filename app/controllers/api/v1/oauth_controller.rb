@@ -30,8 +30,8 @@ module Api
             cookie_opts = {
               value: jwt_token,
               httponly: true,
-              secure: Rails.env.production?,
-              same_site: Rails.env.production? ? :none : :lax,
+              secure: request.ssl?,
+              same_site: request.ssl? ? :none : :lax,
               expires: 2.hours.from_now,
               path: "/"
             }
