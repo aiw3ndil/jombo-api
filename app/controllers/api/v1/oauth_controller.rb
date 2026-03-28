@@ -6,58 +6,53 @@ module Api
       # POST /api/v1/auth/google
       # POST /api/v1/auth/facebook
       def create
-        begin
-          provider = params[:provider]
-          # Accept both 'credential' (new Google flow with ID token) and 'token' (legacy/Facebook)
-          token = params[:credential] || params[:token]
+        provider = params[:provider]
+        # Accept both 'credential' (new Google flow with ID token) and 'token' (legacy/Facebook)
+        token = params[:credential] || params[:token]
+        
+        unless %w[google facebook].include?(provider)
+          return render json: { error: 'Invalid provider' }, status: :bad_request
+        end
+        
+        unless token.present?
+          return render json: { error: 'Token or credential is required' }, status: :bad_request
+        end
+        
+        # Verify token and get user info
+        user_info = verify_oauth_token(provider, token)
+        
+        if user_info
+          user = User.from_omniauth(user_info)
           
-          unless %w[google facebook].include?(provider)
-            return render json: { error: 'Invalid provider' }, status: :bad_request
-          end
-          
-          unless token.present?
-            return render json: { error: 'Token or credential is required' }, status: :bad_request
-          end
-          
-          # Verify token and get user info
-          user_info = verify_oauth_token(provider, token)
-          
-          if user_info
-            user = User.from_omniauth(user_info)
+          if user.persisted?
+            jwt_token = JwtService.encode(user_id: user.id)
             
-            if user.persisted?
-              jwt_token = JwtService.encode(user_id: user.id)
-              
-              cookie_opts = {
-                value: jwt_token,
-                httponly: true,
-                secure: request.ssl?,
-                same_site: request.ssl? ? :none : :lax,
-                expires: 2.hours.from_now,
-                path: "/"
+            cookie_opts = {
+              value: jwt_token,
+              httponly: true,
+              secure: request.ssl?,
+              same_site: request.ssl? ? :none : :lax,
+              expires: 2.hours.from_now,
+              path: "/"
+            }
+            
+            response.set_cookie("jwt", cookie_opts)
+            render json: { 
+              message: "Logged in successfully",
+              user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                language: user.language,
+                region: user.region,
+                picture_url: user.picture.attached? ? url_for(user.picture) : nil
               }
-              
-              response.set_cookie("jwt", cookie_opts)
-              render json: { 
-                message: "Logged in successfully",
-                user: {
-                  id: user.id,
-                  email: user.email,
-                  name: user.name,
-                  language: user.language,
-                  region: user.region,
-                  picture_url: user.picture.attached? ? url_for(user.picture) : nil
-                }
-              }
-            else
-              render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-            end
+            }
           else
-            render json: { error: 'Invalid token' }, status: :unauthorized
+            render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
           end
-        rescue => e
-          Rails.logger.error "💥 OauthController Error: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
-          render json: { error: "Internal Server Error", message: e.message, backtrace: e.backtrace.first(5) }, status: :internal_server_error
+        else
+          render json: { error: 'Invalid token' }, status: :unauthorized
         end
       end
       
