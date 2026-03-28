@@ -5,11 +5,11 @@ if [ -f /app/tmp/pids/server.pid ]; then
   rm -f /app/tmp/pids/server.pid
 fi
 
-# Si el primer argumento es 'server' o se arranca rails
-if [[ "$*" == *"rails server"* ]] || [[ "$*" == *"bin/rails server"* ]] || [[ -z "$1" ]]; then
-  echo "🚀 Preparamos la base de datos (migraciones)..."
-  bundle exec rails db:prepare
-fi
+# Intentar preparar la base de datos SIEMPRE antes de arrancar
+# Esto creará la DB si no existe y correrá las migraciones
+echo "🚀 Intentando preparar la base de datos (db:prepare)..."
+bundle exec rails db:prepare || echo "⚠️ Advertencia: db:prepare falló, intentando continuar..."
 
-# Ejecuta el comando principal
+# Ejecuta el comando principal (server, rake, etc.)
+echo "🎬 Arrancando aplicación con: $@"
 exec "$@"
