@@ -1,15 +1,23 @@
 #!/bin/bash -e
 
-# Borrar el archivo server.pid si existe para evitar que Puma no arranque
+# Forzar el entorno de producción si no está definido
+export RAILS_ENV=${RAILS_ENV:-production}
+echo "🌍 Entorno actual: $RAILS_ENV"
+
+# Limpieza de PID de Puma
 if [ -f /app/tmp/pids/server.pid ]; then
   rm -f /app/tmp/pids/server.pid
 fi
 
-# Preparar la base de datos en cada despliegue (create + migrate + setup)
-if [[ "$*" == *"rails server"* ]] || [[ "$*" == *"bin/rails server"* ]] || [[ -z "$1" ]]; then
-  echo "🚀 Preparando base de datos (db:prepare)..."
-  bundle exec rails db:prepare
-fi
+# Intentar preparar la base de datos
+echo "🚀 Ejecutando bundle exec rails db:prepare..."
+bundle exec rails db:prepare
 
-# Ejecutar el comando principal
+# Por si acaso db:prepare no corrió las migraciones por estar en desarrollo
+echo "migrando base de datos..."
+bundle exec rails db:migrate
+
+echo "✅ Base de datos lista. Arrancando servidor..."
+
+# Ejecutar el comando original
 exec "$@"
