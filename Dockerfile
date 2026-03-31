@@ -1,67 +1,58 @@
 # syntax = docker/dockerfile:1
 
-# 1. Base compartida
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.3.10
-FROM ruby:$RUBY_VERSION-slim AS base
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 
-WORKDIR /app
+# Rails app lives here
+WORKDIR /rails
 
-# Variables de entorno para producción
+# Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development:test"
 
-# 2. Etapa de Construcción (Build)
-# Aquí se instalan las herramientas necesarias para compilar gemas con extensiones C (como pg o bcrypt)
-FROM base AS build
 
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-    build-essential \
-    curl \
-    git \
-    libpq-dev \
-    libyaml-dev \
-    pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    apt-get install --no-install-recommends -y build-essential curl git libpq-dev libvips pkg-config
 
-# Instalamos las gemas
+# Install application gems
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
-# Copiamos el código de la aplicación
+# Copy application code
 COPY . .
 
-# Precompilamos bootsnap para un arranque más rápido
+# Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile --gemfile app/ lib/
 
-# 3. Etapa Final
-# Esta es la imagen limpia que se despliega. No tiene compiladores.
+
+# Final stage for app image
 FROM base
 
-# Instalamos solo las librerías de tiempo de ejecución (runtime)
+# Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-    curl \
-    libpq5 \
-    postgresql-client && \
+    apt-get install --no-install-recommends -y curl libvips postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Copiamos las gemas y el código desde la etapa de build
+# Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /app /app
+COPY --from=build /rails /rails
 
-# Creamos el usuario rails para no ejecutar como root
+# Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails /app/db /app/log /app/storage /app/tmp
-
-# Permisos para el entrypoint
-RUN chmod +x /app/bin/docker-entrypoint.sh
-
+    chown -R rails:rails db log storage tmp
 USER rails:rails
 
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint.sh"]
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
 CMD ["./bin/rails", "server", "-b", "0.0.0.0"]

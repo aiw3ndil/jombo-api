@@ -5,8 +5,8 @@ export RAILS_ENV=${RAILS_ENV:-production}
 echo "🌍 Entorno actual: $RAILS_ENV"
 
 # Limpieza de PID de Puma
-if [ -f /app/tmp/pids/server.pid ]; then
-  rm -f /app/tmp/pids/server.pid
+if [ -f /rails/tmp/pids/server.pid ]; then
+  rm -f /rails/tmp/pids/server.pid
 fi
 
 # Intentar preparar la base de datos
