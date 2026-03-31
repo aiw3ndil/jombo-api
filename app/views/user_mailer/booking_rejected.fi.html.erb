@@ -1,25 +1,27 @@
 <h1><%= t('mailers.user_mailer.booking_rejected.subject') %></h1>
 
-<div class="email-content">
-  <p><%= t('mailers.user_mailer.booking_rejected.greeting', name: @user.name) %></p>
-  
-  <p><%= t('mailers.user_mailer.booking_rejected.intro', driver_name: @driver.name) %></p>
+<p><%= t('mailers.user_mailer.booking_rejected.greeting', name: @user.name) %></p>
 
-  <div class="highlight">
-    <h3 style="margin-top: 0;"><%= t('mailers.user_mailer.booking_rejected.rejected_trip') %></h3>
-    <p><strong><%= t('mailers.user_mailer.booking_rejected.origin') %></strong> <%= @trip.departure_location %></p>
-    <p><strong><%= t('mailers.user_mailer.booking_rejected.destination') %></strong> <%= @trip.arrival_location %></p>
-    <p><strong><%= t('mailers.user_mailer.booking_rejected.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
-    <p><strong><%= t('mailers.user_mailer.booking_rejected.seats_reserved') %></strong> <%= @booking.seats %></p>
-  </div>
+<p><%= t('mailers.user_mailer.booking_rejected.intro', driver_name: @driver.name) %></p>
 
-  <p><%= t('mailers.user_mailer.booking_rejected.apology_text') %></p>
+<%= render layout: 'card' do %>
+  <h3 style="margin-top: 0; color: #FFFFFF;"><%= t('mailers.user_mailer.booking_rejected.trip_details') %></h3>
+  <p><strong><%= t('mailers.user_mailer.booking_rejected.origin') %></strong> <%= @trip.departure_location %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_rejected.destination') %></strong> <%= @trip.arrival_location %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_rejected.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_rejected.seats') %></strong> <%= @booking.seats %></p>
+<% end %>
 
-  <p style="text-align: center;">
-    <a href="<%= @frontend_url %>" class="email-button"><%= t('mailers.user_mailer.booking_rejected.find_another_trip') %></a>
-  </p>
-
-  <p><%= t('mailers.user_mailer.booking_rejected.goodbye') %></p>
-  
-  <p><%= t('mailers.user_mailer.booking_rejected.team') %></p>
+<div style="border-left: 4px solid #FF419C; padding-left: 16px; margin: 24px 0;">
+  <p><%= t('mailers.user_mailer.booking_rejected.rejection_reason') %></p>
 </div>
+
+<p><%= t('mailers.user_mailer.booking_rejected.apology_text') %></p>
+
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: @frontend_url, text: t('mailers.user_mailer.booking_rejected.find_another_trip') %>
+</div>
+
+<p><%= t('mailers.user_mailer.booking_rejected.goodbye') %></p>
+
+<p><strong><%= t('mailers.user_mailer.booking_rejected.team') %></strong></p>

@@ -50,20 +50,22 @@ Los emails se envían automáticamente en el idioma del usuario configurado en s
 
 ## 🎨 Plantilla Reutilizable
 
-La plantilla base (`layouts/mailer.html.erb`) incluye:
+La plantilla base (`layouts/mailer.html.erb`) sigue la **Guía de Estilo de Email de Jombo**:
 
-- **Header con logo** de Jombo con gradiente moderno
-- **Body responsive** con estilos inline (compatible con clientes de email)
-- **Footer** con copyright, links y año dinámico
-- **Botones de acción** con estilo consistente
-- **Highlights** para información importante
-- **Diseño mobile-first** con media queries
+- **Header con logo** de Jombo (centrado) y borde superior de acento.
+- **Body responsive** con jerarquía clara y diseño mobile-first.
+- **Footer** con información legal, enlaces de contacto y opción de baja.
+- **Componentes Reutilizables**:
+  - `_button.html.erb`: Botones con gradiente de marca y bordes redondeados.
+  - `_card.html.erb`: Tarjetas para agrupar información con fondo `#1A1535` y borde `#2D284D`.
 
 ### Colores del Brand:
-- Gradiente principal: `#667eea` → `#764ba2` (Púrpura)
-- Texto: `#333333`
-- Fondo: `#f4f4f4`
-- Highlights: `#f0f4ff`
+- **Brand Dark**: `#120D2B` (Fondo principal)
+- **Brand Cyan**: `#0BB1D3` (Acento primario, enlaces, botones)
+- **Brand Purple**: `#9F2FFF` (Acento secundario, gradientes)
+- **Brand Blue**: `#5471E9` (Información, fondos de mensajes)
+- **Brand Pink**: `#FF419C` (Alertas, errores, rechazos)
+- **White**: `#FFFFFF` (Texto principal)
 
 ## 📝 Versiones de Email
 

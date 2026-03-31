@@ -1,36 +1,34 @@
 <h1><%= t('mailers.user_mailer.booking_confirmed.subject') %></h1>
 
-<div class="email-content">
-  <p><%= t('mailers.user_mailer.booking_confirmed.greeting', name: @user.name) %></p>
-  
-  <p><%= t('mailers.user_mailer.booking_confirmed.good_news', driver_name: @driver.name) %></p>
+<p><%= t('mailers.user_mailer.booking_confirmed.greeting', name: @user.name) %></p>
 
-  <div class="highlight">
-    <h3 style="margin-top: 0;"><%= t('mailers.user_mailer.booking_confirmed.trip_details') %></h3>
-    <p><strong><%= t('mailers.user_mailer.booking_confirmed.origin') %></strong> <%= @trip.departure_location %></p>
-    <p><strong><%= t('mailers.user_mailer.booking_confirmed.destination') %></strong> <%= @trip.arrival_location %></p>
-    <p><strong><%= t('mailers.user_mailer.booking_confirmed.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
-    <p><strong><%= t('mailers.user_mailer.booking_confirmed.seats') %></strong> <%= @booking.seats %></p>
-    <p><strong><%= t('mailers.user_mailer.booking_confirmed.price') %></strong> <%= number_to_currency(@trip.price) %></p>
-  </div>
+<p><%= t('mailers.user_mailer.booking_confirmed.good_news', driver_name: @driver.name) %></p>
 
-  <h3><%= t('mailers.user_mailer.booking_confirmed.driver_info') %></h3>
-  <p>
-    <strong><%= t('mailers.user_mailer.booking_confirmed.contact_driver') %></strong> <a href="<%= @messages_url %>" style="color: #0BB1D3;"><%= t('mailers.user_mailer.booking_confirmed.send_message_link') %></a>
-  </p>
+<%= render layout: 'card' do %>
+  <h3 style="margin-top: 0; color: #FFFFFF;"><%= t('mailers.user_mailer.booking_confirmed.trip_details') %></h3>
+  <p><strong><%= t('mailers.user_mailer.booking_confirmed.origin') %></strong> <%= @trip.departure_location %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_confirmed.destination') %></strong> <%= @trip.arrival_location %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_confirmed.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_confirmed.seats') %></strong> <%= @booking.seats %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_confirmed.price') %></strong> <%= number_to_currency(@trip.price) %></p>
+<% end %>
 
-  <p style="text-align: center;">
-    <a href="<%= @frontend_url %>/my-bookings" class="email-button"><%= t('mailers.user_mailer.booking_confirmed.button') %></a>
-  </p>
+<h3><%= t('mailers.user_mailer.booking_confirmed.driver_info') %></h3>
+<%= render layout: 'card' do %>
+  <p><strong><%= t('mailers.user_mailer.booking_confirmed.contact_driver') %></strong> <a href="<%= @messages_url %>" style="color: #0BB1D3; font-weight: 600;"><%= t('mailers.user_mailer.booking_confirmed.send_message_link') %></a></p>
+<% end %>
 
-  <p><strong><%= t('mailers.user_mailer.booking_confirmed.remember_title') %></strong></p>
-  <p>
-    <%= t('mailers.user_mailer.booking_confirmed.remember_time') %><br>
-    <%= t('mailers.user_mailer.booking_confirmed.remember_phone') %><br>
-    <%= t('mailers.user_mailer.booking_confirmed.remember_luggage') %>
-  </p>
-
-  <p><%= t('mailers.user_mailer.booking_confirmed.goodbye') %></p>
-  
-  <p><%= t('mailers.user_mailer.booking_confirmed.team') %></p>
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: "#{@frontend_url}/my-bookings", text: t('mailers.user_mailer.booking_confirmed.button') %>
 </div>
+
+<p><strong><%= t('mailers.user_mailer.booking_confirmed.remember_title') %></strong></p>
+<p>
+  • <%= t('mailers.user_mailer.booking_confirmed.remember_time') %><br>
+  • <%= t('mailers.user_mailer.booking_confirmed.remember_phone') %><br>
+  • <%= t('mailers.user_mailer.booking_confirmed.remember_luggage') %>
+</p>
+
+<p><%= t('mailers.user_mailer.booking_confirmed.goodbye') %></p>
+
+<p><strong><%= t('mailers.user_mailer.booking_confirmed.team') %></strong></p>

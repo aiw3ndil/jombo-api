@@ -1,34 +1,32 @@
 <h1><%= t('mailers.user_mailer.welcome_email.greeting', name: @user.name) %></h1>
 
-<div class="email-content">
-  <p><%= t('mailers.user_mailer.welcome_email.intro') %></p>
-  
-  <p><%= t('mailers.user_mailer.welcome_email.features_title') %></p>
-  
-  <div class="highlight">
-    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_offer') %></strong></p>
-    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_find') %></strong></p>
-    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_planet') %></strong></p>
-    <p><strong><%= t('mailers.user_mailer.welcome_email.feature_people') %></strong></p>
-  </div>
+<p><%= t('mailers.user_mailer.welcome_email.intro') %></p>
 
-  <p><%= t('mailers.user_mailer.welcome_email.account_created', email: "<span style='color: #0BB1D3; font-weight: 600;'>#{@user.email}</span>").html_safe %></p>
+<p><%= t('mailers.user_mailer.welcome_email.features_title') %></p>
 
-  <p style="text-align: center;">
-    <a href="<%= @frontend_url %>" class="email-button"><%= t('mailers.user_mailer.welcome_email.button') %></a>
-  </p>
+<%= render layout: 'card' do %>
+  <p><strong><%= t('mailers.user_mailer.welcome_email.feature_offer') %></strong></p>
+  <p><strong><%= t('mailers.user_mailer.welcome_email.feature_find') %></strong></p>
+  <p><strong><%= t('mailers.user_mailer.welcome_email.feature_planet') %></strong></p>
+  <p><strong><%= t('mailers.user_mailer.welcome_email.feature_people') %></strong></p>
+<% end %>
 
-  <h2><%= t('mailers.user_mailer.welcome_email.next_steps_title') %></h2>
-  <p>
-    <%= t('mailers.user_mailer.welcome_email.next_step_search') %><br>
-    <%= t('mailers.user_mailer.welcome_email.next_step_publish') %><br>
-    <%= t('mailers.user_mailer.welcome_email.next_step_profile') %><br>
-    <%= t('mailers.user_mailer.welcome_email.next_step_book') %>
-  </p>
+<p><%= t('mailers.user_mailer.welcome_email.account_created', email: "<strong style='color: #0BB1D3;'>#{@user.email}</strong>").html_safe %></p>
 
-  <p><%= t('mailers.user_mailer.welcome_email.help') %></p>
-
-  <p><%= t('mailers.user_mailer.welcome_email.goodbye') %></p>
-  
-  <p><%= t('mailers.user_mailer.welcome_email.team') %></p>
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: @frontend_url, text: t('mailers.user_mailer.welcome_email.button') %>
 </div>
+
+<h2><%= t('mailers.user_mailer.welcome_email.next_steps_title') %></h2>
+<p>
+  • <%= t('mailers.user_mailer.welcome_email.next_step_search') %><br>
+  • <%= t('mailers.user_mailer.welcome_email.next_step_publish') %><br>
+  • <%= t('mailers.user_mailer.welcome_email.next_step_profile') %><br>
+  • <%= t('mailers.user_mailer.welcome_email.next_step_book') %>
+</p>
+
+<p><%= t('mailers.user_mailer.welcome_email.help') %></p>
+
+<p><%= t('mailers.user_mailer.welcome_email.goodbye') %></p>
+
+<p><strong><%= t('mailers.user_mailer.welcome_email.team') %></strong></p>

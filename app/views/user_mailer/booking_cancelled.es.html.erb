@@ -1,25 +1,23 @@
-<h1>Tu reserva ha sido cancelada</h1>
+<h1><%= t('mailers.user_mailer.booking_cancelled.subject') %></h1>
 
-<div class="email-content">
-  <p>Hola <%= @user.name %>,</p>
-  
-  <p>Tu reserva ha sido cancelada exitosamente.</p>
+<p><%= t('mailers.user_mailer.booking_cancelled.greeting', name: @user.name) %></p>
 
-  <div class="highlight">
-    <h3 style="margin-top: 0;">📍 Detalles del Viaje Cancelado</h3>
-    <p><strong>Origen:</strong> <%= @trip.departure_location %></p>
-    <p><strong>Destino:</strong> <%= @trip.arrival_location %></p>
-    <p><strong>Fecha y Hora:</strong> <%= @trip.departure_time.strftime('%d/%m/%Y a las %H:%M') %></p>
-    <p><strong>Asientos que tenías reservados:</strong> <%= @booking.seats %></p>
-  </div>
+<p><%= t('mailers.user_mailer.booking_cancelled.intro') %></p>
 
-  <p>Si cancelaste por error o cambias de opinión, puedes crear una nueva reserva si el viaje aún tiene asientos disponibles.</p>
+<%= render layout: 'card' do %>
+  <h3 style="margin-top: 0; color: #FFFFFF;"><%= t('mailers.user_mailer.booking_cancelled.cancelled_trip') %></h3>
+  <p><strong><%= t('mailers.user_mailer.booking_cancelled.origin') %></strong> <%= @trip.departure_location %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_cancelled.destination') %></strong> <%= @trip.arrival_location %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_cancelled.datetime') %></strong> <%= l(@trip.departure_time, format: :email) %></p>
+  <p><strong><%= t('mailers.user_mailer.booking_cancelled.seats_reserved') %></strong> <%= @booking.seats %></p>
+<% end %>
 
-  <p style="text-align: center;">
-    <a href="<%= @frontend_url %>/my-bookings" class="email-button">Buscar Otros Viajes</a>
-  </p>
+<p><%= t('mailers.user_mailer.booking_cancelled.help_text') %></p>
 
-  <p>Esperamos verte pronto en otro viaje.</p>
-  
-  <p>El equipo de Jombo</p>
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: "#{@frontend_url}/my-bookings", text: t('mailers.user_mailer.booking_cancelled.button') %>
 </div>
+
+<p><%= t('mailers.user_mailer.booking_cancelled.goodbye') %></p>
+
+<p><strong><%= t('mailers.user_mailer.booking_cancelled.team') %></strong></p>

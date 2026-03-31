@@ -1,133 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+      /* Brand Colors */
+      :root {
+        --brand-dark: #120D2B;
+        --brand-cyan: #0BB1D3;
+        --brand-purple: #9F2FFF;
+        --brand-blue: #5471E9;
+        --brand-pink: #FF419C;
+        --white: #FFFFFF;
+        --card-bg: #1A1535;
+        --card-border: #2D284D;
+      }
+
       body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-family: 'Geist Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         line-height: 1.6;
-        color: #d1d1e0;
-        background-color: #212240;
+        color: #FFFFFF;
+        background-color: #120D2B;
         margin: 0;
         padding: 0;
+        -webkit-font-smoothing: antialiased;
       }
+
+      .email-wrapper {
+        background-color: #120D2B;
+        padding: 20px 0;
+      }
+
       .email-container {
         max-width: 600px;
-        margin: 40px auto;
-        background-color: #2a2b4d;
-        border-radius: 12px;
+        margin: 0 auto;
+        background-color: #120D2B;
         overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
       }
+
       .email-header {
-        background: linear-gradient(89.8deg, #0BB1D3 0%, #9F2FFF 100%);
         padding: 40px 20px;
         text-align: center;
+        border-top: 4px solid #0BB1D3;
       }
+
       .email-logo {
-        font-size: 32px;
+        font-size: 24px;
         font-weight: 800;
-        color: #ffffff;
+        color: #FFFFFF;
         margin: 0;
-        letter-spacing: 3px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        letter-spacing: 2px;
+        text-transform: uppercase;
       }
+
       .email-body {
-        padding: 40px 30px;
+        padding: 20px;
       }
-      .email-content {
-        font-size: 16px;
-        color: #d1d1e0;
-      }
-      .email-button {
-        display: inline-block;
-        padding: 16px 32px;
-        margin: 24px 0;
-        background: linear-gradient(89.8deg, #0BB1D3 0%, #9F2FFF 100%);
-        color: #ffffff !important;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 700;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(11, 177, 211, 0.4);
-      }
+
       .email-footer {
-        background-color: #1a1b3a;
-        padding: 30px;
+        padding: 40px 20px;
         text-align: center;
         font-size: 14px;
         color: #717285;
-        border-top: 1px solid #3a3b5c;
+        border-top: 1px solid #2D284D;
       }
+
       .email-footer a {
         color: #0BB1D3;
         text-decoration: none;
       }
+
       h1 {
-        color: #ffffff;
-        font-size: 28px;
-        margin-bottom: 24px;
+        font-size: 24px;
         font-weight: 700;
+        color: #FFFFFF;
+        margin-bottom: 20px;
       }
-      h2, h3 {
-        color: #ffffff;
+
+      h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #FFFFFF;
         margin-top: 24px;
+        margin-bottom: 16px;
       }
+
       p {
+        font-size: 16px;
         margin: 16px 0;
+        color: #d1d1e0;
       }
-      .highlight {
-        background-color: rgba(0, 81, 179, 0.2);
-        padding: 20px;
-        border-left: 4px solid #0BB1D3;
-        margin: 25px 0;
-        border-radius: 4px;
+
+      .cta-button {
+        display: inline-block;
+        padding: 14px 32px;
+        background: linear-gradient(89.8deg, #0BB1D3 0%, #9F2FFF 100%);
+        color: #FFFFFF !important;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        text-align: center;
+        min-height: 44px;
+        line-height: 44px;
+        padding-top: 0;
+        padding-bottom: 0;
       }
-      .critical-alert {
-        background-color: rgba(255, 65, 156, 0.1);
-        padding: 15px;
-        border: 1px dashed #FF419C;
-        border-radius: 8px;
-        color: #FF419C;
-        margin: 20px 0;
+
+      .card {
+        background-color: #1A1535;
+        border: 1px solid #2D284D;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
       }
-      strong {
-        color: #ffffff;
+
+      .small {
+        font-size: 14px;
+        color: #717285;
       }
+
+      @media (prefers-color-scheme: dark) {
+        body, .email-wrapper, .email-container {
+          background-color: #120D2B !important;
+        }
+        .email-logo, h1, h2, strong {
+          color: #FFFFFF !important;
+        }
+        p {
+          color: #d1d1e0 !important;
+        }
+      }
+
       @media only screen and (max-width: 600px) {
         .email-container {
-          margin: 0 auto;
-          border-radius: 0;
+          width: 100% !important;
         }
         .email-body {
-          padding: 30px 20px;
-        }
-        h1 {
-          font-size: 24px;
+          padding: 20px 15px !important;
         }
       }
     </style>
   </head>
 
   <body>
-    <div class="email-container">
-      <div class="email-header">
-        <h2 class="email-logo">🚗 JOMBO</h2>
-      </div>
-      
-      <div class="email-body">
-        <%= yield %>
-      </div>
-      
-      <div class="email-footer">
-        <p>© <%= Time.current.year %> Jombo. Todos los derechos reservados.</p>
-        <p>
-          <%= t('layouts.mailer.platform_description', default: 'Plataforma de carpooling inteligente') %><br>
-          <a href="#"><%= t('layouts.mailer.terms', default: 'Términos') %></a> | 
-          <a href="#"><%= t('layouts.mailer.privacy', default: 'Privacidad') %></a> | 
-          <a href="#"><%= t('layouts.mailer.contact', default: 'Contacto') %></a>
-        </p>
+    <div class="email-wrapper">
+      <div class="email-container">
+        <div class="email-header">
+          <div class="email-logo">JOMBO</div>
+        </div>
+        
+        <div class="email-body">
+          <%= yield %>
+        </div>
+        
+        <div class="email-footer">
+          <p>© <%= Time.current.year %> Jombo. <%= t('layouts.mailer.all_rights_reserved', default: 'Todos los derechos reservados.') %></p>
+          <p>
+            <%= t('layouts.mailer.platform_description', default: 'Tu viaje compartido, sin comisiones.') %><br>
+            <a href="#"><%= t('layouts.mailer.terms', default: 'Términos') %></a> | 
+            <a href="#"><%= t('layouts.mailer.privacy', default: 'Privacidad') %></a> | 
+            <a href="#"><%= t('layouts.mailer.contact', default: 'Contacto') %></a>
+          </p>
+          <% if @user || @driver || @recipient %>
+            <p class="small">
+              <%= t('layouts.mailer.unsubscribe', default: 'Si no deseas recibir más correos, puedes') %> 
+              <a href="#"><%= t('layouts.mailer.unsubscribe_link', default: 'darte de baja aquí') %></a>.
+            </p>
+          <% end %>
+        </div>
       </div>
     </div>
   </body>
