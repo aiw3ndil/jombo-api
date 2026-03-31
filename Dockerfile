@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # 1. Base compartida
-ARG RUBY_VERSION=3.3.7
+ARG RUBY_VERSION=3.3.10
 FROM ruby:$RUBY_VERSION-slim AS base
 
 WORKDIR /app
