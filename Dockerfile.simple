@@ -1,5 +1,5 @@
 # Dockerfile optimizado para Coolify
-FROM ruby:3.3.7-slim
+FROM ruby:3.3.10-slim
 
 WORKDIR /rails
 
@@ -26,7 +26,7 @@ COPY . .
 
 # Crear directorios necesarios
 RUN mkdir -p tmp/pids log storage && \
-    chmod +x bin/rails bin/docker-entrypoint
+    chmod +x bin/rails bin/docker-entrypoint.sh
 
 # Usuario no root
 RUN useradd -m -u 1000 rails && \
@@ -35,5 +35,5 @@ USER rails
 
 EXPOSE 3000
 
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+ENTRYPOINT ["/rails/bin/docker-entrypoint.sh"]
 CMD ["bin/rails", "server", "-b", "0.0.0.0"]
