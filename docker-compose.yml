@@ -22,7 +22,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - storage_data:/rails/storage
+      - storage:/rails/storage
     env_file:
       - .env
     environment:
@@ -48,7 +48,7 @@ services:
       start_period: 40s
 
 volumes:
-  storage_data:
+  storage:
   db_data:
 
 
