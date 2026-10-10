@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   # Health check endpoints
+  root 'health#home'
   get '/health', to: 'health#index'
   get '/health/database', to: 'health#database'
 

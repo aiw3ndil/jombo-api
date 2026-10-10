@@ -1,4 +1,16 @@
 class HealthController < ActionController::API
+  def home
+    render html: <<~HTML.html_safe
+      <!doctype html>
+      <html>
+        <head><meta charset="utf-8"><title>Jombo API</title></head>
+        <body style="margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#22c55e;color:#fff;font-family:sans-serif;font-size:2rem">
+          Jombo API OK
+        </body>
+      </html>
+    HTML
+  end
+
   def index
     render json: {
       status: 'ok',

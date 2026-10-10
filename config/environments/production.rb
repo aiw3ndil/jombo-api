@@ -43,6 +43,8 @@ Rails.application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
+  # Skip HTTPS redirect for the container health check endpoints.
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/" || request.path.start_with?("/health") } } }
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
