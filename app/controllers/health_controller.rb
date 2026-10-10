@@ -4,9 +4,7 @@ class HealthController < ActionController::API
       <!doctype html>
       <html>
         <head><meta charset="utf-8"><title>Jombo API</title></head>
-        <body style="margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#22c55e;color:#fff;font-family:sans-serif;font-size:2rem">
-          Jombo API OK
-        </body>
+        <body style="margin:0;height:100vh;background:#22c55e"></body>
       </html>
     HTML
   end
