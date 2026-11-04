@@ -1,0 +1,14 @@
+<% s = 'mailers.user_mailer.email_verification' %>
+<h1><%= t("#{s}.subject") %></h1>
+
+<p><%= t("#{s}.greeting", name: @user.name) %></p>
+
+<p><%= t("#{s}.intro") %></p>
+
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: @verify_url, text: t("#{s}.button") %>
+</div>
+
+<p style="font-size: 13px;"><%= t("#{s}.ignore") %></p>
+
+<p><strong><%= t("#{s}.team") %></strong></p>

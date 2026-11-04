@@ -32,7 +32,8 @@ en:
   time:
     formats:
       email: "%a, %d %b %Y %H:%M:%S %z" # e.g., "Tue, 01 Jan 2025 12:00:00 +0000"
-      short: "%d/%m/%Y" # e.g., "01/01/2025"
+      short: "%d/%m/%Y"
+      short_datetime: "%a %d %b %H:%M" # e.g., "01/01/2025"
   notifications:
     instant_booking:
       title: "New passenger on your trip"
@@ -43,3 +44,5 @@ en:
     ride_offer:
       title: "A driver offered a ride for your request"
       content: "%{driver}: %{from} → %{to}, %{time}"
+  sms:
+    verification_code: "Your Jombo verification code is %{code}. It expires in 10 minutes."

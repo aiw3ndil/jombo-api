@@ -1,0 +1,18 @@
+<% s = 'mailers.user_mailer.trip_match' %>
+<%= @segment[:from] %> → <%= @segment[:to] %>
+
+<%= t("#{s}.greeting", name: @user.name) %>
+
+<%= @offer ? t("#{s}.offer_intro") : t("#{s}.intro") %>
+
+<%= t("#{s}.route") %> <%= @segment[:from] %> → <%= @segment[:to] %>
+<%= t("#{s}.departure") %> <%= @departure_label %>
+<%= t("#{s}.price") %> <%= format('%.2f', @segment[:price]) %> €
+<%= t("#{s}.seats") %> <%= @trip.available_seats %>
+<%= t("#{s}.driver") %> <%= @trip.driver.name %>
+
+<%= t("#{s}.button") %>: <%= @trip_url %>
+
+<%= t("#{s}.hint") %>
+
+<%= t("#{s}.team") %>

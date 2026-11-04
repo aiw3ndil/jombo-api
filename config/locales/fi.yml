@@ -3,6 +3,7 @@ fi:
     formats:
       email: "%a, %d %b %Y %H:%M:%S %z"
       short: "%d/%m/%Y"
+      short_datetime: "%a %d.%m. klo %H.%M"
   notifications:
     instant_booking:
       title: "Uusi matkustaja kyydilläsi"
@@ -13,3 +14,5 @@ fi:
     ride_offer:
       title: "Kuljettaja tarjosi kyytiä pyyntöösi"
       content: "%{driver}: %{from} → %{to}, %{time}"
+  sms:
+    verification_code: "Jombo-vahvistuskoodisi on %{code}. Koodi vanhenee 10 minuutissa."

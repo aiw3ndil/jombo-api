@@ -7,7 +7,7 @@ module Api
       }.freeze
       TRIP_PERMITTED = [
         :departure_location, :arrival_location, :departure_time, :available_seats, :description, :price,
-        :vehicle_id, :distance_km, :duration_minutes, *Trip::PREFERENCE_ATTRIBUTES,
+        :vehicle_id, :ride_request_id, :distance_km, :duration_minutes, *Trip::PREFERENCE_ATTRIBUTES,
         :is_recurring, :recurrence_pattern, :recurrence_days, :recurrence_until
       ].freeze
       BOOLEAN_FILTERS = {
@@ -190,7 +190,8 @@ module Api
       end
 
       def driver_profile(user)
-        driver_summary(user)&.merge(user.respond_to?(:public_badges) ? user.public_badges : {})
+        driver_summary(user)&.merge(experience_level: user.experience_level, verifications: user.verifications,
+                                    bio: user.bio, member_since: user.created_at)
       end
 
       def picture_url_for(user)

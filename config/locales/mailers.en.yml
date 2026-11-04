@@ -10,6 +10,29 @@ en:
       unsubscribe_link: "unsubscribe here"
   mailers:
     user_mailer:
+      trip_match:
+        subject: "New ride: %{from} → %{to}"
+        greeting: "Hello %{name},"
+        intro: "A driver just published a ride that matches what you were looking for."
+        offer_intro: "A driver published a ride in response to your ride request."
+        route: "Route:"
+        departure: "Departure:"
+        price: "Price per seat:"
+        seats: "Free seats:"
+        driver: "Driver:"
+        button: "See the ride"
+        hint: "Seats go fast — book soon if the ride suits you."
+        manage: "You can manage your alerts and requests on Jombo."
+        team: "The Jombo Team"
+      ride_offer:
+        subject: "A driver offered a ride: %{from} → %{to}"
+      email_verification:
+        subject: "Confirm your email address"
+        greeting: "Hello %{name},"
+        intro: "Please confirm your email address. A verified email shows other members they can trust you."
+        button: "Confirm email"
+        ignore: "If you didn't create a Jombo account, you can ignore this email."
+        team: "The Jombo Team"
       welcome_email:
         subject: "Welcome to Jombo! 🚗"
         greeting: "Welcome to Jombo, %{name}! 👋"

@@ -40,6 +40,9 @@ module Api
               email: user.email, 
               name: user.name,
               language: user.language,
+              bio: user.bio,
+              phone: user.phone,
+              verifications: user.verifications,
               picture_url: user.picture.attached? ? url_for(user.picture) : nil
             }
           else

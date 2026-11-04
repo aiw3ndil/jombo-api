@@ -32,6 +32,10 @@ class Trip < ApplicationRecord
   before_validation(on: :create) { self.region = User::REGION }
 
   after_create :generate_recurring_trips, if: -> { is_recurring? && parent_id.nil? }
+  # Las copias de un viaje recurrente no vuelven a avisar
+  after_create_commit -> { TripMatchJob.perform_later(id, ride_request_id.presence&.to_i) }, if: -> { parent_id.nil? }
+
+  attr_accessor :ride_request_id
   
   def self.suggested_price_for(distance_km)
     return nil if distance_km.blank?

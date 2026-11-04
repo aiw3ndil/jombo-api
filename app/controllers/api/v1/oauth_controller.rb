@@ -25,6 +25,8 @@ module Api
           user = User.from_omniauth(user_info)
           
           if user.persisted?
+            # Google ya ha verificado el email
+            user.update_column(:email_verified_at, Time.current) if provider == 'google' && !user.email_verified?
             jwt_token = JwtService.encode(user_id: user.id)
             
             cookie_opts = {

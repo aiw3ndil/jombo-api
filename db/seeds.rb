@@ -80,3 +80,44 @@ Trip.create!(
   price: 35.00,
   region: "fi"
 )
+
+# Viaje con paradas intermedias, preferencias y reserva instantánea
+departure = 2.days.from_now.change(hour: 8)
+long_trip = Trip.new(
+  driver: user2,
+  vehicle: car2,
+  departure_location: "Helsinki",
+  arrival_location: "Oulu",
+  departure_time: departure,
+  available_seats: 3,
+  price: 39.00,
+  distance_km: 610,
+  duration_minutes: 420,
+  instant_booking: true,
+  pets_allowed: true,
+  music_allowed: true,
+  max_two_back: true,
+  chattiness: "chatty",
+  luggage_size: "large",
+  description: "Coffee break in Jyväskylä. Small dogs welcome!",
+  region: "fi"
+)
+long_trip.assign_stops([
+  { location: "Tampere", departure_time: departure + 2.hours, price_from_origin: 12 },
+  { location: "Jyväskylä", departure_time: departure + 4.hours, price_from_origin: 20 }
+])
+long_trip.save!
+
+user1.update!(bio: "Driving between Helsinki and Turku most weekends. Podcasts and coffee stops.")
+
+RideRequest.create!(
+  user: user1,
+  departure_location: "Helsinki",
+  arrival_location: "Kuopio",
+  departure_date: 6.days.from_now.to_date,
+  flexible_days: 1,
+  seats: 1,
+  note: "Small backpack only, can meet anywhere in the centre."
+)
+
+SearchAlert.create!(user: user1, departure_location: "Tampere", arrival_location: "Oulu")

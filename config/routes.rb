@@ -20,6 +20,19 @@ Rails.application.routes.draw do
       # Vehicles of the current user
       resources :vehicles
 
+      get 'config', to: 'app_config#show'
+      resources :users, only: [:show]
+      resources :search_alerts, only: [:index, :create, :destroy]
+      resources :ride_requests do
+        get 'mine', on: :collection
+      end
+      scope 'verification', controller: 'verifications' do
+        post 'email', action: :send_email
+        post 'email/confirm', action: :confirm_email
+        post 'phone', action: :send_phone
+        post 'phone/confirm', action: :confirm_phone
+      end
+
       # Trips and nested bookings
       resources :trips do
         collection do

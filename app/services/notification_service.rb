@@ -43,6 +43,20 @@ class NotificationService
       )
     end
 
+    def create_trip_notification(user, title, content = nil, trip_id = nil, url: nil)
+      return unless user
+
+      Notification.create(
+        user: user,
+        notification_type: Notification::TYPES[:trip],
+        title: title,
+        content: content,
+        related_id: trip_id,
+        url: url,
+        read: false
+      )
+    end
+
     def mark_all_as_read(user)
       user.notifications.unread.update_all(read: true)
     end

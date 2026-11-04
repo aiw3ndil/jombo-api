@@ -7,6 +7,8 @@ module Api
         if user.save
           # Enviar email de bienvenida
           UserMailer.welcome_email(user).deliver_later
+          user.generate_email_verification_token!
+          UserMailer.email_verification(user).deliver_later
           
           token = JwtService.encode(user_id: user.id)
 

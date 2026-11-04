@@ -10,6 +10,29 @@ fi:
       unsubscribe_link: "perua tilauksen tästä"
   mailers:
     user_mailer:
+      trip_match:
+        subject: "Uusi kyyti: %{from} → %{to}"
+        greeting: "Hei %{name},"
+        intro: "Kuljettaja julkaisi juuri kyydin, joka vastaa hakuasi."
+        offer_intro: "Kuljettaja julkaisi kyydin vastauksena kyytipyyntöösi."
+        route: "Reitti:"
+        departure: "Lähtö:"
+        price: "Hinta per paikka:"
+        seats: "Vapaita paikkoja:"
+        driver: "Kuljettaja:"
+        button: "Katso kyyti"
+        hint: "Paikat menevät nopeasti – varaa pian, jos kyyti sopii sinulle."
+        manage: "Voit hallita hälytyksiäsi ja pyyntöjäsi Jombossa."
+        team: "Jombo-tiimi"
+      ride_offer:
+        subject: "Kuljettaja tarjosi kyytiä: %{from} → %{to}"
+      email_verification:
+        subject: "Vahvista sähköpostiosoitteesi"
+        greeting: "Hei %{name},"
+        intro: "Vahvista sähköpostiosoitteesi. Vahvistettu sähköposti kertoo muille jäsenille, että sinuun voi luottaa."
+        button: "Vahvista sähköposti"
+        ignore: "Jos et luonut Jombo-tiliä, voit jättää tämän viestin huomiotta."
+        team: "Jombo-tiimi"
       welcome_email:
         subject: "Tervetuloa Jomboon! 🚗"
         greeting: "Tervetuloa Jomboon, %{name}! 👋"

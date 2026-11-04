@@ -1,0 +1,10 @@
+<% s = 'mailers.user_mailer.email_verification' %>
+<%= t("#{s}.greeting", name: @user.name) %>
+
+<%= t("#{s}.intro") %>
+
+<%= t("#{s}.button") %>: <%= @verify_url %>
+
+<%= t("#{s}.ignore") %>
+
+<%= t("#{s}.team") %>

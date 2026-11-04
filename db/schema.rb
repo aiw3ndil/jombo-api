@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_05_110000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_05_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -116,6 +116,36 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_05_110000) do
     t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
   end
 
+  create_table "ride_requests", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "departure_location", null: false
+    t.string "arrival_location", null: false
+    t.date "departure_date", null: false
+    t.integer "flexible_days", default: 0, null: false
+    t.integer "seats", default: 1, null: false
+    t.decimal "max_price", precision: 8, scale: 2
+    t.text "note"
+    t.string "status", default: "open", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status", "departure_date"], name: "index_ride_requests_on_status_and_departure_date"
+    t.index ["user_id"], name: "index_ride_requests_on_user_id"
+  end
+
+  create_table "search_alerts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "departure_location", null: false
+    t.string "arrival_location", null: false
+    t.date "date"
+    t.boolean "active", default: true, null: false
+    t.datetime "last_notified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_search_alerts_on_active"
+    t.index ["user_id", "departure_location", "arrival_location", "date"], name: "index_search_alerts_uniqueness", unique: true
+    t.index ["user_id"], name: "index_search_alerts_on_user_id"
+  end
+
   create_table "search_logs", force: :cascade do |t|
     t.string "departure_location"
     t.string "arrival_location"
@@ -183,6 +213,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_05_110000) do
     t.string "region", default: "fi"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.text "bio"
+    t.string "phone"
+    t.datetime "phone_verified_at"
+    t.string "phone_verification_code_digest"
+    t.datetime "phone_verification_sent_at"
+    t.integer "phone_verification_attempts", default: 0, null: false
+    t.datetime "email_verified_at"
+    t.string "email_verification_token"
+    t.index ["email_verification_token"], name: "index_users_on_email_verification_token", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["region"], name: "index_users_on_region"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -216,6 +255,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_05_110000) do
   add_foreign_key "reviews", "bookings"
   add_foreign_key "reviews", "users", column: "reviewee_id"
   add_foreign_key "reviews", "users", column: "reviewer_id"
+  add_foreign_key "ride_requests", "users", on_delete: :cascade
+  add_foreign_key "search_alerts", "users", on_delete: :cascade
   add_foreign_key "trip_stops", "trips", on_delete: :cascade
   add_foreign_key "trips", "vehicles", on_delete: :nullify
   add_foreign_key "vehicles", "users"

@@ -1,0 +1,23 @@
+<% s = 'mailers.user_mailer.trip_match' %>
+<h1><%= @segment[:from] %> → <%= @segment[:to] %></h1>
+
+<p><%= t("#{s}.greeting", name: @user.name) %></p>
+
+<p><%= @offer ? t("#{s}.offer_intro") : t("#{s}.intro") %></p>
+
+<%= render layout: 'card' do %>
+  <p><strong><%= t("#{s}.route") %></strong> <%= @segment[:from] %> → <%= @segment[:to] %></p>
+  <p><strong><%= t("#{s}.departure") %></strong> <%= @departure_label %></p>
+  <p><strong><%= t("#{s}.price") %></strong> <%= format('%.2f', @segment[:price]) %> €</p>
+  <p><strong><%= t("#{s}.seats") %></strong> <%= @trip.available_seats %></p>
+  <p><strong><%= t("#{s}.driver") %></strong> <%= @trip.driver.name %></p>
+<% end %>
+
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: @trip_url, text: t("#{s}.button") %>
+</div>
+
+<p><%= t("#{s}.hint") %></p>
+<p style="font-size: 13px;"><%= t("#{s}.manage") %></p>
+
+<p><strong><%= t("#{s}.team") %></strong></p>
