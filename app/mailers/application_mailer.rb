@@ -13,12 +13,17 @@ class ApplicationMailer < ActionMailer::Base
     super
   end
 
+  # Finnish lives at the root (jombo.fi), English under jombo.fi/en
+  def self.frontend_url_for(user_or_locale)
+    locale = user_or_locale.respond_to?(:language) ? user_or_locale.language : user_or_locale
+    base_url = ENV.fetch('FRONTEND_URL', 'https://jombo.fi').chomp('/')
+
+    locale.to_s == 'fi' ? base_url : "#{base_url}/en"
+  end
+
   private
 
   def frontend_url
-    # Finnish lives at the root (jombo.fi), English under jombo.fi/en
-    base_url = ENV.fetch('FRONTEND_URL', 'https://jombo.fi').chomp('/')
-
-    I18n.locale.to_s == 'fi' ? base_url : "#{base_url}/en"
+    self.class.frontend_url_for(I18n.locale)
   end
 end

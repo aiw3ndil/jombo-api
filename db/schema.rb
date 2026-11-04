@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_04_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_05_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,6 +49,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_04_120000) do
     t.string "status", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "pickup_location"
+    t.string "dropoff_location"
+    t.decimal "price_per_seat", precision: 8, scale: 2
     t.index ["trip_id"], name: "index_bookings_on_trip_id"
     t.index ["user_id", "trip_id"], name: "index_bookings_on_user_id_and_trip_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
@@ -122,6 +125,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_04_120000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "trip_stops", force: :cascade do |t|
+    t.bigint "trip_id", null: false
+    t.string "location", null: false
+    t.integer "position", null: false
+    t.datetime "departure_time", null: false
+    t.decimal "price_from_origin", precision: 8, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location"], name: "index_trip_stops_on_location"
+    t.index ["trip_id", "position"], name: "index_trip_stops_on_trip_id_and_position", unique: true
+    t.index ["trip_id"], name: "index_trip_stops_on_trip_id"
+  end
+
   create_table "trips", force: :cascade do |t|
     t.string "departure_location"
     t.string "arrival_location"
@@ -139,6 +155,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_04_120000) do
     t.datetime "recurrence_until"
     t.integer "parent_id"
     t.bigint "vehicle_id"
+    t.boolean "instant_booking", default: false, null: false
+    t.boolean "pets_allowed", default: false, null: false
+    t.boolean "smoking_allowed", default: false, null: false
+    t.boolean "music_allowed", default: false, null: false
+    t.boolean "max_two_back", default: false, null: false
+    t.string "chattiness", default: "normal", null: false
+    t.string "luggage_size", default: "medium", null: false
+    t.integer "distance_km"
+    t.integer "duration_minutes"
     t.index ["driver_id"], name: "index_trips_on_driver_id"
     t.index ["parent_id"], name: "index_trips_on_parent_id"
     t.index ["region"], name: "index_trips_on_region"
@@ -191,6 +216,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_04_120000) do
   add_foreign_key "reviews", "bookings"
   add_foreign_key "reviews", "users", column: "reviewee_id"
   add_foreign_key "reviews", "users", column: "reviewer_id"
+  add_foreign_key "trip_stops", "trips", on_delete: :cascade
   add_foreign_key "trips", "vehicles", on_delete: :nullify
   add_foreign_key "vehicles", "users"
 end

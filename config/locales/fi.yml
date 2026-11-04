@@ -3,3 +3,13 @@ fi:
     formats:
       email: "%a, %d %b %Y %H:%M:%S %z"
       short: "%d/%m/%Y"
+  notifications:
+    instant_booking:
+      title: "Uusi matkustaja kyydilläsi"
+      content: "%{name} varasi %{seats} paikkaa"
+    trip_match:
+      title: "Hakuasi vastaava kyyti: %{from} → %{to}"
+      content: "%{driver} lähtee %{time} · %{price} €"
+    ride_offer:
+      title: "Kuljettaja tarjosi kyytiä pyyntöösi"
+      content: "%{driver}: %{from} → %{to}, %{time}"

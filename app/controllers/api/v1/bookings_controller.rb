@@ -49,9 +49,9 @@ module Api
 
       def create
         trip = Trip.find(params[:trip_id])
-        booking = trip.bookings.build(booking_params.merge(user: current_user, status: 'pending'))
+        booking = trip.bookings.build(booking_params.except(:status).merge(user: current_user, status: 'pending'))
 
-        if booking.seats <= 0
+        if booking.seats.to_i <= 0
           return render json: { error: 'Invalid seats' }, status: :unprocessable_entity
         end
 
@@ -59,19 +59,41 @@ module Api
           return render json: { error: 'Not enough seats available' }, status: :unprocessable_entity
         end
 
-        if booking.save
-          UserMailer.booking_received(trip.driver, booking).deliver_later
+        # Tramo reservado (por defecto el viaje completo); guardamos una copia del precio
+        segment = trip.segment_for(booking.pickup_location, booking.dropoff_location)
+        return render json: { error: 'Invalid pickup or drop-off point' }, status: :unprocessable_entity unless segment
 
-          render json: booking.as_json(
-            include: {
-              trip: {
-                include: { driver: { only: [:id, :email, :name] } }
-              }
-            }
-          ), status: :created
-        else
-          render json: { errors: booking.errors.full_messages }, status: :unprocessable_entity
+        booking.pickup_location = segment[:from]
+        booking.dropoff_location = segment[:to]
+        booking.price_per_seat = segment[:price]
+
+        unless booking.save
+          return render json: { errors: booking.errors.full_messages }, status: :unprocessable_entity
         end
+
+        if trip.instant_booking? && booking.confirm_by_driver!
+          UserMailer.booking_confirmed(current_user, booking).deliver_later
+          I18n.with_locale(trip.driver.language) do
+            NotificationService.create_booking_notification(
+              trip.driver,
+              I18n.t('notifications.instant_booking.title', default: 'New passenger on your trip'),
+              I18n.t('notifications.instant_booking.content', default: '%{name} booked %{seats} seat(s)',
+                     name: current_user.name, seats: booking.seats),
+              booking.id,
+              url: "#{ApplicationMailer.frontend_url_for(trip.driver)}/my-trips/#{trip.id}"
+            )
+          end
+        else
+          UserMailer.booking_received(trip.driver, booking).deliver_later
+        end
+
+        render json: booking.reload.as_json(
+          include: {
+            trip: {
+              include: { driver: { only: [:id, :name] } }
+            }
+          }
+        ), status: :created
       rescue ActiveRecord::RecordNotFound
         render json: { error: "Trip not found" }, status: :not_found
       end
@@ -150,7 +172,7 @@ module Api
       end
 
       def booking_params
-        params.require(:booking).permit(:seats, :status)
+        params.require(:booking).permit(:seats, :status, :pickup_location, :dropoff_location)
       end
 
       def authenticate_user!
