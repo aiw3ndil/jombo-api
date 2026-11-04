@@ -1,4 +1,13 @@
 en:
+  layouts:
+    mailer:
+      all_rights_reserved: "All rights reserved."
+      platform_description: "Your shared ride, with no commissions."
+      terms: "Terms"
+      privacy: "Privacy"
+      contact: "Contact"
+      unsubscribe: "If you no longer want to receive emails, you can"
+      unsubscribe_link: "unsubscribe here"
   mailers:
     user_mailer:
       welcome_email:

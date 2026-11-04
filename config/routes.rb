@@ -17,6 +17,9 @@ Rails.application.routes.draw do
       # OAuth
       post 'auth/:provider', to: 'oauth#create'
 
+      # Vehicles of the current user
+      resources :vehicles
+
       # Trips and nested bookings
       resources :trips do
         collection do

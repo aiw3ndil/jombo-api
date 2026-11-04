@@ -1,4 +1,13 @@
 fi:
+  layouts:
+    mailer:
+      all_rights_reserved: "Kaikki oikeudet pidätetään."
+      platform_description: "Jaettu kyytisi, ilman välityspalkkioita."
+      terms: "Käyttöehdot"
+      privacy: "Tietosuoja"
+      contact: "Yhteystiedot"
+      unsubscribe: "Jos et halua enää vastaanottaa sähköposteja, voit"
+      unsubscribe_link: "perua tilauksen tästä"
   mailers:
     user_mailer:
       welcome_email:

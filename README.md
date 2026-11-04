@@ -139,6 +139,17 @@ Configurar variables de entorno para SMTP:
 > - Sin origen y destino: devuelven un **Array** directo de viajes `[...]`.
 > - Con `departure_location` y `arrival_location`: devuelven un **Objeto** `{ trips: [...], external_options: [...] }` que incluye alternativas de trenes y buses de la API de Digitransit si no hay viajes locales suficientes.
 
+### Vehículos (Vehicles)
+- `GET /api/v1/vehicles` - Vehículos del usuario autenticado
+- `POST /api/v1/vehicles` - Crear vehículo (`brand`, `model`, `vehicle_type`, `color`, `doors`, `seats`, `year`, `fuel_type`)
+- `PATCH /api/v1/vehicles/:id` - Actualizar vehículo
+- `DELETE /api/v1/vehicles/:id` - Eliminar vehículo (sus viajes quedan sin vehículo)
+
+`vehicle_type`: sedan, hatchback, estate, suv, minivan, van, coupe, convertible, pickup.
+`fuel_type` (opcional): petrol, diesel, hybrid, plugin_hybrid, electric, gas, other.
+
+Al crear un viaje es obligatorio indicar el vehículo: `trip[vehicle_id]` (uno existente) o `trip[vehicle]{...}` (se crea en el momento). Las plazas disponibles no pueden superar `seats - 1`. Los viajes devuelven el vehículo en `vehicle`.
+
 ### Reservas (Bookings)
 - `GET /api/v1/bookings` - Mis reservas como pasajero
 - `POST /api/v1/bookings` - Crear reserva

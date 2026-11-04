@@ -155,17 +155,17 @@
         </div>
         
         <div class="email-footer">
-          <p>© <%= Time.current.year %> Jombo. <%= t('layouts.mailer.all_rights_reserved', default: 'Todos los derechos reservados.') %></p>
+          <p>© <%= Time.current.year %> Jombo. <%= t('layouts.mailer.all_rights_reserved', default: 'All rights reserved.') %></p>
           <p>
-            <%= t('layouts.mailer.platform_description', default: 'Tu viaje compartido, sin comisiones.') %><br>
-            <a href="#"><%= t('layouts.mailer.terms', default: 'Términos') %></a> | 
-            <a href="#"><%= t('layouts.mailer.privacy', default: 'Privacidad') %></a> | 
-            <a href="#"><%= t('layouts.mailer.contact', default: 'Contacto') %></a>
+            <%= t('layouts.mailer.platform_description', default: 'Your shared ride, with no commissions.') %><br>
+            <a href="#"><%= t('layouts.mailer.terms', default: 'Terms') %></a> | 
+            <a href="#"><%= t('layouts.mailer.privacy', default: 'Privacy') %></a> | 
+            <a href="#"><%= t('layouts.mailer.contact', default: 'Contact') %></a>
           </p>
           <% if @user || @driver || @recipient %>
             <p class="small">
-              <%= t('layouts.mailer.unsubscribe', default: 'Si no deseas recibir más correos, puedes') %> 
-              <a href="#"><%= t('layouts.mailer.unsubscribe_link', default: 'darte de baja aquí') %></a>.
+              <%= t('layouts.mailer.unsubscribe', default: 'If you no longer want to receive emails, you can') %> 
+              <a href="#"><%= t('layouts.mailer.unsubscribe_link', default: 'unsubscribe here') %></a>.
             </p>
           <% end %>
         </div>

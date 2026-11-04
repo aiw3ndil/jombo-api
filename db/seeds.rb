@@ -22,9 +22,13 @@ user2 = User.create!(
   name: "Aino Korhonen"
 )
 
+car1 = user1.vehicles.create!(brand: "Toyota", model: "Corolla", vehicle_type: "hatchback", color: "White", doors: 5, seats: 5, year: 2021, fuel_type: "hybrid")
+car2 = user2.vehicles.create!(brand: "Volvo", model: "V60", vehicle_type: "estate", color: "Black", doors: 5, seats: 5, year: 2019, fuel_type: "diesel")
+
 # Create 5 example trips
 Trip.create!(
   driver: user1,
+  vehicle: car1,
   departure_location: "Helsinki",
   arrival_location: "Tampere",
   departure_time: 2.days.from_now,
@@ -35,6 +39,7 @@ Trip.create!(
 
 Trip.create!(
   driver: user2,
+  vehicle: car2,
   departure_location: "Turku",
   arrival_location: "Helsinki",
   departure_time: 1.day.from_now,
@@ -45,6 +50,7 @@ Trip.create!(
 
 Trip.create!(
   driver: user1,
+  vehicle: car1,
   departure_location: "Tampere",
   arrival_location: "Jyväskylä",
   departure_time: 3.days.from_now,
@@ -55,6 +61,7 @@ Trip.create!(
 
 Trip.create!(
   driver: user2,
+  vehicle: car2,
   departure_location: "Oulu",
   arrival_location: "Rovaniemi",
   departure_time: 4.days.from_now,
@@ -65,6 +72,7 @@ Trip.create!(
 
 Trip.create!(
   driver: user1,
+  vehicle: car1,
   departure_location: "Helsinki",
   arrival_location: "Turku",
   departure_time: 5.days.from_now,

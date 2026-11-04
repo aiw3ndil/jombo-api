@@ -1,5 +1,6 @@
 class Trip < ApplicationRecord
   belongs_to :driver, class_name: 'User', foreign_key: 'driver_id'
+  belongs_to :vehicle, optional: true
   has_many :bookings, dependent: :destroy
   has_many :passengers, through: :bookings, source: :user
   has_one :conversation, dependent: :destroy
@@ -8,6 +9,9 @@ class Trip < ApplicationRecord
   validates :available_seats, numericality: { greater_than_or_equal_to: 0, only_integer: true }
   validates :price, numericality: { greater_than_or_equal_to: 0 }
   validates :region, inclusion: { in: %w[fi] }
+  validates :vehicle, presence: true, on: :create
+  validate :vehicle_belongs_to_driver
+  validate :seats_fit_in_vehicle
   validates :recurrence_pattern, inclusion: { in: %w[daily weekly], allow_nil: true }
   
   before_validation(on: :create) { self.region = User::REGION }
@@ -20,6 +24,21 @@ class Trip < ApplicationRecord
   end
 
   private
+
+  def vehicle_belongs_to_driver
+    return if vehicle.nil? || vehicle.user_id == driver_id
+
+    errors.add(:vehicle, 'must belong to the driver')
+  end
+
+  def seats_fit_in_vehicle
+    return if vehicle.nil? || available_seats.nil?
+    return unless will_save_change_to_available_seats? || will_save_change_to_vehicle_id?
+    # El conductor ocupa una plaza
+    return if available_seats <= vehicle.seats - 1
+
+    errors.add(:available_seats, "cannot exceed the vehicle's passenger seats (#{vehicle.seats - 1})")
+  end
 
   def generate_recurring_trips
     # Límite de seguridad: máximo 3 meses en el futuro o la fecha especificada
@@ -45,6 +64,7 @@ class Trip < ApplicationRecord
         price: price,
         description: description,
         region: region,
+        vehicle_id: vehicle_id,
         is_recurring: true,
         parent_id: id # Referencia al viaje original
       )

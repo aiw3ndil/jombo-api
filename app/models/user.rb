@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_one_attached :picture
   
   has_many :trips, foreign_key: 'driver_id', dependent: :destroy
+  has_many :vehicles, dependent: :destroy
   has_many :bookings, dependent: :destroy
   has_many :booked_trips, through: :bookings, source: :trip
   has_many :messages, dependent: :destroy

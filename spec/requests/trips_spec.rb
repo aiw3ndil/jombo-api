@@ -97,9 +97,11 @@ RSpec.describe 'Api::V1::Trips', type: :request do
   end
 
   describe 'POST /api/v1/trips' do
+    let(:vehicle) { create(:vehicle, user: driver, seats: 5) }
     let(:valid_params) do
       {
         trip: {
+          vehicle_id: vehicle.id,
           departure_location: 'Helsinki',
           arrival_location: 'Tampere',
           departure_time: 2.days.from_now,
@@ -126,6 +128,57 @@ RSpec.describe 'Api::V1::Trips', type: :request do
         post '/api/v1/trips', params: valid_params, headers: auth_headers(driver)
         json = JSON.parse(response.body)
         expect(json['driver']['id']).to eq(driver.id)
+      end
+
+      it 'includes the vehicle in the response' do
+        post '/api/v1/trips', params: valid_params, headers: auth_headers(driver)
+        json = JSON.parse(response.body)
+        expect(json['vehicle']).to include('id' => vehicle.id, 'brand' => 'Toyota', 'color' => 'Blue', 'doors' => 5)
+      end
+
+      it 'creates a new vehicle inline when vehicle attributes are given' do
+        params = valid_params.deep_dup
+        params[:trip].delete(:vehicle_id)
+        params[:trip][:vehicle] = { brand: 'Skoda', model: 'Octavia', vehicle_type: 'estate', color: 'White', doors: 5, seats: 5 }
+
+        expect {
+          post '/api/v1/trips', params: params, headers: auth_headers(driver)
+        }.to change(driver.vehicles, :count).by(1).and change(Trip, :count).by(1)
+
+        expect(JSON.parse(response.body)['vehicle']['brand']).to eq('Skoda')
+      end
+
+      it 'does not create the inline vehicle when the trip is invalid' do
+        params = valid_params.deep_dup
+        params[:trip].delete(:vehicle_id)
+        params[:trip][:departure_location] = ''
+        params[:trip][:vehicle] = { brand: 'Skoda', model: 'Octavia', vehicle_type: 'estate', color: 'White', doors: 5, seats: 5 }
+
+        expect {
+          post '/api/v1/trips', params: params, headers: auth_headers(driver)
+        }.not_to change(Vehicle, :count)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'requires a vehicle' do
+        params = valid_params.deep_dup
+        params[:trip].delete(:vehicle_id)
+        post '/api/v1/trips', params: params, headers: auth_headers(driver)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "rejects another user's vehicle" do
+        params = valid_params.deep_dup
+        params[:trip][:vehicle_id] = create(:vehicle).id
+        post '/api/v1/trips', params: params, headers: auth_headers(driver)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'rejects more seats than the vehicle has for passengers' do
+        params = valid_params.deep_dup
+        params[:trip][:available_seats] = 5
+        post '/api/v1/trips', params: params, headers: auth_headers(driver)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
 
@@ -173,6 +226,51 @@ RSpec.describe 'Api::V1::Trips', type: :request do
         trip.reload
         expect(trip.price).to eq(30.0)
         expect(trip.description).to eq('Updated description')
+      end
+
+      it 'updates route, time and seats' do
+        new_time = 5.days.from_now.change(sec: 0)
+        put "/api/v1/trips/#{trip.id}",
+            params: { trip: { departure_location: 'Turku', arrival_location: 'Oulu', departure_time: new_time.iso8601, available_seats: 2 } },
+            headers: auth_headers(driver)
+
+        expect(response).to have_http_status(:ok)
+        trip.reload
+        expect(trip.departure_location).to eq('Turku')
+        expect(trip.arrival_location).to eq('Oulu')
+        expect(trip.departure_time).to be_within(1.second).of(new_time)
+        expect(trip.available_seats).to eq(2)
+      end
+
+      it 'switches to another of the driver vehicles' do
+        other_vehicle = create(:vehicle, user: driver, brand: 'Volvo')
+        put "/api/v1/trips/#{trip.id}", params: { trip: { vehicle_id: other_vehicle.id } }, headers: auth_headers(driver)
+
+        expect(response).to have_http_status(:ok)
+        expect(trip.reload.vehicle).to eq(other_vehicle)
+        expect(JSON.parse(response.body)['vehicle']['brand']).to eq('Volvo')
+      end
+
+      it 'creates a new vehicle inline' do
+        trip # crear el viaje (y su vehículo) antes de medir
+        expect {
+          put "/api/v1/trips/#{trip.id}",
+              params: { trip: { vehicle: { brand: 'Kia', model: 'Ceed', vehicle_type: 'estate', color: 'red', doors: 5, seats: 5 } } },
+              headers: auth_headers(driver)
+        }.to change(driver.vehicles, :count).by(1)
+
+        expect(trip.reload.vehicle.brand).to eq('Kia')
+      end
+
+      it "rejects another user's vehicle" do
+        put "/api/v1/trips/#{trip.id}", params: { trip: { vehicle_id: create(:vehicle).id } }, headers: auth_headers(driver)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'returns errors for invalid data' do
+        put "/api/v1/trips/#{trip.id}", params: { trip: { departure_location: '' } }, headers: auth_headers(driver)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)['errors']).to be_present
       end
     end
 

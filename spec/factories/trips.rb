@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :trip do
     association :driver, factory: :user
+    vehicle { association :vehicle, user: driver }
     departure_location { Faker::Address.city }
     arrival_location { Faker::Address.city }
     departure_time { 2.days.from_now }
