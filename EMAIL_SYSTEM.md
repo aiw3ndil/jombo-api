@@ -2,9 +2,8 @@
 
 ## 🌍 Soporte Multiidioma
 
-El sistema de emails soporta **3 idiomas**:
+El sistema de emails soporta **2 idiomas**:
 - **Inglés (en)** - Idioma por defecto
-- **Español (es)**
 - **Finés (fi)**
 
 Los emails se envían automáticamente en el idioma del usuario configurado en su campo `language`.
@@ -97,11 +96,11 @@ user = User.create(
   email: 'user@example.com',
   password: 'password',
   name: 'John',
-  language: 'en'  # o 'es', 'fi'
+  language: 'en'  # o 'fi'
 )
 
 # Actualizar idioma
-user.update(language: 'es')
+user.update(language: 'fi')
 ```
 
 ## 🌐 Archivos de Traducción
@@ -110,7 +109,6 @@ user.update(language: 'es')
 ```
 config/locales/
   ├── mailers.en.yml  # Traducciones en inglés
-  ├── mailers.es.yml  # Traducciones en español
   └── mailers.fi.yml  # Traducciones en finés
 ```
 
@@ -183,7 +181,7 @@ El sistema valida automáticamente que el idioma sea uno de: `en`, `es`, `fi`
 
 ```ruby
 # En el modelo User
-validates :language, presence: true, inclusion: { in: %w[en es fi] }
+validates :language, presence: true, inclusion: { in: %w[en fi] }
 
 # Idioma por defecto: inglés (en)
 before_validation :set_default_language, on: :create

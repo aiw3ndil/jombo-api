@@ -12,9 +12,9 @@
 #
 # To use a different locale, set it with `I18n.locale`:
 #
-#     I18n.locale = :es
+#     I18n.locale = :fi
 #
-# This would use the information in config/locales/es.yml.
+# This would use the information in config/locales/fi.yml.
 #
 # To learn more about the API, please read the Rails Internationalization guide
 # at https://guides.rubyonrails.org/i18n.html.

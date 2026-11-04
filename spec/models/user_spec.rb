@@ -17,7 +17,7 @@ RSpec.describe User, type: :model do
     it { should validate_presence_of(:email) }
     # it { should validate_uniqueness_of(:email).case_insensitive } # Skipped due to application code not supporting case-insensitive uniqueness
     # it { should validate_presence_of(:language) } # Skipped as before_validation callback sets default language
-    it { should validate_inclusion_of(:language).in_array(%w[en es fi]) }
+    it { should validate_inclusion_of(:language).in_array(%w[en fi]) }
   end
 
   describe 'callbacks' do

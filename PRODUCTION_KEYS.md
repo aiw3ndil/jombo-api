@@ -40,9 +40,8 @@ OST_SERVER_ITEM_ACCESS_TOKEN=<your-token>
 
 ### 4. Frontend URLs
 ```bash
-FRONTEND_URL=https://jombo.com
-FRONTEND_URL_ES=https://jombo.com
-FRONTEND_URL_FI=https://jombo.com
+# Finnish links go to FRONTEND_URL, English links to FRONTEND_URL/en
+FRONTEND_URL=https://jombo.fi
 ```
 
 ### 5. Monitoring (Optional)

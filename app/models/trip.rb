@@ -7,9 +7,11 @@ class Trip < ApplicationRecord
   validates :departure_location, :arrival_location, :departure_time, :available_seats, :price, :region, presence: true
   validates :available_seats, numericality: { greater_than_or_equal_to: 0, only_integer: true }
   validates :price, numericality: { greater_than_or_equal_to: 0 }
-  validates :region, inclusion: { in: %w[es fi] }
+  validates :region, inclusion: { in: %w[fi] }
   validates :recurrence_pattern, inclusion: { in: %w[daily weekly], allow_nil: true }
   
+  before_validation(on: :create) { self.region = User::REGION }
+
   after_create :generate_recurring_trips, if: -> { is_recurring? && parent_id.nil? }
   
   # Crear conversación automáticamente si no existe

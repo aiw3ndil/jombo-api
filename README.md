@@ -34,7 +34,7 @@ Jombo es una plataforma que conecta conductores y pasajeros para compartir viaje
 ### Sistemas
 
 - **[EMAIL_SYSTEM.md](EMAIL_SYSTEM.md)** - Sistema de correos electrónicos
-  - Soporte multiidioma (English, Español, Suomi)
+  - Soporte multiidioma (English, Suomi)
   - Plantillas HTML y texto plano
   - Email de bienvenida
   - Notificaciones de reservas
@@ -94,7 +94,6 @@ rails server
 ## 🌍 Idiomas Soportados
 
 - **English (en)** - Idioma por defecto
-- **Español (es)**
 - **Suomi (fi)**
 
 Los usuarios pueden configurar su idioma preferido y recibirán emails en ese idioma.
@@ -127,7 +126,7 @@ Configurar variables de entorno para SMTP:
 - `POST /api/v1/auth/facebook` - Login con Facebook 🆕
 
 ### Viajes (Trips)
-- `GET /api/v1/trips` - Listar viajes (soporta filtros `departure_location`, `arrival_location`, `region`)
+- `GET /api/v1/trips` - Listar viajes (soporta filtros `departure_location`, `arrival_location`; solo Finlandia)
 - `GET /api/v1/trips/search` - Búsqueda avanzada de viajes
 - `GET /api/v1/trips/:departure_location-:arrival_location` - Ruta SEO para búsqueda (ej: `/helsinki-tampere`)
 - `GET /api/v1/trips/my_trips` - Mis viajes como conductor
@@ -137,8 +136,8 @@ Configurar variables de entorno para SMTP:
 - `DELETE /api/v1/trips/:id` - Eliminar viaje
 
 > **Nota sobre el formato de respuesta:**
-> - En **España (es)**: Los endpoints de búsqueda devuelven un **Array** directo de viajes `[...]`.
-> - En **Finlandia (fi)**: Devuelven un **Objeto** `{ trips: [...], external_options: [...] }` que incluye alternativas de trenes y buses de la API de Digitransit si no hay viajes locales suficientes.
+> - Sin origen y destino: devuelven un **Array** directo de viajes `[...]`.
+> - Con `departure_location` y `arrival_location`: devuelven un **Objeto** `{ trips: [...], external_options: [...] }` que incluye alternativas de trenes y buses de la API de Digitransit si no hay viajes locales suficientes.
 
 ### Reservas (Bookings)
 - `GET /api/v1/bookings` - Mis reservas como pasajero

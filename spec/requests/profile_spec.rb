@@ -5,7 +5,7 @@ RSpec.describe "Profile API", type: :request do
   let!(:user) { create(:user) }
 
   describe "PATCH /api/v1/users/profile" do
-    let(:update_params) { { name: "Updated Name", region: "fi" } }
+    let(:update_params) { { name: "Updated Name" } }
 
     context "when authenticated" do
       it "updates the user profile" do
@@ -13,13 +13,13 @@ RSpec.describe "Profile API", type: :request do
         expect(response).to have_http_status(:ok)
         user.reload
         expect(user.name).to eq("Updated Name")
-        expect(user.region).to eq("fi")
       end
 
       it "returns the updated user in JSON" do
         patch "/api/v1/users/profile", params: update_params, headers: auth_headers(user)
         json = JSON.parse(response.body)
-        expect(json['user']['region']).to eq("fi")
+        expect(json['user']['name']).to eq("Updated Name")
+        expect(json['user']).not_to have_key('region')
       end
     end
 

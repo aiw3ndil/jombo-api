@@ -125,7 +125,6 @@ authenticated_request(:get, '/api/v1/trips', user, params: {})
 ### User Factory
 ```ruby
 create(:user)                    # Usuario básico
-create(:user, :spanish)          # Usuario en español
 create(:user, :finnish)          # Usuario en finés
 create(:user, :without_phone)    # Usuario sin teléfono
 ```

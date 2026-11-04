@@ -4,7 +4,7 @@ class UserMailer < ApplicationMailer
   def welcome_email(user)
     @user = user
     @app_name = 'Jombo'
-    @frontend_url = URI.join(frontend_url, user.language.to_s).to_s
+    @frontend_url = frontend_url
 
     I18n.with_locale(user.language) do
       subject = I18n.t('mailers.user_mailer.welcome_email.subject')

@@ -14,7 +14,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the sender email' do
-      expect(mail.from).to eq(['noreply@jombo.es'])
+      expect(mail.from).to eq(['no-reply@jombo.fi'])
     end
 
     it 'includes user name in body' do
@@ -32,14 +32,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(notification.read).to be false
     end
 
-    context 'with Spanish language' do
-      let(:user) { create(:user, :spanish) }
-      let(:mail) { UserMailer.welcome_email(user) }
-
-      it 'renders subject in Spanish' do
-        expect(mail.subject).to eq('[Jombo] ¡Bienvenido a Jombo! 🚗')
-      end
-    end
 
     context 'with Finnish language' do
       let(:user) { create(:user, :finnish) }
@@ -54,7 +46,7 @@ RSpec.describe UserMailer, type: :mailer do
   describe 'booking_confirmed' do
     let(:driver) { create(:user, name: 'Driver Bob') }
     let(:passenger) { create(:user, name: 'Passenger Alice', language: 'en') }
-    let(:trip) { create(:trip, driver: driver, departure_location: 'Madrid', arrival_location: 'Barcelona') }
+    let(:trip) { create(:trip, driver: driver, departure_location: 'Helsinki', arrival_location: 'Tampere') }
     let(:booking) { create(:booking, :confirmed, trip: trip, user: passenger) }
     let(:mail) { UserMailer.booking_confirmed(passenger, booking) }
 
@@ -67,8 +59,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'includes trip details in body' do
-      expect(mail.body.encoded).to match('Madrid')
-      expect(mail.body.encoded).to match('Barcelona')
+      expect(mail.body.encoded).to match('Helsinki')
+      expect(mail.body.encoded).to match('Tampere')
     end
 
     it 'includes driver information' do
@@ -192,13 +184,5 @@ RSpec.describe UserMailer, type: :mailer do
       expect(notification.related_id).to eq(message.id)
     end
 
-    context 'with Spanish language' do
-      let(:recipient) { create(:user, :spanish, name: 'Recipient') }
-      let(:mail) { UserMailer.new_message(recipient, message) }
-
-      it 'renders subject in Spanish' do
-        expect(mail.subject).to eq("[Jombo] Nuevo mensaje de #{sender.name} 💬")
-      end
-    end
   end
 end

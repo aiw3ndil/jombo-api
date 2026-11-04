@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_06_080357) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_04_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -132,7 +132,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_06_080357) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "description"
-    t.string "region"
+    t.string "region", default: "fi"
     t.boolean "is_recurring", default: false
     t.string "recurrence_pattern"
     t.string "recurrence_days"
@@ -153,7 +153,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_06_080357) do
     t.string "picture"
     t.string "provider"
     t.string "uid"
-    t.string "region"
+    t.string "region", default: "fi"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true

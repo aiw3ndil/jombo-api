@@ -2,8 +2,8 @@ class User < ApplicationRecord
   has_secure_password validations: false
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :password, presence: true, if: :password_required?
-  validates :language, presence: true, inclusion: { in: %w[en es fi] }
-  validates :region, inclusion: { in: %w[es fi], allow_nil: true }
+  validates :language, presence: true, inclusion: { in: %w[en fi] }
+  validates :region, inclusion: { in: %w[fi] }
   
   # Picture upload
   has_one_attached :picture
@@ -18,7 +18,10 @@ class User < ApplicationRecord
   has_many :reviews_received, class_name: 'Review', foreign_key: 'reviewee_id', dependent: :destroy
   has_many :notifications, dependent: :destroy
   
+  REGION = 'fi'.freeze
+
   before_validation :set_default_language, on: :create
+  before_validation { self.region = REGION }
   
   def average_rating
     reviews_received.average(:rating).to_f.round(2)
