@@ -124,22 +124,6 @@ RSpec.describe 'Api::V1::Trips', type: :request do
         expect(response).to have_http_status(:created)
       end
 
-      it 'requires a verified phone while SMS is available' do
-        driver.update_column(:phone_verified_at, nil)
-        expect {
-          post '/api/v1/trips', params: valid_params, headers: auth_headers(driver)
-        }.not_to change(Trip, :count)
-        expect(response).to have_http_status(:forbidden)
-        expect(JSON.parse(response.body)['error_code']).to eq('phone_verification_required')
-      end
-
-      it 'does not require a phone when SMS is unavailable' do
-        allow(SmsService).to receive(:enabled?).and_return(false)
-        driver.update_column(:phone_verified_at, nil)
-        post '/api/v1/trips', params: valid_params, headers: auth_headers(driver)
-        expect(response).to have_http_status(:created)
-      end
-
       it 'associates trip with current user' do
         post '/api/v1/trips', params: valid_params, headers: auth_headers(driver)
         json = JSON.parse(response.body)

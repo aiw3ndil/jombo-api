@@ -53,7 +53,7 @@ module Api
         end
 
         def profile_params
-          params.permit(:name, :email, :language, :picture, :bio, :phone)
+          params.permit(:name, :email, :language, :picture, :bio)
         end
 
         def user_json(user)
@@ -63,7 +63,6 @@ module Api
             name: user.name,
             language: user.language,
             bio: user.bio,
-            phone: user.phone,
             verifications: user.verifications,
             picture_url: user.picture.attached? ? url_for(user.picture) : nil
           }

@@ -44,11 +44,6 @@ module Api
 
       def create
         return render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
-        unless current_user.can_publish_trips?
-          return render json: { error_code: 'phone_verification_required',
-                                error: I18n.t('errors.phone_verification_required') }, status: :forbidden
-        end
-
         trip = current_user.trips.build(trip_params.except(:vehicle_id))
         trip.assign_stops(stops_param) unless stops_param.nil?
         save_trip_with_vehicle(trip, status: :created)

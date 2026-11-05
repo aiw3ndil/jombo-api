@@ -21,12 +21,8 @@ class User < ApplicationRecord
   has_many :ride_requests, dependent: :destroy
   has_many :search_alerts, dependent: :destroy
 
-  # Teléfono en formato internacional (E.164), p. ej. +358401234567
-  validates :phone, format: { with: /\A\+[1-9]\d{6,14}\z/ }, allow_blank: true
   validates :bio, length: { maximum: 500 }
 
-  before_validation :normalize_phone
-  before_save :reset_phone_verification, if: :will_save_change_to_phone?
   before_save(if: -> { persisted? && will_save_change_to_email? }) { self.email_verified_at = nil }
 
   # Nivel de experiencia (viajes como conductor + como pasajero): [nivel, viajes mínimos, valoración mínima]
@@ -35,9 +31,6 @@ class User < ApplicationRecord
     ['experienced', 10, 4.4],
     ['regular', 3, 4.0]
   ].freeze
-  PHONE_CODE_TTL = 10.minutes
-  PHONE_CODE_RESEND_AFTER = 1.minute
-  PHONE_CODE_MAX_ATTEMPTS = 5
   
   REGION = 'fi'.freeze
 
@@ -73,22 +66,13 @@ class User < ApplicationRecord
     email_verified_at.present?
   end
 
-  def phone_verified?
-    phone.present? && phone_verified_at.present?
-  end
-
   def verifications
-    { email: email_verified?, phone: phone_verified?, google: provider == 'google', verified: verified_member? }
+    { email: email_verified?, google: provider == 'google', verified: verified_member? }
   end
 
-  # Miembro verificado: email y, si hay SMS disponible, también teléfono
+  # Miembro verificado: email confirmado
   def verified_member?
-    email_verified? && (phone_verified? || !SmsService.enabled?)
-  end
-
-  # Para publicar viajes hace falta el teléfono verificado (si se pueden enviar SMS)
-  def can_publish_trips?
-    !SmsService.enabled? || phone_verified?
+    email_verified?
   end
 
   # Para reservar hace falta el email verificado
@@ -103,30 +87,6 @@ class User < ApplicationRecord
 
   def verify_email!
     update_columns(email_verified_at: Time.current, email_verification_token: nil)
-  end
-
-  # Genera un código de 6 dígitos y guarda solo su hash. Devuelve el código.
-  def generate_phone_code!
-    code = format('%06d', SecureRandom.random_number(1_000_000))
-    update_columns(phone_verification_code_digest: BCrypt::Password.create(code),
-                   phone_verification_sent_at: Time.current, phone_verification_attempts: 0)
-    code
-  end
-
-  def phone_code_recently_sent?
-    phone_verification_sent_at.present? && phone_verification_sent_at > PHONE_CODE_RESEND_AFTER.ago
-  end
-
-  def verify_phone_code!(code)
-    return false if phone_verification_code_digest.blank? || phone_verification_sent_at.nil?
-    return false if phone_verification_sent_at < PHONE_CODE_TTL.ago
-    return false if phone_verification_attempts >= PHONE_CODE_MAX_ATTEMPTS
-
-    increment!(:phone_verification_attempts)
-    return false unless BCrypt::Password.new(phone_verification_code_digest).is_password?(code.to_s.strip)
-
-    update_columns(phone_verified_at: Time.current, phone_verification_code_digest: nil)
-    true
   end
 
   def generate_password_token!
@@ -153,19 +113,6 @@ class User < ApplicationRecord
     provider.blank? && (new_record? || password_digest_changed?)
   end
   
-  def normalize_phone
-    return if phone.nil?
-
-    digits = phone.to_s.gsub(/[\s\-()]/, '')
-    digits = "+358#{digits[1..]}" if digits.start_with?('0') # número finlandés local
-    self.phone = digits.presence
-  end
-
-  def reset_phone_verification
-    self.phone_verified_at = nil
-    self.phone_verification_code_digest = nil
-  end
-
   def set_default_language
     self.language ||= 'en'
   end

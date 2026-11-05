@@ -29,8 +29,6 @@ Rails.application.routes.draw do
       scope 'verification', controller: 'verifications' do
         post 'email', action: :send_email
         post 'email/confirm', action: :confirm_email
-        post 'phone', action: :send_phone
-        post 'phone/confirm', action: :confirm_phone
       end
 
       # Trips and nested bookings

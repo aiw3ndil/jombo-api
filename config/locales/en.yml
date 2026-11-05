@@ -44,8 +44,5 @@ en:
     ride_offer:
       title: "A driver offered a ride for your request"
       content: "%{driver}: %{from} → %{to}, %{time}"
-  sms:
-    verification_code: "Your Jombo verification code is %{code}. It expires in 10 minutes."
   errors:
-    phone_verification_required: "Verify your phone number to publish trips."
     email_verification_required: "Verify your email address to book trips."
