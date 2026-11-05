@@ -11,7 +11,7 @@ RSpec.describe 'Public profiles and verification', type: :request do
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json).to include('name' => user.name, 'bio' => user.bio, 'experience_level' => 'new')
-      expect(json['verifications']).to eq('email' => false, 'google' => false, 'verified' => false)
+      expect(json['verifications']).to eq('email' => false, 'verified' => false)
       expect(json['upcoming_trips'].size).to eq(1)
       expect(json.keys).not_to include('email')
       expect(response.body).not_to include(user.email)
@@ -51,7 +51,7 @@ RSpec.describe 'Public profiles and verification', type: :request do
     it 'is verified once the email is confirmed' do
       expect(user.verified_member?).to be(false)
       user.verify_email!
-      expect(user.reload.verifications).to eq(email: true, google: false, verified: true)
+      expect(user.reload.verifications).to eq(email: true, verified: true)
     end
   end
 

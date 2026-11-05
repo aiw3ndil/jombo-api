@@ -67,7 +67,8 @@ class User < ApplicationRecord
   end
 
   def verifications
-    { email: email_verified?, google: provider == 'google', verified: verified_member? }
+    # Sin el proveedor de login (p. ej. Google): es dato privado
+    { email: email_verified?, verified: verified_member? }
   end
 
   # Miembro verificado: email confirmado
