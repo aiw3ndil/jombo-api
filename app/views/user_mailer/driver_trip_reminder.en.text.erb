@@ -1,0 +1,17 @@
+<% s = 'mailers.user_mailer.driver_trip_reminder' %>
+<%= t("#{s}.title") %>
+
+<%= t("#{s}.greeting", name: @user.name) %>
+
+<%= t("#{s}.intro") %>
+
+<%= t("#{s}.route") %> <%= @trip.departure_location %> → <%= @trip.arrival_location %>
+<%= t("#{s}.departure") %> <%= @departure_label %>
+<%= t("#{s}.passengers") %>
+<% @bookings.each do |b| %>- <%= b.user.name %> · <%= b.seats %> × <%= b.pickup_location || @trip.departure_location %> → <%= b.dropoff_location || @trip.arrival_location %>
+<% end %>
+<%= t("#{s}.button") %>: <%= @trip_url %>
+
+<%= t("#{s}.tip_cancel") %>
+
+<%= t("#{s}.team") %>

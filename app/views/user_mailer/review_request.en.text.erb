@@ -1,0 +1,12 @@
+<% s = 'mailers.user_mailer.review_request' %>
+<%= t("#{s}.title") %>
+
+<%= t("#{s}.greeting", name: @user.name) %>
+
+<%= t("#{s}.intro", from: @trip.departure_location, to: @trip.arrival_location, names: @other_name) %>
+
+<%= t("#{s}.why") %>
+
+<%= t("#{s}.button") %>: <%= @review_url %>
+
+<%= t("#{s}.team") %>

@@ -1,0 +1,21 @@
+<% s = 'mailers.user_mailer.trip_reminder' %>
+<h1><%= t("#{s}.title") %></h1>
+
+<p><%= t("#{s}.greeting", name: @user.name) %></p>
+<p><%= t("#{s}.intro") %></p>
+
+<%= render layout: 'card' do %>
+  <p><strong><%= t("#{s}.route") %></strong> <%= @booking.pickup_location || @trip.departure_location %> → <%= @booking.dropoff_location || @trip.arrival_location %></p>
+  <p><strong><%= t("#{s}.departure") %></strong> <%= @departure_label %></p>
+  <p><strong><%= t("#{s}.driver") %></strong> <%= @trip.driver.name %></p>
+  <% if @trip.vehicle %><p><strong><%= t("#{s}.vehicle") %></strong> <%= [@trip.vehicle.brand, @trip.vehicle.model, @trip.vehicle.color].compact_blank.join(' · ') %></p><% end %>
+  <p><strong><%= t("#{s}.seats") %></strong> <%= @booking.seats %></p>
+<% end %>
+
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: "#{@frontend_url}/my-bookings", text: t("#{s}.button") %>
+</div>
+
+<p>• <%= t("#{s}.tip_time") %><br>• <%= t("#{s}.tip_message") %></p>
+
+<p><strong><%= t("#{s}.team") %></strong></p>

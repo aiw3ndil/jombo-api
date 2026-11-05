@@ -1,0 +1,12 @@
+<% s = 'mailers.user_mailer.review_request' %>
+<h1><%= t("#{s}.title") %></h1>
+
+<p><%= t("#{s}.greeting", name: @user.name) %></p>
+<p><%= t("#{s}.intro", from: @trip.departure_location, to: @trip.arrival_location, names: @other_name) %></p>
+<p><%= t("#{s}.why") %></p>
+
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: @review_url, text: t("#{s}.button") %>
+</div>
+
+<p><strong><%= t("#{s}.team") %></strong></p>

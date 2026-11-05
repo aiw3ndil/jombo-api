@@ -10,6 +10,49 @@ en:
       unsubscribe_link: "unsubscribe here"
   mailers:
     user_mailer:
+      trip_reminder:
+        subject: "Your ride %{from} → %{to} is coming up"
+        title: "Your ride is coming up 🚗"
+        greeting: "Hello %{name},"
+        intro: "A quick reminder of your upcoming ride:"
+        route: "Route:"
+        departure: "Departure:"
+        driver: "Driver:"
+        vehicle: "Car:"
+        seats: "Seats:"
+        button: "View my booking"
+        tip_time: "Be at the meeting point a few minutes early."
+        tip_message: "If your plans change, message the driver or cancel your booking as soon as possible."
+        team: "The Jombo Team"
+      driver_trip_reminder:
+        subject: "Your ride %{from} → %{to} is coming up"
+        title: "Your ride is coming up 🚗"
+        greeting: "Hello %{name},"
+        intro: "A quick reminder of the ride you are driving, with the confirmed passengers:"
+        route: "Route:"
+        departure: "Departure:"
+        passengers: "Passengers:"
+        button: "Manage the ride"
+        tip_cancel: "If you can't drive, cancel as soon as possible so your passengers can find another ride."
+        team: "The Jombo Team"
+      booking_expired:
+        subject: "Your request %{from} → %{to} has expired"
+        title: "Your booking request has expired"
+        greeting: "Hello %{name},"
+        intro: "%{driver} didn't answer your booking request in time, so it has expired."
+        route: "Route:"
+        departure: "Departure:"
+        next: "There may be other rides on the same route — have a look."
+        button: "Search rides"
+        team: "The Jombo Team"
+      review_request:
+        subject: "How was your ride %{from} → %{to}?"
+        title: "How was the ride? ⭐"
+        greeting: "Hello %{name},"
+        intro: "Your ride %{from} → %{to} with %{names} has finished."
+        why: "Leaving a review takes a minute and helps other members travel with confidence."
+        button: "Leave a review"
+        team: "The Jombo Team"
       trip_match:
         subject: "New ride: %{from} → %{to}"
         greeting: "Hello %{name},"
@@ -151,5 +194,5 @@ en:
   number:
     currency:
       format:
-        unit: "$"
-        format: "%u%n"
+        unit: "€"
+        format: "%n %u"

@@ -4,7 +4,11 @@ class Booking < ApplicationRecord
   has_many :reviews, dependent: :destroy
 
   validates :seats, presence: true, numericality: { greater_than: 0, only_integer: true }
-  validates :status, presence: true, inclusion: { in: %w[pending confirmed rejected cancelled] }
+  STATUSES = %w[pending confirmed rejected cancelled expired].freeze
+  CANCELLED_BY = %w[passenger driver system].freeze
+
+  validates :status, presence: true, inclusion: { in: STATUSES }
+  validates :cancelled_by, inclusion: { in: CANCELLED_BY }, allow_nil: true
   validate :not_driver
 
   before_create :set_default_status
@@ -13,6 +17,7 @@ class Booking < ApplicationRecord
   scope :confirmed, -> { where(status: 'confirmed') }
   scope :pending, -> { where(status: 'pending') }
   scope :rejected, -> { where(status: 'rejected') }
+  scope :active, -> { where(status: %w[pending confirmed]) }
 
   def confirm_by_driver!
     return false unless status == 'pending'
@@ -24,24 +29,34 @@ class Booking < ApplicationRecord
       end
       
       trip.decrement!(:available_seats, seats)
-      update!(status: 'confirmed')
+      update!(status: 'confirmed', responded_at: Time.current)
     end
   end
 
   def reject_by_driver!
     return false unless status == 'pending'
-    update!(status: 'rejected')
+    update!(status: 'rejected', responded_at: Time.current)
   end
 
   def cancel_by_passenger!
-    return false if ['cancelled', 'rejected'].include?(status)
-    
+    cancel!(by: 'passenger')
+  end
+
+  # Cancela una reserva activa (pending o confirmed) y devuelve las plazas al viaje
+  def cancel!(by:)
+    return false unless %w[pending confirmed].include?(status)
+
     transaction do
-      if status == 'confirmed'
-        trip.increment!(:available_seats, seats)
-      end
-      update!(status: 'cancelled')
+      trip.increment!(:available_seats, seats) if status == 'confirmed'
+      update!(status: 'cancelled', cancelled_by: by, cancelled_at: Time.current)
     end
+  end
+
+  # Solicitud pendiente sin respuesta a tiempo
+  def expire!
+    return false unless status == 'pending'
+
+    update!(status: 'expired', cancelled_by: 'system', cancelled_at: Time.current)
   end
 
   private

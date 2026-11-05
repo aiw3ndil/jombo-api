@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_06_100000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_06_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -52,6 +52,12 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_100000) do
     t.string "pickup_location"
     t.string "dropoff_location"
     t.decimal "price_per_seat", precision: 8, scale: 2
+    t.datetime "responded_at"
+    t.datetime "cancelled_at"
+    t.string "cancelled_by"
+    t.datetime "reminder_sent_at"
+    t.datetime "review_requested_at"
+    t.index ["status"], name: "index_bookings_on_status"
     t.index ["trip_id"], name: "index_bookings_on_trip_id"
     t.index ["user_id", "trip_id"], name: "index_bookings_on_user_id_and_trip_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
@@ -194,6 +200,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_100000) do
     t.string "luggage_size", default: "medium", null: false
     t.integer "distance_km"
     t.integer "duration_minutes"
+    t.datetime "reminder_sent_at"
     t.index ["driver_id"], name: "index_trips_on_driver_id"
     t.index ["parent_id"], name: "index_trips_on_parent_id"
     t.index ["region"], name: "index_trips_on_region"
