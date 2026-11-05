@@ -17,10 +17,10 @@ module Api
             trip: {
               only: [:id, :departure_location, :arrival_location, :departure_time],
               include: {
-                driver: { only: [:id, :name, :email] }
+                driver: { only: [:id, :name] }
               }
             },
-            participants: { only: [:id, :name, :email] },
+            participants: { only: [:id, :name] },
             last_message: {
               only: [:id, :content, :created_at],
               include: { user: { only: [:id, :name] } }
@@ -38,13 +38,13 @@ module Api
             include: {
               trip: {
                 only: [:id, :departure_location, :arrival_location, :departure_time],
-                include: { driver: { only: [:id, :name, :email] } }
+                include: { driver: { only: [:id, :name] } }
               },
-              participants: { only: [:id, :name, :email] }
+              participants: { only: [:id, :name] }
             }
           ),
           messages: messages.as_json(
-            include: { user: { only: [:id, :name, :email] } }
+            include: { user: { only: [:id, :name] } }
           )
         }
       end

@@ -11,7 +11,7 @@ module Api
         
         render json: reviews.as_json(
           include: {
-            reviewer: { only: [:id, :name, :email] }
+            reviewer: { only: [:id, :name] }
           },
           methods: [:trip_info]
         )
@@ -36,8 +36,8 @@ module Api
         if review.save
           render json: review.as_json(
             include: {
-              reviewer: { only: [:id, :name, :email] },
-              reviewee: { only: [:id, :name, :email] }
+              reviewer: { only: [:id, :name] },
+              reviewee: { only: [:id, :name] }
             }
           ), status: :created
         else
@@ -51,8 +51,8 @@ module Api
         
         render json: reviews.as_json(
           include: {
-            reviewer: { only: [:id, :name, :email] },
-            reviewee: { only: [:id, :name, :email] }
+            reviewer: { only: [:id, :name] },
+            reviewee: { only: [:id, :name] }
           }
         )
       rescue ActiveRecord::RecordNotFound

@@ -17,7 +17,8 @@ module UserPresenter
       average_rating: user.average_rating,
       total_reviews: user.total_reviews,
       experience_level: user.experience_level,
-      verifications: user.verifications
+      verifications: user.verifications,
+      reliability: user.reliability
     }
   end
 

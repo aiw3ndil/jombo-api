@@ -13,6 +13,29 @@ class Trip < ApplicationRecord
   SUGGESTED_PRICE_PER_KM = 0.065
   MAX_PRICE_PER_KM = 0.12
   MAX_STOPS = 5
+
+  scope :not_cancelled, -> { where(cancelled_at: nil) }
+
+  def cancelled?
+    cancelled_at.present?
+  end
+
+  # El conductor anula el viaje. Si tiene reservas activas se marca como cancelado y se
+  # cancelan las reservas (para avisar a los pasajeros y contarlo en su fiabilidad);
+  # si no, se borra. Devuelve las reservas canceladas (vacío si se borró).
+  def cancel_by_driver!
+    active = bookings.active.includes(:user).to_a
+    if active.empty?
+      destroy!
+      return []
+    end
+
+    transaction do
+      active.each { |booking| booking.cancel!(by: 'driver') }
+      update_columns(cancelled_at: Time.current)
+    end
+    active
+  end
   
   validates :departure_location, :arrival_location, :departure_time, :available_seats, :price, :region, presence: true
   validates :available_seats, numericality: { greater_than_or_equal_to: 0, only_integer: true }

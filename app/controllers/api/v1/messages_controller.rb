@@ -10,18 +10,23 @@ module Api
         messages = @conversation.messages.includes(:user).order(created_at: :asc)
         
         render json: messages.as_json(
-          include: { user: { only: [:id, :name, :email] } }
+          include: { user: { only: [:id, :name] } }
         )
       end
 
       # POST /api/v1/conversations/:conversation_id/messages
       def create
+        others = @conversation.participants.where.not(id: current_user.id)
+        if others.any? { |other| current_user.blocked_with?(other) }
+          return render json: { error_code: 'blocked', error: I18n.t('errors.blocked') }, status: :forbidden
+        end
+
         message = @conversation.messages.build(message_params)
         message.user = current_user
 
         if message.save
           render json: message.as_json(
-            include: { user: { only: [:id, :name, :email] } }
+            include: { user: { only: [:id, :name] } }
           ), status: :created
         else
           render json: { errors: message.errors.full_messages }, status: :unprocessable_entity

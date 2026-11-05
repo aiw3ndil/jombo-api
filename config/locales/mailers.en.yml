@@ -10,6 +10,16 @@ en:
       unsubscribe_link: "unsubscribe here"
   mailers:
     user_mailer:
+      trip_cancelled:
+        subject: "Ride cancelled: %{from} → %{to}"
+        title: "The driver cancelled the ride"
+        greeting: "Hello %{name},"
+        intro: "We're sorry — %{driver} has cancelled the ride you had booked. Your booking has been cancelled."
+        route: "Route:"
+        departure: "Departure:"
+        next: "There may be other rides on the same route — have a look, or create a search alert."
+        button: "Search rides"
+        team: "The Jombo Team"
       trip_reminder:
         subject: "Your ride %{from} → %{to} is coming up"
         title: "Your ride is coming up 🚗"

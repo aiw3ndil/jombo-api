@@ -1,0 +1,15 @@
+<% s = 'mailers.user_mailer.trip_cancelled' %>
+<%= t("#{s}.title") %>
+
+<%= t("#{s}.greeting", name: @user.name) %>
+
+<%= t("#{s}.intro", driver: @trip.driver.name) %>
+
+<%= t("#{s}.route") %> <%= @from %> → <%= @to %>
+<%= t("#{s}.departure") %> <%= @departure_label %>
+
+<%= t("#{s}.next") %>
+
+<%= t("#{s}.button") %>: <%= @search_url %>
+
+<%= t("#{s}.team") %>

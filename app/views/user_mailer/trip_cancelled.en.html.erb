@@ -1,0 +1,18 @@
+<% s = 'mailers.user_mailer.trip_cancelled' %>
+<h1><%= t("#{s}.title") %></h1>
+
+<p><%= t("#{s}.greeting", name: @user.name) %></p>
+<p><%= t("#{s}.intro", driver: @trip.driver.name) %></p>
+
+<%= render layout: 'card' do %>
+  <p><strong><%= t("#{s}.route") %></strong> <%= @from %> → <%= @to %></p>
+  <p><strong><%= t("#{s}.departure") %></strong> <%= @departure_label %></p>
+<% end %>
+
+<p><%= t("#{s}.next") %></p>
+
+<div style="text-align: center; margin: 32px 0;">
+  <%= render 'button', url: @search_url, text: t("#{s}.button") %>
+</div>
+
+<p><strong><%= t("#{s}.team") %></strong></p>

@@ -27,7 +27,7 @@ module Api
 
       def my_trips
         return render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
-        trips = current_user.trips.includes(:driver, :vehicle, :stops).order(created_at: :desc)
+        trips = current_user.trips.not_cancelled.includes(:driver, :vehicle, :stops).order(created_at: :desc)
         render json: trips.map { |trip| serialize_trip(trip) }
       end
 
@@ -63,16 +63,30 @@ module Api
           # Solo eliminamos viajes futuros para no perder el historial de los ya realizados
           trips_to_delete = trips_to_delete.where('departure_time >= ?', Time.current)
           
-          count = trips_to_delete.count
-          trips_to_delete.destroy_all
-          render json: { message: "#{count} trips from the series deleted successfully" }
-        else
+          trips = trips_to_delete.to_a
+          cancelled = trips.count { |trip| cancel_trip(trip) }
+          render json: { message: "#{trips.size} trips from the series deleted successfully", cancelled: cancelled }
+        elsif @trip.departure_time < Time.current
+          # Viaje ya realizado: se borra sin avisar a nadie
           @trip.destroy
           render json: { message: "Trip deleted successfully" }
+        else
+          cancelled = cancel_trip(@trip)
+          render json: { message: cancelled ? 'Trip cancelled; passengers have been notified' : 'Trip deleted successfully',
+                         cancelled: cancelled ? 1 : 0 }
         end
       end
 
       private
+
+      # Cancela (o borra si no tiene reservas) y avisa a los pasajeros. true si había reservas.
+      def cancel_trip(trip)
+        bookings = trip.cancel_by_driver!
+        bookings.each do |booking|
+          UserMailer.trip_cancelled(booking).deliver_later
+        end
+        bookings.any?
+      end
 
       def set_trip
         @trip = Trip.find(params[:id])
@@ -103,7 +117,7 @@ module Api
         end
 
         if log_empty && results.empty?
-          SearchLog.create(departure_location: from, arrival_location: to, region: User::REGION, user_id: current_user&.id)
+          SearchLog.create(departure_location: from, arrival_location: to, region: User::REGION, user_id: (current_user || optional_user)&.id)
         end
 
         cache_key = "external_transport/#{from}/#{to}"
@@ -117,7 +131,7 @@ module Api
       # Viajes futuros que pasan por "from" y luego por "to" (origen, paradas o destino),
       # con los filtros de búsqueda aplicados. Devuelve pares [trip, segmento].
       def filtered_results(from, to)
-        query = Trip.includes(:driver, :vehicle, :stops)
+        query = Trip.not_cancelled.includes(:driver, :vehicle, :stops)
                     .where(region: User::REGION)
                     .where('trips.departure_time >= ?', Time.current - 6.hours)
         query = query.merge(location_scope('departure_location', from)) if from
@@ -134,6 +148,8 @@ module Api
         end
         query = query.where(smoking_allowed: false) if ActiveModel::Type::Boolean.new.cast(params[:no_smoking])
 
+        viewer = current_user || optional_user
+        query = query.where.not(driver_id: viewer.blocked_user_ids) if viewer
         trips = query.to_a
         trips = trips.select { |trip| trip.driver&.verified_member? } if ActiveModel::Type::Boolean.new.cast(params[:verified])
 

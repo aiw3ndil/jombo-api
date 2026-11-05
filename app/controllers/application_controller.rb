@@ -20,4 +20,12 @@ class ApplicationController < ActionController::API
   def current_user
     @current_user
   end
+
+  # Usuario de la sesión si la hay, sin exigir login (para rutas públicas)
+  def optional_user
+    return @optional_user if defined?(@optional_user)
+
+    payload = JwtService.decode(request.cookies['jwt'].to_s)
+    @optional_user = payload && User.find_by(id: payload[:user_id])
+  end
 end

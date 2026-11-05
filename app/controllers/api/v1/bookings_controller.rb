@@ -22,11 +22,11 @@ module Api
           render json: bookings.map { |booking| booking_with_passenger(booking) }
         else
           # Original logic for standalone bookings (GET /api/v1/bookings)
-          bookings = current_user.bookings.includes(trip: :driver).order(created_at: :desc)
+          bookings = current_user.bookings.includes(trip: %i[driver vehicle]).order(created_at: :desc)
           render json: bookings.as_json(
             include: {
               trip: {
-                include: { driver: { only: [:id, :name] } }
+                include: { driver: { only: [:id, :name] }, vehicle: { only: Vehicle::PUBLIC_ATTRIBUTES } }
               }
             }
           )
@@ -52,6 +52,13 @@ module Api
         end
 
         trip = Trip.find(params[:trip_id])
+        if trip.cancelled?
+          return render json: { error: 'This trip has been cancelled' }, status: :unprocessable_entity
+        end
+        if current_user.blocked_with?(trip.driver)
+          return render json: { error_code: 'blocked', error: I18n.t('errors.blocked') }, status: :forbidden
+        end
+
         booking = trip.bookings.build(booking_params.except(:status).merge(user: current_user, status: 'pending'))
 
         if booking.seats.to_i <= 0

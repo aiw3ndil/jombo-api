@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_06_110000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_06_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_110000) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "blocks", force: :cascade do |t|
+    t.bigint "blocker_id", null: false
+    t.bigint "blocked_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blocked_id"], name: "index_blocks_on_blocked_id"
+    t.index ["blocker_id", "blocked_id"], name: "index_blocks_on_blocker_id_and_blocked_id", unique: true
+    t.index ["blocker_id"], name: "index_blocks_on_blocker_id"
   end
 
   create_table "bookings", force: :cascade do |t|
@@ -105,6 +115,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_110000) do
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "reports", force: :cascade do |t|
+    t.bigint "reporter_id", null: false
+    t.bigint "reported_id", null: false
+    t.bigint "booking_id"
+    t.string "reason", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["booking_id"], name: "index_reports_on_booking_id"
+    t.index ["reported_id"], name: "index_reports_on_reported_id"
+    t.index ["reporter_id"], name: "index_reports_on_reporter_id"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -201,6 +224,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_110000) do
     t.integer "distance_km"
     t.integer "duration_minutes"
     t.datetime "reminder_sent_at"
+    t.datetime "cancelled_at"
+    t.index ["cancelled_at"], name: "index_trips_on_cancelled_at"
     t.index ["driver_id"], name: "index_trips_on_driver_id"
     t.index ["parent_id"], name: "index_trips_on_parent_id"
     t.index ["region"], name: "index_trips_on_region"
@@ -246,6 +271,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_110000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "blocks", "users", column: "blocked_id"
+  add_foreign_key "blocks", "users", column: "blocker_id"
   add_foreign_key "bookings", "trips"
   add_foreign_key "bookings", "users"
   add_foreign_key "conversation_participants", "conversations"
@@ -254,6 +281,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_110000) do
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "reports", "bookings"
+  add_foreign_key "reports", "users", column: "reported_id"
+  add_foreign_key "reports", "users", column: "reporter_id"
   add_foreign_key "reviews", "bookings"
   add_foreign_key "reviews", "users", column: "reviewee_id"
   add_foreign_key "reviews", "users", column: "reviewer_id"

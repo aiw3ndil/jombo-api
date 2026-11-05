@@ -15,4 +15,5 @@ fi:
       title: "Kuljettaja tarjosi kyytiä pyyntöösi"
       content: "%{driver}: %{from} → %{to}, %{time}"
   errors:
+    blocked: "Et voi olla yhteydessä tähän käyttäjään."
     email_verification_required: "Vahvista sähköpostiosoitteesi varataksesi kyytejä."

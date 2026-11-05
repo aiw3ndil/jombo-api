@@ -23,6 +23,10 @@ Rails.application.routes.draw do
       get 'config', to: 'app_config#show'
       resources :users, only: [:show]
       resources :search_alerts, only: [:index, :create, :destroy]
+      resources :reports, only: [:create]
+      post 'users/:user_id/block', to: 'blocks#create', as: :block_user
+      delete 'users/:user_id/block', to: 'blocks#destroy', as: :unblock_user
+
       resources :ride_requests do
         get 'mine', on: :collection
       end

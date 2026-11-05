@@ -257,6 +257,24 @@ class UserMailer < ApplicationMailer
     end
   end
 
+  # El conductor canceló el viaje: aviso al pasajero
+  def trip_cancelled(booking)
+    @user = booking.user
+    @booking = booking
+    @trip = booking.trip
+    @frontend_url = self.class.frontend_url_for(@user)
+    @from = booking.pickup_location || @trip.departure_location
+    @to = booking.dropoff_location || @trip.arrival_location
+    @search_url = "#{@frontend_url}/search?#{{ from: @from, to: @to, date: @trip.departure_time.in_time_zone(HELSINKI).to_date.iso8601 }.to_query}"
+
+    I18n.with_locale(@user.language) do
+      @departure_label = departure_label(@trip)
+      subject = I18n.t('mailers.user_mailer.trip_cancelled.subject', from: @from, to: @to)
+      NotificationService.create_booking_notification(@user, subject, @departure_label, booking.id, url: @search_url)
+      mail(to: @user.email, subject: subject)
+    end
+  end
+
   # La solicitud de reserva caducó sin respuesta del conductor
   def booking_expired(booking)
     @user = booking.user

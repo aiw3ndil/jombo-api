@@ -20,6 +20,10 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy
   has_many :ride_requests, dependent: :destroy
   has_many :search_alerts, dependent: :destroy
+  has_many :reports_made, class_name: 'Report', foreign_key: 'reporter_id', dependent: :destroy
+  has_many :reports_received, class_name: 'Report', foreign_key: 'reported_id', dependent: :destroy
+  has_many :blocks_made, class_name: 'Block', foreign_key: 'blocker_id', dependent: :destroy
+  has_many :blocks_received, class_name: 'Block', foreign_key: 'blocked_id', dependent: :destroy
 
   validates :bio, length: { maximum: 500 }
 
@@ -60,6 +64,47 @@ class User < ApplicationRecord
     rating = average_rating
     level = EXPERIENCE_LEVELS.find { |_name, min_trips, min_rating| completed >= min_trips && rating >= min_rating }
     level ? level.first : 'new'
+  end
+
+  # ¿Hay un bloqueo entre los dos usuarios (en cualquier dirección)?
+  def blocked_with?(other)
+    return false unless other
+
+    Block.where(blocker_id: id, blocked_id: other.id).or(Block.where(blocker_id: other.id, blocked_id: id)).exists?
+  end
+
+  # Ids de usuarios con los que hay un bloqueo en cualquier dirección
+  def blocked_user_ids
+    Block.where(blocker_id: id).pluck(:blocked_id) | Block.where(blocked_id: id).pluck(:blocker_id)
+  end
+
+  # Fiabilidad como conductor en los últimos 12 meses (nil si hay menos de 3 datos)
+  RELIABILITY_MIN_SAMPLES = 3
+
+  # % de reservas canceladas por el conductor sobre las que llegó a tener
+  def driver_cancellation_rate
+    scope = Booking.joins(:trip).where(trips: { driver_id: id }).where('bookings.created_at > ?', 12.months.ago)
+    total = scope.where("bookings.status = 'confirmed' OR bookings.cancelled_by = 'driver'").count
+    return nil if total < RELIABILITY_MIN_SAMPLES
+
+    (scope.where(cancelled_by: 'driver').count * 100.0 / total).round
+  end
+
+  # Mediana de horas que tarda en responder a solicitudes (sin contar la reserva instantánea)
+  def median_response_hours
+    hours = Booking.joins(:trip).where(trips: { driver_id: id, instant_booking: false })
+                   .where.not(responded_at: nil).where('bookings.created_at > ?', 12.months.ago)
+                   .pluck(Arel.sql('EXTRACT(EPOCH FROM (bookings.responded_at - bookings.created_at)) / 3600.0'))
+                   .map(&:to_f).sort
+    return nil if hours.size < RELIABILITY_MIN_SAMPLES
+
+    mid = hours.size / 2
+    median = hours.size.odd? ? hours[mid] : (hours[mid - 1] + hours[mid]) / 2
+    median.round(1)
+  end
+
+  def reliability
+    { cancellation_rate: driver_cancellation_rate, response_hours: median_response_hours }
   end
 
   def email_verified?

@@ -45,4 +45,5 @@ en:
       title: "A driver offered a ride for your request"
       content: "%{driver}: %{from} → %{to}, %{time}"
   errors:
+    blocked: "You can't interact with this user."
     email_verification_required: "Verify your email address to book trips."

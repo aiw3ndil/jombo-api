@@ -1,0 +1,14 @@
+New user report
+
+Reported:  <%= @report.reported.name %> (#<%= @report.reported_id %>, <%= @report.reported.email %>)
+Reporter:  <%= @report.reporter.name %> (#<%= @report.reporter_id %>, <%= @report.reporter.email %>)
+Reason:    <%= @report.reason %>
+<% if @report.booking %>Booking:   #<%= @report.booking_id %> — <%= @report.booking.trip.departure_location %> → <%= @report.booking.trip.arrival_location %>, <%= l(@report.booking.trip.departure_time.in_time_zone('Europe/Helsinki'), format: :short_datetime) %>
+<% end %>
+Comment:
+<%= @report.comment.presence || '(none)' %>
+
+Reports received by this user: <%= @report.reported.reports_received.count %>
+Public profile: <%= ApplicationMailer.frontend_url_for('en') %>/users/<%= @report.reported_id %>
+
+Report #<%= @report.id %>, <%= @report.created_at.in_time_zone('Europe/Helsinki') %>

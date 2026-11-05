@@ -10,6 +10,16 @@ fi:
       unsubscribe_link: "perua tilauksen tästä"
   mailers:
     user_mailer:
+      trip_cancelled:
+        subject: "Kyyti peruttu: %{from} → %{to}"
+        title: "Kuljettaja perui kyydin"
+        greeting: "Hei %{name},"
+        intro: "Valitettavasti %{driver} perui kyydin, jonka olit varannut. Varauksesi on peruttu."
+        route: "Reitti:"
+        departure: "Lähtö:"
+        next: "Samalla reitillä voi olla muita kyytejä – katso vaihtoehdot tai luo hakuvahti."
+        button: "Hae kyytejä"
+        team: "Jombo-tiimi"
       trip_reminder:
         subject: "Kyytisi %{from} → %{to} lähestyy"
         title: "Kyytisi lähestyy 🚗"
