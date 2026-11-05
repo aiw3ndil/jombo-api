@@ -114,6 +114,16 @@ RSpec.describe 'Public profiles and verification', type: :request do
       expect(response).to have_http_status(:too_many_requests)
     end
 
+    it 'lets the user retry right away when the SMS could not be sent' do
+      allow(SmsService).to receive(:deliver).and_raise(SmsService::DeliveryError, 'Could not send the SMS')
+      post '/api/v1/verification/phone', headers: auth_headers(user)
+      expect(response).to have_http_status(:bad_gateway)
+
+      allow(SmsService).to receive(:deliver).and_call_original
+      post '/api/v1/verification/phone', headers: auth_headers(user)
+      expect(response).to have_http_status(:ok)
+    end
+
     it 'resets verification when the phone changes' do
       user.update_column(:phone_verified_at, Time.current)
       user.update!(phone: '+358409999999')

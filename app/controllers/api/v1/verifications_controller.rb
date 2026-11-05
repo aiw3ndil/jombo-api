@@ -37,6 +37,8 @@ module Api
         end
         render json: { message: 'Code sent' }
       rescue SmsService::DeliveryError => e
+        # El SMS no salió: anulamos el código para que se pueda reintentar sin esperar
+        current_user.update_columns(phone_verification_sent_at: nil, phone_verification_code_digest: nil)
         render json: { error: e.message }, status: :bad_gateway
       end
 
