@@ -29,7 +29,7 @@ class User < ApplicationRecord
   before_save :reset_phone_verification, if: :will_save_change_to_phone?
   before_save(if: -> { persisted? && will_save_change_to_email? }) { self.email_verified_at = nil }
 
-  # Nivel de experiencia como conductor: [nivel, viajes completados mínimos, valoración mínima]
+  # Nivel de experiencia (viajes como conductor + como pasajero): [nivel, viajes mínimos, valoración mínima]
   EXPERIENCE_LEVELS = [
     ['expert', 25, 4.6],
     ['experienced', 10, 4.4],
@@ -63,7 +63,7 @@ class User < ApplicationRecord
   end
 
   def experience_level
-    completed = completed_trips_count
+    completed = completed_trips_count + rides_taken_count
     rating = average_rating
     level = EXPERIENCE_LEVELS.find { |_name, min_trips, min_rating| completed >= min_trips && rating >= min_rating }
     level ? level.first : 'new'
@@ -78,7 +78,22 @@ class User < ApplicationRecord
   end
 
   def verifications
-    { email: email_verified?, phone: phone_verified?, google: provider == 'google' }
+    { email: email_verified?, phone: phone_verified?, google: provider == 'google', verified: verified_member? }
+  end
+
+  # Miembro verificado: email y, si hay SMS disponible, también teléfono
+  def verified_member?
+    email_verified? && (phone_verified? || !SmsService.enabled?)
+  end
+
+  # Para publicar viajes hace falta el teléfono verificado (si se pueden enviar SMS)
+  def can_publish_trips?
+    !SmsService.enabled? || phone_verified?
+  end
+
+  # Para reservar hace falta el email verificado
+  def can_book?
+    email_verified?
   end
 
   def generate_email_verification_token!

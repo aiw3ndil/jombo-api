@@ -2,6 +2,8 @@ module Api
   module V1
     # Perfil público de un usuario (sin email ni teléfono)
     class UsersController < ApplicationController
+      include UserPresenter
+
       def show
         user = User.find_by(id: params[:id])
         return render json: { error: 'User not found' }, status: :not_found unless user
@@ -31,16 +33,6 @@ module Api
               reviewer: { id: review.reviewer_id, name: review.reviewer&.name } }
           end
         }
-      end
-
-      private
-
-      def picture_url_for(user)
-        return url_for(user.picture) if user.picture.attached?
-
-        user.read_attribute(:picture).presence
-      rescue StandardError
-        nil
       end
     end
   end

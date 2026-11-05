@@ -160,4 +160,33 @@ RSpec.describe 'Api::V1::Bookings', type: :request do
       end
     end
   end
+
+  describe 'verification and privacy' do
+    it 'requires a verified email to book' do
+      unverified = create(:user, :unverified)
+      expect {
+        post "/api/v1/trips/#{trip.id}/bookings", params: { booking: { seats: 1 } }, headers: auth_headers(unverified)
+      }.not_to change(Booking, :count)
+      expect(response).to have_http_status(:forbidden)
+      expect(JSON.parse(response.body)['error_code']).to eq('email_verification_required')
+    end
+
+    it 'shows the driver trust data about passengers but not their email' do
+      create(:booking, trip: trip, user: user, seats: 1)
+      get "/api/v1/trips/#{trip.id}/bookings", headers: auth_headers(driver)
+
+      expect(response).to have_http_status(:ok)
+      passenger = JSON.parse(response.body).first['user']
+      expect(passenger).to include('id' => user.id, 'name' => user.name, 'experience_level' => 'new', 'rides_taken' => 0)
+      expect(passenger['verifications']).to include('email' => true)
+      expect(passenger.keys).to include('average_rating', 'total_reviews')
+      expect(response.body).not_to include(user.email)
+    end
+
+    it 'does not expose the driver email to passengers' do
+      create(:booking, trip: trip, user: user, seats: 1)
+      get '/api/v1/bookings', headers: auth_headers(user)
+      expect(response.body).not_to include(driver.email)
+    end
+  end
 end

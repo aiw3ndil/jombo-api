@@ -54,7 +54,19 @@ RSpec.describe 'Trip search filters, stops and instant booking', type: :request 
 
   it 'does not expose the driver email' do
     trips = search(departure_location: 'Helsinki', arrival_location: 'Oulu')
-    expect(trips.first['driver'].keys).not_to include('email')
+    expect(trips.first['driver'].keys).not_to include('email', 'phone')
+  end
+
+  it 'includes the driver experience level and verifications' do
+    driver_json = search(departure_location: 'Helsinki', arrival_location: 'Oulu').first['driver']
+    expect(driver_json['experience_level']).to eq('new')
+    expect(driver_json['verifications']).to include('email' => true, 'phone' => true, 'verified' => true)
+  end
+
+  it 'filters to verified drivers only' do
+    direct.driver.update_column(:phone_verified_at, nil)
+    ids = search(departure_location: 'Tampere', arrival_location: 'Oulu', verified: true).map { |t| t['id'] }
+    expect(ids).to eq([with_stops.id])
   end
 
   it 'creates and replaces stops through the API' do

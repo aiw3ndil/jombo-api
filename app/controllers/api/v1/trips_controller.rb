@@ -1,6 +1,8 @@
 module Api
   module V1
     class TripsController < ApplicationController
+      include UserPresenter
+
       TRIP_INCLUDES = {
         vehicle: { only: Vehicle::PUBLIC_ATTRIBUTES },
         stops: { only: [:id, :location, :position, :departure_time, :price_from_origin] }
@@ -42,6 +44,11 @@ module Api
 
       def create
         return render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
+        unless current_user.can_publish_trips?
+          return render json: { error_code: 'phone_verification_required',
+                                error: I18n.t('errors.phone_verification_required') }, status: :forbidden
+        end
+
         trip = current_user.trips.build(trip_params.except(:vehicle_id))
         trip.assign_stops(stops_param) unless stops_param.nil?
         save_trip_with_vehicle(trip, status: :created)
@@ -132,7 +139,10 @@ module Api
         end
         query = query.where(smoking_allowed: false) if ActiveModel::Type::Boolean.new.cast(params[:no_smoking])
 
-        results = query.to_a.filter_map do |trip|
+        trips = query.to_a
+        trips = trips.select { |trip| trip.driver&.verified_member? } if ActiveModel::Type::Boolean.new.cast(params[:verified])
+
+        results = trips.filter_map do |trip|
           segment = trip.segment_for(from, to)
           [trip, segment] if segment && segment_matches_filters?(segment)
         end
@@ -182,24 +192,8 @@ module Api
         json
       end
 
-      def driver_summary(user)
-        return nil unless user
-
-        { id: user.id, name: user.name, picture_url: picture_url_for(user),
-          average_rating: user.average_rating, total_reviews: user.total_reviews }
-      end
-
       def driver_profile(user)
-        driver_summary(user)&.merge(experience_level: user.experience_level, verifications: user.verifications,
-                                    bio: user.bio, member_since: user.created_at)
-      end
-
-      def picture_url_for(user)
-        return url_for(user.picture) if user.picture.attached?
-
-        user.read_attribute(:picture).presence
-      rescue StandardError
-        nil
+        driver_summary(user)&.merge(bio: user.bio, member_since: user.created_at)
       end
 
       # Guarda el viaje junto con su vehículo (existente o nuevo) en una transacción

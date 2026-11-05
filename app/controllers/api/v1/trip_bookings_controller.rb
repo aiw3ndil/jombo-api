@@ -9,7 +9,7 @@ module Api
         bookings = @trip.bookings.includes(:user).order(created_at: :desc)
         render json: bookings.as_json(
           include: {
-            user: { only: [:id, :email, :name] }
+            user: { only: [:id, :name] }
           }
         )
       end

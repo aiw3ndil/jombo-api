@@ -1,6 +1,8 @@
 module Api
   module V1
     class BookingsController < ApplicationController
+      include UserPresenter
+
       before_action :authenticate_user!
       before_action :set_booking, only: [:show, :update, :destroy, :confirm, :reject]
       before_action :authorize_booking_owner!, only: [:show, :update, :destroy]
@@ -15,20 +17,16 @@ module Api
             return
           end
 
-          bookings = trip.bookings.includes(user: []).order(created_at: :desc)
+          bookings = trip.bookings.includes(:user).order(created_at: :desc)
 
-          render json: bookings.as_json(
-            include: {
-              user: { only: [:id, :email, :name] }
-            }
-          )
+          render json: bookings.map { |booking| booking_with_passenger(booking) }
         else
           # Original logic for standalone bookings (GET /api/v1/bookings)
           bookings = current_user.bookings.includes(trip: :driver).order(created_at: :desc)
           render json: bookings.as_json(
             include: {
               trip: {
-                include: { driver: { only: [:id, :email, :name] } }
+                include: { driver: { only: [:id, :name] } }
               }
             }
           )
@@ -41,13 +39,18 @@ module Api
         render json: @booking.as_json(
           include: {
             trip: {
-              include: { driver: { only: [:id, :email, :name] } }
+              include: { driver: { only: [:id, :name] } }
             }
           }
         )
       end
 
       def create
+        unless current_user.can_book?
+          return render json: { error_code: 'email_verification_required',
+                                error: I18n.t('errors.email_verification_required') }, status: :forbidden
+        end
+
         trip = Trip.find(params[:trip_id])
         booking = trip.bookings.build(booking_params.except(:status).merge(user: current_user, status: 'pending'))
 
@@ -120,14 +123,7 @@ module Api
         if @booking.confirm_by_driver!
           UserMailer.booking_confirmed(@booking.user, @booking).deliver_later
 
-          render json: @booking.as_json(
-            include: {
-              trip: {
-                include: { driver: { only: [:id, :email, :name] } }
-              },
-              user: { only: [:id, :email, :name] }
-            }
-          )
+          render json: booking_with_passenger(@booking, include: { trip: { include: { driver: { only: [:id, :name] } } } })
         else
           render json: { errors: @booking.errors.full_messages }, status: :unprocessable_entity
         end
@@ -164,6 +160,11 @@ module Api
       end
 
       private
+
+      # Reserva vista por el conductor: datos de confianza del pasajero, sin email
+      def booking_with_passenger(booking, include: {})
+        booking.as_json(include: include).merge('user' => passenger_summary(booking.user))
+      end
 
       def set_booking
         @booking = Booking.find(params[:id])

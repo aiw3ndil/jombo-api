@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Public profiles and verification', type: :request do
-  let(:user) { create(:user, bio: 'Commuting Tampere–Helsinki every week', phone: '0401234567') }
+  let(:user) { create(:user, :unverified, bio: 'Commuting Tampere–Helsinki every week', phone: '0401234567') }
 
   before { SmsService.deliveries.clear }
 
@@ -13,7 +13,7 @@ RSpec.describe 'Public profiles and verification', type: :request do
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json).to include('name' => user.name, 'bio' => user.bio, 'experience_level' => 'new')
-      expect(json['verifications']).to eq('email' => false, 'phone' => false, 'google' => false)
+      expect(json['verifications']).to eq('email' => false, 'phone' => false, 'google' => false, 'verified' => false)
       expect(json['upcoming_trips'].size).to eq(1)
       expect(json.keys).not_to include('email', 'phone')
       expect(response.body).not_to include(user.email)
@@ -36,6 +36,33 @@ RSpec.describe 'Public profiles and verification', type: :request do
       end
       expect(user.completed_trips_count).to eq(3)
       expect(user.experience_level).to eq('regular')
+    end
+
+    it 'also counts rides taken as a passenger' do
+      3.times do
+        trip = create(:trip, departure_time: 2.days.from_now)
+        trip.update_column(:departure_time, 2.days.ago)
+        booking = create(:booking, trip: trip, user: user, status: 'confirmed')
+        Review.create!(booking: booking, reviewer: trip.driver, reviewee: user, rating: 5)
+      end
+      expect(user.rides_taken_count).to eq(3)
+      expect(user.experience_level).to eq('regular')
+    end
+  end
+
+  describe 'verified member' do
+    it 'requires email and phone while SMS is available' do
+      user.verify_email!
+      expect(user.verified_member?).to be(false)
+      user.update_column(:phone_verified_at, Time.current)
+      expect(user.reload.verifications).to include(verified: true)
+    end
+
+    it 'only requires email when SMS is unavailable' do
+      allow(SmsService).to receive(:enabled?).and_return(false)
+      user.verify_email!
+      expect(user.verified_member?).to be(true)
+      expect(user.can_publish_trips?).to be(true)
     end
   end
 
