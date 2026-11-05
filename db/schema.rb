@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_06_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_06_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -225,6 +225,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_120000) do
     t.integer "duration_minutes"
     t.datetime "reminder_sent_at"
     t.datetime "cancelled_at"
+    t.string "meeting_point"
+    t.decimal "meeting_lat", precision: 10, scale: 7
+    t.decimal "meeting_lng", precision: 10, scale: 7
     t.index ["cancelled_at"], name: "index_trips_on_cancelled_at"
     t.index ["driver_id"], name: "index_trips_on_driver_id"
     t.index ["parent_id"], name: "index_trips_on_parent_id"

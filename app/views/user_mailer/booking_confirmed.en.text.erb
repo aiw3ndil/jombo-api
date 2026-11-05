@@ -9,7 +9,8 @@
 <%= t('mailers.user_mailer.booking_confirmed.origin') %> <%= @trip.departure_location %>
 <%= t('mailers.user_mailer.booking_confirmed.destination') %> <%= @trip.arrival_location %>
 <%= t('mailers.user_mailer.booking_confirmed.datetime') %> <%= l(@trip.departure_time, format: :email) %>
-<%= t('mailers.user_mailer.booking_confirmed.seats') %> <%= @booking.seats %>
+<% if @trip.meeting_point.present? %><%= t('mailers.user_mailer.booking_confirmed.meeting_point') %> <%= @trip.meeting_point %> (<%= @trip.meeting_point_url %>)
+<% end %><%= t('mailers.user_mailer.booking_confirmed.seats') %> <%= @booking.seats %>
 <%= t('mailers.user_mailer.booking_confirmed.price') %> <%= number_to_currency(@trip.price) %>
 
 <%= t('mailers.user_mailer.booking_confirmed.driver_info') %>

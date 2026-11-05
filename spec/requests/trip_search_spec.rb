@@ -110,4 +110,32 @@ RSpec.describe 'Trip search filters, stops and instant booking', type: :request 
       expect(Notification.where(user: direct.driver).count).to eq(1)
     end
   end
+
+  describe 'meeting point' do
+    it 'is saved, validated and returned with a Google Maps link' do
+      trip = with_stops
+      put "/api/v1/trips/#{trip.id}", params: { trip: { meeting_point: 'Helsinki Central Station', meeting_lat: 60.1719, meeting_lng: 24.9414 } },
+                                      headers: auth_headers(driver)
+      expect(response).to have_http_status(:ok)
+
+      get "/api/v1/trips/#{trip.id}"
+      json = JSON.parse(response.body)
+      expect(json).to include('meeting_point' => 'Helsinki Central Station')
+      expect(json['meeting_point_url']).to eq('https://www.google.com/maps/search/?api=1&query=60.1719%2C24.9414')
+
+      put "/api/v1/trips/#{trip.id}", params: { trip: { meeting_lat: 200 } }, headers: auth_headers(driver)
+      expect(response).to have_http_status(:unprocessable_entity)
+
+      put "/api/v1/trips/#{trip.id}", params: { trip: { meeting_point: '' } }, headers: auth_headers(driver)
+      expect(trip.reload).to have_attributes(meeting_point: nil, meeting_lat: nil, meeting_lng: nil)
+    end
+
+    it 'appears in the reminder email' do
+      with_stops.update_columns(meeting_point: 'Kamppi bus station', departure_time: 10.hours.from_now)
+      booking = create(:booking, :confirmed, trip: with_stops, user: passenger)
+      mail = UserMailer.trip_reminder(booking)
+      expect(mail.html_part.body.to_s).to include('Kamppi bus station', 'google.com/maps')
+      expect(mail.text_part.body.to_s).to include('Kamppi bus station')
+    end
+  end
 end

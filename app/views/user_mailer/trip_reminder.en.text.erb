@@ -7,7 +7,8 @@
 
 <%= t("#{s}.route") %> <%= @booking.pickup_location || @trip.departure_location %> → <%= @booking.dropoff_location || @trip.arrival_location %>
 <%= t("#{s}.departure") %> <%= @departure_label %>
-<%= t("#{s}.driver") %> <%= @trip.driver.name %>
+<% if @trip.meeting_point.present? %><%= t("#{s}.meeting_point") %> <%= @trip.meeting_point %> (<%= @trip.meeting_point_url %>)
+<% end %><%= t("#{s}.driver") %> <%= @trip.driver.name %>
 <% if @trip.vehicle %><%= t("#{s}.vehicle") %> <%= [@trip.vehicle.brand, @trip.vehicle.model, @trip.vehicle.color].compact_blank.join(' · ') %>
 <% end %><%= t("#{s}.seats") %> <%= @booking.seats %>
 

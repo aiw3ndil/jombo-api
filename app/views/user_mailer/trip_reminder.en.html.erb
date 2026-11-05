@@ -7,6 +7,7 @@
 <%= render layout: 'card' do %>
   <p><strong><%= t("#{s}.route") %></strong> <%= @booking.pickup_location || @trip.departure_location %> → <%= @booking.dropoff_location || @trip.arrival_location %></p>
   <p><strong><%= t("#{s}.departure") %></strong> <%= @departure_label %></p>
+  <% if @trip.meeting_point.present? %><p><strong><%= t("#{s}.meeting_point") %></strong> <a href="<%= @trip.meeting_point_url %>" style="color: #0BB1D3; font-weight: 600;"><%= @trip.meeting_point %></a></p><% end %>
   <p><strong><%= t("#{s}.driver") %></strong> <%= @trip.driver.name %></p>
   <% if @trip.vehicle %><p><strong><%= t("#{s}.vehicle") %></strong> <%= [@trip.vehicle.brand, @trip.vehicle.model, @trip.vehicle.color].compact_blank.join(' · ') %></p><% end %>
   <p><strong><%= t("#{s}.seats") %></strong> <%= @booking.seats %></p>

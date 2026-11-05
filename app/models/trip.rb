@@ -16,6 +16,14 @@ class Trip < ApplicationRecord
 
   scope :not_cancelled, -> { where(cancelled_at: nil) }
 
+  # Enlace a Google Maps del punto de encuentro (coordenadas si las hay, si no la dirección)
+  def meeting_point_url
+    return nil if meeting_point.blank?
+
+    query = meeting_lat && meeting_lng ? "#{meeting_lat},#{meeting_lng}" : meeting_point
+    "https://www.google.com/maps/search/?api=1&query=#{ERB::Util.url_encode(query)}"
+  end
+
   def cancelled?
     cancelled_at.present?
   end
@@ -48,6 +56,10 @@ class Trip < ApplicationRecord
   validates :luggage_size, inclusion: { in: LUGGAGE_SIZES }
   validates :distance_km, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :duration_minutes, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :meeting_point, length: { maximum: 200 }
+  validates :meeting_lat, numericality: { in: -90..90 }, allow_nil: true
+  validates :meeting_lng, numericality: { in: -180..180 }, allow_nil: true
+  before_validation :clear_meeting_coordinates, if: -> { meeting_point.blank? }
   validate :price_is_cost_sharing
   validate :stops_are_consistent
   validates :recurrence_pattern, inclusion: { in: %w[daily weekly], allow_nil: true }
@@ -217,5 +229,11 @@ class Trip < ApplicationRecord
       end
       copy.save!
     end
+  end
+
+  def clear_meeting_coordinates
+    self.meeting_point = nil
+    self.meeting_lat = nil
+    self.meeting_lng = nil
   end
 end

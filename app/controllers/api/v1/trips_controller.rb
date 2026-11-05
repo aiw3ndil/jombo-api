@@ -9,7 +9,7 @@ module Api
       }.freeze
       TRIP_PERMITTED = [
         :departure_location, :arrival_location, :departure_time, :available_seats, :description, :price,
-        :vehicle_id, :ride_request_id, :distance_km, :duration_minutes, *Trip::PREFERENCE_ATTRIBUTES,
+        :vehicle_id, :ride_request_id, :distance_km, :duration_minutes, :meeting_point, :meeting_lat, :meeting_lng, *Trip::PREFERENCE_ATTRIBUTES,
         :is_recurring, :recurrence_pattern, :recurrence_days, :recurrence_until
       ].freeze
       BOOLEAN_FILTERS = {
@@ -200,6 +200,7 @@ module Api
         json['driver'] = driver_summary(trip.driver)
         json['segment'] = segment if segment&.dig(:partial)
         json['max_price'] = trip.max_price
+        json['meeting_point_url'] = trip.meeting_point_url
         json
       end
 
