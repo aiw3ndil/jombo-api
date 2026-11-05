@@ -1,21 +1,31 @@
 require 'net/http'
 
-# Envío de SMS. Usa Twilio si están configuradas TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN y
-# TWILIO_FROM; si no, en desarrollo y test escribe el mensaje en el log.
+# Envío de SMS a través de textbee (https://textbee.dev): un móvil Android con la app de
+# textbee hace de pasarela y envía los SMS con su propia SIM.
+#
+# Variables de entorno:
+#   TEXTBEE_API_KEY    (obligatoria) clave de la API, del panel de textbee
+#   TEXTBEE_DEVICE_ID  (opcional) móvil concreto; si no, textbee usa el dispositivo por defecto
+#   TEXTBEE_API_URL    (opcional) para textbee autoalojado; por defecto https://api.textbee.dev
+#
+# Sin TEXTBEE_API_KEY: en desarrollo y test el mensaje se escribe en el log; en producción
+# la verificación por SMS queda desactivada.
 class SmsService
   class DeliveryError < StandardError; end
+
+  DEFAULT_API_URL = 'https://api.textbee.dev'.freeze
 
   # Mensajes enviados en test (para las specs)
   cattr_accessor :deliveries, default: []
 
   class << self
     def enabled?
-      twilio_configured? || !Rails.env.production?
+      configured? || !Rails.env.production?
     end
 
     def deliver(to:, body:)
-      if twilio_configured?
-        deliver_with_twilio(to, body)
+      if configured?
+        deliver_with_textbee(to, body)
       elsif Rails.env.production?
         raise DeliveryError, 'SMS provider is not configured'
       else
@@ -27,24 +37,31 @@ class SmsService
 
     private
 
-    def twilio_configured?
-      %w[TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM].all? { |key| ENV[key].present? }
+    def configured?
+      ENV['TEXTBEE_API_KEY'].present?
     end
 
-    def deliver_with_twilio(to, body)
-      sid = ENV.fetch('TWILIO_ACCOUNT_SID')
-      uri = URI("https://api.twilio.com/2010-04-01/Accounts/#{sid}/Messages.json")
-      request = Net::HTTP::Post.new(uri)
-      request.basic_auth(sid, ENV.fetch('TWILIO_AUTH_TOKEN'))
-      request.set_form_data('To' => to, 'From' => ENV.fetch('TWILIO_FROM'), 'Body' => body)
+    def deliver_with_textbee(to, body)
+      base = ENV['TEXTBEE_API_URL'].presence || DEFAULT_API_URL
+      uri = URI("#{base.chomp('/')}/api/v1/gateway/send-sms")
+      payload = { recipients: [to], message: body }
+      payload[:deviceId] = ENV['TEXTBEE_DEVICE_ID'] if ENV['TEXTBEE_DEVICE_ID'].present?
 
-      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 10) do |http|
+      request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json',
+                                         'x-api-key' => ENV.fetch('TEXTBEE_API_KEY'))
+      request.body = payload.to_json
+
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https',
+                                                     open_timeout: 5, read_timeout: 10) do |http|
         http.request(request)
       end
       return if response.is_a?(Net::HTTPSuccess)
 
-      Rails.logger.error("Twilio error #{response.code}: #{response.body}")
-      raise DeliveryError, 'Could not send the SMS'
+      Rails.logger.error("textbee error #{response.code}: #{response.body}")
+      raise DeliveryError, "Could not send the SMS (textbee #{response.code})"
+    rescue Net::OpenTimeout, Net::ReadTimeout, SocketError, Errno::ECONNREFUSED => e
+      Rails.logger.error("textbee connection error: #{e.class}: #{e.message}")
+      raise DeliveryError, 'Could not send the SMS (gateway unreachable)'
     end
   end
 end
